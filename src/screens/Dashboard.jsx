@@ -68,7 +68,7 @@ const Dashboard = () => {
   return (
     <View style={custom.canvas}>
       {/* Header */}
-      <View style={[custom.headerRow, { paddingTop: 20 }]}> 
+      <View style={[custom.headerRow, { paddingTop: 20 }]}>
         <View>
           <Text style={custom.labelText}>Welcome back</Text>
           <Text style={[custom.headerText, { marginTop: 2 }]}>Alex</Text>
@@ -88,10 +88,22 @@ const Dashboard = () => {
           <Text style={custom.balanceAmount}>$12,480.50</Text>
           <View style={[style.row, { marginTop: 8 }]}>
             <TrendingUp size={16} color="#22C55E" strokeWidth={2.5} />
-            <Text style={[custom.textGreen, { fontSize: 14, fontWeight: '600', marginLeft: 4 }]}> 
+            <Text
+              style={[
+                custom.textGreen,
+                { fontSize: 14, fontWeight: '600', marginLeft: 4 },
+              ]}
+            >
               +8.2%
             </Text>
-            <Text style={[custom.textGray, { fontSize: 14, fontWeight: '500', marginLeft: 6 }]}>vs last month</Text>
+            <Text
+              style={[
+                custom.textGray,
+                { fontSize: 14, fontWeight: '500', marginLeft: 6 },
+              ]}
+            >
+              vs last month
+            </Text>
           </View>
         </View>
 
@@ -141,7 +153,11 @@ const Dashboard = () => {
         <View style={[style.rowBetween, { marginTop: 24, marginBottom: 16 }]}>
           <Text style={custom.sectionTitle}>Recent Transactions</Text>
           <TouchableOpacity activeOpacity={0.7}>
-            <Text style={[custom.textBlue, { fontSize: 14, fontWeight: '600' }]}>See All</Text>
+            <Text
+              style={[custom.textBlue, { fontSize: 14, fontWeight: '600' }]}
+            >
+              See All
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -149,7 +165,12 @@ const Dashboard = () => {
           {transactions.map((tx, index) => (
             <View key={tx.id}>
               <View style={custom.transactionItem}>
-                <View style={[custom.transactionIconWrap, { backgroundColor: `${tx.color}15` }]}>
+                <View
+                  style={[
+                    custom.transactionIconWrap,
+                    { backgroundColor: `${tx.color}15` },
+                  ]}
+                >
                   <tx.icon size={20} color={tx.color} strokeWidth={1.8} />
                 </View>
                 <View style={custom.transactionInfo}>
@@ -158,7 +179,12 @@ const Dashboard = () => {
                     {tx.category} · {tx.date}
                   </Text>
                 </View>
-                <Text style={[custom.transactionAmount, { color: tx.amount > 0 ? '#22C55E' : '#EF4444' }]}> 
+                <Text
+                  style={[
+                    custom.transactionAmount,
+                    { color: tx.amount > 0 ? '#22C55E' : '#EF4444' },
+                  ]}
+                >
                   {tx.amount > 0 ? '+' : ''}${Math.abs(tx.amount).toFixed(2)}
                 </Text>
               </View>

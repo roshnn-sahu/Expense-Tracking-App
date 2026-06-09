@@ -11,8 +11,8 @@ import {
   Delete,
   ArrowLeft,
 } from 'lucide-react-native';
-import styles from '../styles/custom';
-import Styles from '../styles/style';
+import custom from '../styles/custom';
+import style from '../styles/style';
 
 const categories = [
   { id: 1, name: 'Food', icon: Coffee, color: '#F59E0B' },
@@ -66,13 +66,13 @@ const AddTransaction = () => {
   ];
 
   return (
-    <View style={styles.safeArea}>
+    <View style={custom.safeArea}>
       {/* Header */}
-      <View style={[styles.headerRow, { paddingTop: 16 }]}>
+      <View style={[custom.headerRow, { paddingTop: 16 }]}> 
         <TouchableOpacity activeOpacity={0.7}>
           <ArrowLeft size={24} color="#0F172A" strokeWidth={2} />
         </TouchableOpacity>
-        <Text style={[styles.headerText, { fontSize: 20 }]}>
+        <Text style={[custom.headerText, { fontSize: 20 }]}> 
           Add Transaction
         </Text>
         <View style={{ width: 24 }} />
@@ -82,13 +82,13 @@ const AddTransaction = () => {
       <View
         style={{ paddingHorizontal: 24, paddingTop: 12, alignItems: 'center' }}
       >
-        <Text style={styles.numberLabel}>Enter amount</Text>
-        <Text style={styles.numberDisplay}>{formattedAmount}</Text>
+        <Text style={custom.numberLabel}>Enter amount</Text>
+        <Text style={custom.numberDisplay}>{formattedAmount}</Text>
       </View>
 
       {/* Category Selection */}
       <View style={{ paddingHorizontal: 24, marginTop: 16 }}>
-        <Text style={[styles.sectionTitle, { marginBottom: 12 }]}>
+        <Text style={[custom.sectionTitle, { marginBottom: 12 }]}> 
           Category
         </Text>
         <ScrollView
@@ -105,10 +105,10 @@ const AddTransaction = () => {
                 activeOpacity={0.7}
                 onPress={() => setSelectedCategory(cat.id)}
                 style={[
-                  styles.categoryPill,
-                  utilStyles.row,
+                  custom.categoryPill,
+                  style.row,
                   { paddingVertical: 12, paddingHorizontal: 18 },
-                  isActive && styles.categoryPillActive,
+                  isActive && custom.categoryPillActive,
                 ]}
               >
                 <Icon
@@ -117,12 +117,7 @@ const AddTransaction = () => {
                   strokeWidth={isActive ? 2.2 : 1.8}
                   style={{ marginRight: 8 }}
                 />
-                <Text
-                  style={[
-                    styles.categoryPillText,
-                    isActive && { color: cat.color, fontWeight: '600' },
-                  ]}
-                >
+                <Text style={[custom.categoryPillText, isActive && { color: cat.color, fontWeight: '600' }]}>
                   {cat.name}
                 </Text>
               </TouchableOpacity>
@@ -135,9 +130,9 @@ const AddTransaction = () => {
       <View style={{ flex: 1 }} />
 
       {/* Number Keypad */}
-      <View style={styles.numberKeypad}>
+      <View style={custom.numberKeypad}>
         {keyRows.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.numberKeyRow}>
+          <View key={rowIndex} style={custom.numberKeyRow}>
             {row.map(key => {
               if (key === 'backspace') {
                 return (
@@ -145,7 +140,7 @@ const AddTransaction = () => {
                     key={key}
                     activeOpacity={0.6}
                     onPress={() => handleKeyPress(key)}
-                    style={styles.numberKey}
+                    style={custom.numberKey}
                   >
                     <Delete size={24} color="#0F172A" strokeWidth={1.8} />
                   </TouchableOpacity>
@@ -157,9 +152,9 @@ const AddTransaction = () => {
                   key={key}
                   activeOpacity={0.6}
                   onPress={() => handleKeyPress(key)}
-                  style={isZero ? styles.numberKeyZero : styles.numberKey}
+                    style={isZero ? custom.numberKeyZero : custom.numberKey}
                 >
-                  <Text style={styles.numberKeyText}>{key}</Text>
+                  <Text style={custom.numberKeyText}>{key}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -167,16 +162,8 @@ const AddTransaction = () => {
         ))}
 
         {/* Save Button */}
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={handleSave}
-          style={[styles.primaryButton, { marginTop: 16 }]}
-        >
-          <Text
-            style={[styles.bodyText, styles.textWhite, { fontWeight: '700' }]}
-          >
-            Save Transaction
-          </Text>
+        <TouchableOpacity activeOpacity={0.85} onPress={handleSave} style={[custom.primaryButton, { marginTop: 16 }]}> 
+          <Text style={[custom.bodyText, custom.textWhite, { fontWeight: '700' }]}>Save Transaction</Text>
         </TouchableOpacity>
       </View>
     </View>
