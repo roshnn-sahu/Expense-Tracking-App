@@ -68,11 +68,11 @@ const AddTransaction = () => {
   return (
     <View style={custom.safeArea}>
       {/* Header */}
-      <View style={[custom.headerRow, { paddingTop: 16 }]}> 
+      <View style={[custom.headerRow, { paddingTop: 16 }]}>
         <TouchableOpacity activeOpacity={0.7}>
           <ArrowLeft size={24} color="#0F172A" strokeWidth={2} />
         </TouchableOpacity>
-        <Text style={[custom.headerText, { fontSize: 20 }]}> 
+        <Text style={[custom.headerText, { fontSize: 20 }]}>
           Add Transaction
         </Text>
         <View style={{ width: 24 }} />
@@ -88,7 +88,7 @@ const AddTransaction = () => {
 
       {/* Category Selection */}
       <View style={{ paddingHorizontal: 24, marginTop: 16 }}>
-        <Text style={[custom.sectionTitle, { marginBottom: 12 }]}> 
+        <Text style={[custom.sectionTitle, { marginBottom: 12 }]}>
           Category
         </Text>
         <ScrollView
@@ -117,7 +117,12 @@ const AddTransaction = () => {
                   strokeWidth={isActive ? 2.2 : 1.8}
                   style={{ marginRight: 8 }}
                 />
-                <Text style={[custom.categoryPillText, isActive && { color: cat.color, fontWeight: '600' }]}>
+                <Text
+                  style={[
+                    custom.categoryPillText,
+                    isActive && { color: cat.color, fontWeight: '600' },
+                  ]}
+                >
                   {cat.name}
                 </Text>
               </TouchableOpacity>
@@ -152,7 +157,7 @@ const AddTransaction = () => {
                   key={key}
                   activeOpacity={0.6}
                   onPress={() => handleKeyPress(key)}
-                    style={isZero ? custom.numberKeyZero : custom.numberKey}
+                  style={isZero ? custom.numberKeyZero : custom.numberKey}
                 >
                   <Text style={custom.numberKeyText}>{key}</Text>
                 </TouchableOpacity>
@@ -162,8 +167,16 @@ const AddTransaction = () => {
         ))}
 
         {/* Save Button */}
-        <TouchableOpacity activeOpacity={0.85} onPress={handleSave} style={[custom.primaryButton, { marginTop: 16 }]}> 
-          <Text style={[custom.bodyText, custom.textWhite, { fontWeight: '700' }]}>Save Transaction</Text>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleSave}
+          style={[custom.primaryButton, { marginTop: 16 }]}
+        >
+          <Text
+            style={[custom.bodyText, custom.textWhite, { fontWeight: '700' }]}
+          >
+            Save Transaction
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

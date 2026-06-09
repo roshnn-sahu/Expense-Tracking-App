@@ -25,8 +25,7 @@ const styles = StyleSheet.create({
     flex1: {
         flex: 1,
     },
-
-    // Bootstrap-inspired spacing utilities
+    //Bootstrap Margin / Padding CLasses
     m0: { margin: 0 },
     mt1: { marginTop: 4 },
     mt2: { marginTop: 8 },
@@ -126,6 +125,73 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+
+    // Display / flex helpers
+    dFlex: { display: 'flex' },
+    flexRow: { flexDirection: 'row' },
+    flexCol: { flexDirection: 'column' },
+    flexWrap: { flexWrap: 'wrap' },
+    justifyStart: { justifyContent: 'flex-start' },
+    justifyCenter: { justifyContent: 'center' },
+    justifyEnd: { justifyContent: 'flex-end' },
+    justifyBetween: { justifyContent: 'space-between' },
+    justifyAround: { justifyContent: 'space-around' },
+    alignStart: { alignItems: 'flex-start' },
+    alignCenter: { alignItems: 'center' },
+    alignEnd: { alignItems: 'flex-end' },
+
+    // Sizing
+    w100: { width: '100%' },
+    w75: { width: '75%' },
+    w50: { width: '50%' },
+    w25: { width: '25%' },
+    h100: { height: '100%' },
+
+    // Borders & radius
+    border: { borderWidth: 1, borderColor: '#E5E7EB' },
+    borderTop: { borderTopWidth: 1, borderTopColor: '#E5E7EB' },
+    borderBottom: { borderBottomWidth: 1, borderBottomColor: '#E5E7EB' },
+    rounded: { borderRadius: 8 },
+    roundedLg: { borderRadius: 16 },
+    roundedCircle: { borderRadius: 9999 },
+
+    // Shadows
+    shadowSm: {
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.06,
+        shadowRadius: 4,
+    },
+    shadowMd: {
+        elevation: 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+    },
+    shadowLg: {
+        elevation: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.12,
+        shadowRadius: 20,
+    },
+
+    // Text utilities
+    textUppercase: { textTransform: 'uppercase' },
+    textLowercase: { textTransform: 'lowercase' },
+    textCapitalize: { textTransform: 'capitalize' },
+    fw400: { fontWeight: '400' },
+    fw500: { fontWeight: '500' },
+    fw600: { fontWeight: '600' },
+    fw700: { fontWeight: '700' },
+
+    // Overflow / z-index
+    overflowHidden: { overflow: 'hidden' },
+    z0: { zIndex: 0 },
+    z10: { zIndex: 10 },
+    z20: { zIndex: 20 },
 });
 
 export default styles;
