@@ -186,6 +186,10 @@ const styles = StyleSheet.create({
     fw500: { fontWeight: '500' },
     fw600: { fontWeight: '600' },
     fw700: { fontWeight: '700' },
+    fontSM :{ fontSize: 12 },
+    fontMD :{ fontSize: 16 },
+    fontLG :{ fontSize: 20 },
+    fontXL :{ fontSize: 24 },
 
     // Overflow / z-index
     overflowHidden: { overflow: 'hidden' },

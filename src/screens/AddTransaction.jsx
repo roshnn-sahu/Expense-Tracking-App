@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import {
   Coffee,
   ShoppingBag,
@@ -9,19 +9,18 @@ import {
   Gamepad2,
   MoreHorizontal,
   Delete,
-  ArrowLeft,
 } from 'lucide-react-native';
-import custom from '../styles/custom';
-import style from '../styles/style';
+import custom, { colors } from '../styles/custom';
+import Header from '../components/Header';
 
 const categories = [
-  { id: 1, name: 'Food', icon: Coffee, color: '#F59E0B' },
-  { id: 2, name: 'Shopping', icon: ShoppingBag, color: '#8B5CF6' },
-  { id: 3, name: 'Transport', icon: Car, color: '#3B82F6' },
-  { id: 4, name: 'Bills', icon: Home, color: '#EF4444' },
-  { id: 5, name: 'Health', icon: HeartPulse, color: '#22C55E' },
-  { id: 6, name: 'Entertainment', icon: Gamepad2, color: '#EC4899' },
-  { id: 7, name: 'Other', icon: MoreHorizontal, color: '#6B7280' },
+  { id: 1, name: 'Food', icon: Coffee, color: colors.amber },
+  { id: 2, name: 'Shopping', icon: ShoppingBag, color: colors.purple },
+  { id: 3, name: 'Transport', icon: Car, color: colors.blue },
+  { id: 4, name: 'Bills', icon: Home, color: colors.red },
+  { id: 5, name: 'Health', icon: HeartPulse, color: colors.green },
+  { id: 6, name: 'Entertainment', icon: Gamepad2, color: colors.pink },
+  { id: 7, name: 'Other', icon: MoreHorizontal, color: colors.gray },
 ];
 
 const AddTransaction = () => {
@@ -37,7 +36,6 @@ const AddTransaction = () => {
           setAmount(prev => prev + '.');
         }
       } else {
-        // Limit to 10 characters
         if (amount.length < 10) {
           setAmount(prev => prev + key);
         }
@@ -67,35 +65,18 @@ const AddTransaction = () => {
 
   return (
     <View style={custom.safeArea}>
-      {/* Header */}
-      <View style={[custom.headerRow, { paddingTop: 16 }]}>
-        <TouchableOpacity activeOpacity={0.7}>
-          <ArrowLeft size={24} color="#0F172A" strokeWidth={2} />
-        </TouchableOpacity>
-        <Text style={[custom.headerText, { fontSize: 20 }]}>
-          Add Transaction
-        </Text>
-        <View style={{ width: 24 }} />
-      </View>
+      <Header title="Add Transaction" />
 
       {/* Amount Display */}
-      <View
-        style={{ paddingHorizontal: 24, paddingTop: 12, alignItems: 'center' }}
-      >
-        <Text style={custom.numberLabel}>Enter amount</Text>
-        <Text style={custom.numberDisplay}>{formattedAmount}</Text>
+      <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+        <Text style={custom.amountLabel}>Enter amount</Text>
+        <Text style={custom.amountDisplay}>{formattedAmount}</Text>
       </View>
 
       {/* Category Selection */}
-      <View style={{ paddingHorizontal: 24, marginTop: 16 }}>
-        <Text style={[custom.sectionTitle, { marginBottom: 12 }]}>
-          Category
-        </Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 4 }}
-        >
+      <View style={{ paddingHorizontal: 20 }}>
+        <Text style={[custom.dateHeader, { marginBottom: 10 }]}>Category</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {categories.map(cat => {
             const Icon = cat.icon;
             const isActive = selectedCategory === cat.id;
@@ -104,40 +85,29 @@ const AddTransaction = () => {
                 key={cat.id}
                 activeOpacity={0.7}
                 onPress={() => setSelectedCategory(cat.id)}
-                style={[
-                  custom.categoryPill,
-                  style.row,
-                  { paddingVertical: 12, paddingHorizontal: 18 },
-                  isActive && custom.categoryPillActive,
-                ]}
+                style={[custom.categoryPill, isActive && custom.categoryPillActive]}
               >
                 <Icon
                   size={18}
-                  color={isActive ? cat.color : '#6B7280'}
+                  color={isActive ? cat.color : colors.slate}
                   strokeWidth={isActive ? 2.2 : 1.8}
-                  style={{ marginRight: 8 }}
                 />
-                <Text
-                  style={[
-                    custom.categoryPillText,
-                    isActive && { color: cat.color, fontWeight: '600' },
-                  ]}
-                >
+                <Text style={[custom.categoryPillText, isActive && custom.categoryPillTextActive]}>
                   {cat.name}
                 </Text>
               </TouchableOpacity>
             );
           })}
-        </ScrollView>
+        </View>
       </View>
 
       {/* Spacer */}
       <View style={{ flex: 1 }} />
 
-      {/* Number Keypad */}
-      <View style={custom.numberKeypad}>
+      {/* Keypad */}
+      <View style={custom.keypadContainer}>
         {keyRows.map((row, rowIndex) => (
-          <View key={rowIndex} style={custom.numberKeyRow}>
+          <View key={rowIndex} style={custom.keypadRow}>
             {row.map(key => {
               if (key === 'backspace') {
                 return (
@@ -145,9 +115,9 @@ const AddTransaction = () => {
                     key={key}
                     activeOpacity={0.6}
                     onPress={() => handleKeyPress(key)}
-                    style={custom.numberKey}
+                    style={custom.keyBtn}
                   >
-                    <Delete size={24} color="#0F172A" strokeWidth={1.8} />
+                    <Delete size={24} color={colors.navy} strokeWidth={1.8} />
                   </TouchableOpacity>
                 );
               }
@@ -157,9 +127,9 @@ const AddTransaction = () => {
                   key={key}
                   activeOpacity={0.6}
                   onPress={() => handleKeyPress(key)}
-                  style={isZero ? custom.numberKeyZero : custom.numberKey}
+                  style={isZero ? custom.keyBtnZero : custom.keyBtn}
                 >
-                  <Text style={custom.numberKeyText}>{key}</Text>
+                  <Text style={custom.keyBtnText}>{key}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -170,13 +140,9 @@ const AddTransaction = () => {
         <TouchableOpacity
           activeOpacity={0.85}
           onPress={handleSave}
-          style={[custom.primaryButton, { marginTop: 16 }]}
+          style={[custom.primaryButton, { marginTop: 12 }]}
         >
-          <Text
-            style={[custom.bodyText, custom.textWhite, { fontWeight: '700' }]}
-          >
-            Save Transaction
-          </Text>
+          <Text style={custom.primaryButtonText}>Save Transaction</Text>
         </TouchableOpacity>
       </View>
     </View>
