@@ -10,6 +10,7 @@ import {
   MoreHorizontal,
   Delete,
 } from 'lucide-react-native';
+import styles from '../styles/style';
 import custom, { colors } from '../styles/custom';
 import Header from '../components/Header';
 
@@ -64,19 +65,19 @@ const AddTransaction = () => {
   ];
 
   return (
-    <View style={custom.safeArea}>
+    <View style={styles.safeArea}>
       <Header title="Add Transaction" />
 
       {/* Amount Display */}
-      <View style={{ paddingVertical: 24, alignItems: 'center' }}>
+      <View style={[styles.py6, styles.alignCenter]}>
         <Text style={custom.amountLabel}>Enter amount</Text>
         <Text style={custom.amountDisplay}>{formattedAmount}</Text>
       </View>
 
       {/* Category Selection */}
-      <View style={{ paddingHorizontal: 20 }}>
-        <Text style={[custom.dateHeader, { marginBottom: 10 }]}>Category</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+      <View style={styles.px5}>
+        <Text style={[custom.dateHeader, styles.mb2]}>Category</Text>
+        <View style={[styles.flexRow, styles.flexWrap, styles.gap2]}>
           {categories.map(cat => {
             const Icon = cat.icon;
             const isActive = selectedCategory === cat.id;
@@ -102,7 +103,7 @@ const AddTransaction = () => {
       </View>
 
       {/* Spacer */}
-      <View style={{ flex: 1 }} />
+      <View style={styles.flex1} />
 
       {/* Keypad */}
       <View style={custom.keypadContainer}>
@@ -140,7 +141,7 @@ const AddTransaction = () => {
         <TouchableOpacity
           activeOpacity={0.85}
           onPress={handleSave}
-          style={[custom.primaryButton, { marginTop: 12 }]}
+          style={[custom.primaryButton, styles.mt3]}
         >
           <Text style={custom.primaryButtonText}>Save Transaction</Text>
         </TouchableOpacity>

@@ -12,6 +12,7 @@ import {
   LogOut,
   ChevronRight,
 } from 'lucide-react-native';
+import styles from '../styles/style';
 import custom, { colors } from '../styles/custom';
 import Header from '../components/Header';
 
@@ -43,12 +44,12 @@ const menuSections = [
 
 const Profile = () => {
   return (
-    <View style={custom.container}>
+    <View style={styles.container}>
       <Header title="Profile" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={styles.scrollContentCompact}
       >
         {/* Avatar Card */}
         <View style={custom.cardCompact}>
@@ -61,28 +62,28 @@ const Profile = () => {
           </View>
 
           {/* Quick Stats */}
-          <View style={{ flexDirection: 'row', marginTop: 4 }}>
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, fontWeight: '700', color: colors.navy }}>142</Text>
-              <Text style={{ fontSize: 12, color: colors.grayLight, fontWeight: '500', marginTop: 2 }}>Transactions</Text>
+          <View style={[styles.flexRow, styles.mt1]}>
+            <View style={[styles.flex1, styles.alignCenter]}>
+              <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>142</Text>
+              <Text style={[styles.fontSM, styles.textGrayLight, styles.fw500, styles.mt1]}>Transactions</Text>
             </View>
-            <View style={{ width: 1, backgroundColor: colors.grayBorder }} />
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, fontWeight: '700', color: colors.navy }}>8</Text>
-              <Text style={{ fontSize: 12, color: colors.grayLight, fontWeight: '500', marginTop: 2 }}>Categories</Text>
+            <View style={styles.dividerVertical} />
+            <View style={[styles.flex1, styles.alignCenter]}>
+              <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>8</Text>
+              <Text style={[styles.fontSM, styles.textGrayLight, styles.fw500, styles.mt1]}>Categories</Text>
             </View>
-            <View style={{ width: 1, backgroundColor: colors.grayBorder }} />
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, fontWeight: '700', color: colors.navy }}>3</Text>
-              <Text style={{ fontSize: 12, color: colors.grayLight, fontWeight: '500', marginTop: 2 }}>Budgets</Text>
+            <View style={styles.dividerVertical} />
+            <View style={[styles.flex1, styles.alignCenter]}>
+              <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>3</Text>
+              <Text style={[styles.fontSM, styles.textGrayLight, styles.fw500, styles.mt1]}>Budgets</Text>
             </View>
           </View>
         </View>
 
         {/* Menu Sections */}
         {menuSections.map((section, sIdx) => (
-          <View key={section.title} style={{ paddingHorizontal: 20, marginTop: sIdx === 0 ? 4 : 0 }}>
-            <Text style={[custom.dateHeader, { marginTop: 16, marginBottom: 8 }]}>{section.title}</Text>
+          <View key={section.title} style={[styles.px5, sIdx === 0 && styles.mt1]}>
+            <Text style={[custom.dateHeader, styles.mt4, styles.mb2]}>{section.title}</Text>
             <View style={custom.cardCompact}>
               {section.items.map((item, iIdx) => {
                 const Icon = item.icon;

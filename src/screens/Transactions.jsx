@@ -9,6 +9,7 @@ import {
   Gamepad2,
   Wallet,
 } from 'lucide-react-native';
+import styles from '../styles/style';
 import custom, { colors } from '../styles/custom';
 import Header from '../components/Header';
 
@@ -44,14 +45,14 @@ const Transactions = () => {
   });
 
   return (
-    <View style={custom.container}>
+    <View style={styles.container}>
       <Header title="Transactions" />
 
       {/* Filter Chips */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 12 }}
+        contentContainerStyle={[styles.px5, styles.py3]}
       >
         {filters.map(f => (
           <TouchableOpacity
@@ -69,7 +70,7 @@ const Transactions = () => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
+        contentContainerStyle={styles.scrollContent}
       >
         <View style={custom.cardCompact}>
           {Object.keys(groups).map(group => (

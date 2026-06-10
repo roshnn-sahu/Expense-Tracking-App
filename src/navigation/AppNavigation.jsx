@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
-  Wallet,
+  Home,
   ArrowUpDown,
   PlusCircle,
   PieChart,
@@ -79,7 +79,7 @@ const AppNavigation = () => (
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon Icon={Wallet} color={color} size={22} focused={focused} />
+            <TabIcon Icon={Home} color={color} size={22} focused={focused} />
           ),
         }}
       />
@@ -89,7 +89,12 @@ const AppNavigation = () => (
         options={{
           tabBarLabel: 'Transactions',
           tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon Icon={ArrowUpDown} color={color} size={22} focused={focused} />
+            <TabIcon
+              Icon={ArrowUpDown}
+              color={color}
+              size={22}
+              focused={focused}
+            />
           ),
         }}
       />
@@ -107,7 +112,12 @@ const AppNavigation = () => (
         options={{
           tabBarLabel: 'Analytics',
           tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon Icon={PieChart} color={color} size={22} focused={focused} />
+            <TabIcon
+              Icon={PieChart}
+              color={color}
+              size={22}
+              focused={focused}
+            />
           ),
         }}
       />
