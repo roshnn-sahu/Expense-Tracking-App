@@ -4,13 +4,9 @@ import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Circle } from 'react-native-svg';
-import {
-  TrendingUp,
-  ArrowDownRight,
-  ArrowUpRight,
-} from 'lucide-react-native';
+import { TrendingUp, ArrowDownRight, ArrowUpRight } from 'lucide-react-native';
 import * as LucideIcons from 'lucide-react-native';
-import styles from '../styles/style';
+import styles from '../styles';
 import Header from '../components/Header';
 import { analyticsCategories } from '../data/transactions';
 
@@ -73,7 +69,10 @@ const Analytics = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
-        <Header title="Analytics" onMenuPress={() => navigation.getParent()?.openDrawer()} />
+        <Header
+          title="Analytics"
+          onMenuPress={() => navigation.getParent()?.openDrawer()}
+        />
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -85,7 +84,9 @@ const Analytics = () => {
             <View style={styles.legendContainer}>
               {analyticsCategories.slice(0, 3).map(cat => (
                 <View key={cat.id} style={styles.row}>
-                  <View style={[styles.legendDot, { backgroundColor: cat.color }]} />
+                  <View
+                    style={[styles.legendDot, { backgroundColor: cat.color }]}
+                  />
                   <Text style={styles.legendText}>{cat.name}</Text>
                 </View>
               ))}
@@ -96,22 +97,44 @@ const Analytics = () => {
           <View style={[styles.flexRow, styles.gap2, styles.mb1]}>
             <View style={[styles.summaryCard, styles.bgGreenLight]}>
               <View style={[styles.summaryIconWrap, styles.bgWhite]}>
-                <ArrowUpRight size={18} color={styles.colors.green} strokeWidth={2.5} />
+                <ArrowUpRight
+                  size={18}
+                  color={styles.colors.green}
+                  strokeWidth={2.5}
+                />
               </View>
               <Text style={styles.summaryLabel}>Income</Text>
-              <Text style={[styles.summaryValue, styles.textGreenDark]}>$4,500</Text>
+              <Text style={[styles.summaryValue, styles.textGreenDark]}>
+                $4,500
+              </Text>
             </View>
             <View style={[styles.summaryCard, styles.bgRedLight]}>
               <View style={[styles.summaryIconWrap, styles.bgWhite]}>
-                <ArrowDownRight size={18} color={styles.colors.red} strokeWidth={2.5} />
+                <ArrowDownRight
+                  size={18}
+                  color={styles.colors.red}
+                  strokeWidth={2.5}
+                />
               </View>
               <Text style={styles.summaryLabel}>Expenses</Text>
-              <Text style={[styles.summaryValue, styles.textRedDark]}>$2,850</Text>
+              <Text style={[styles.summaryValue, styles.textRedDark]}>
+                $2,850
+              </Text>
             </View>
-            <View style={[styles.summaryCard, styles.alignCenter, styles.bgSurface]}>
-              <TrendingUp size={22} color={styles.colors.green} strokeWidth={2.5} />
+            <View
+              style={[styles.summaryCard, styles.alignCenter, styles.bgSurface]}
+            >
+              <TrendingUp
+                size={22}
+                color={styles.colors.green}
+                strokeWidth={2.5}
+              />
               <Text style={[styles.summaryLabel, styles.mt1]}>Change</Text>
-              <Text style={[styles.summaryValue, styles.fontLG, styles.textGreen]}>+8.2%</Text>
+              <Text
+                style={[styles.summaryValue, styles.fontLG, styles.textGreen]}
+              >
+                +8.2%
+              </Text>
             </View>
           </View>
 
@@ -126,14 +149,27 @@ const Analytics = () => {
               return (
                 <View key={cat.id}>
                   <View style={styles.catItem}>
-                    <View style={[styles.catIconWrap, { backgroundColor: `${cat.color}18` }]}>
+                    <View
+                      style={[
+                        styles.catIconWrap,
+                        { backgroundColor: `${cat.color}18` },
+                      ]}
+                    >
                       <CatIcon size={20} color={cat.color} strokeWidth={1.8} />
                     </View>
                     <View style={styles.catInfo}>
                       <Text style={styles.catName}>{cat.name}</Text>
                       <View style={styles.catBarRow}>
                         <View style={[styles.catBarTrack, styles.flex1]}>
-                          <View style={[styles.catBarFill, { width: `${cat.percentage}%`, backgroundColor: cat.color }]} />
+                          <View
+                            style={[
+                              styles.catBarFill,
+                              {
+                                width: `${cat.percentage}%`,
+                                backgroundColor: cat.color,
+                              },
+                            ]}
+                          />
                         </View>
                         <Text style={styles.catPercent}>{cat.percentage}%</Text>
                       </View>

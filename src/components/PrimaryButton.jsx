@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
-import styles from '../styles/style';
+import styles from '../styles';
 
 const PrimaryButton = ({ label = 'Save', onPress, style }) => {
   return (

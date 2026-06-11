@@ -11,15 +11,40 @@ import {
   Bell,
   ChevronRight,
 } from 'lucide-react-native';
-import styles from '../styles/style';
+import styles from '../styles';
 import Header from '../components/Header';
 
 const settingsItems = [
-  { icon: Moon, label: 'Dark Mode', color: styles.colors.purple, bg: styles.colors.purpleLight },
-  { icon: Globe, label: 'Currency', color: styles.colors.blue, bg: styles.colors.blueLight },
-  { icon: Lock, label: 'App Lock', color: styles.colors.teal, bg: styles.colors.tealLight },
-  { icon: Fingerprint, label: 'Biometric Auth', color: styles.colors.amber, bg: styles.colors.amberLight },
-  { icon: Bell, label: 'Notifications', color: styles.colors.pink, bg: styles.colors.pinkLight },
+  {
+    icon: Moon,
+    label: 'Dark Mode',
+    color: styles.colors.purple,
+    bg: styles.colors.purpleLight,
+  },
+  {
+    icon: Globe,
+    label: 'Currency',
+    color: styles.colors.blue,
+    bg: styles.colors.blueLight,
+  },
+  {
+    icon: Lock,
+    label: 'App Lock',
+    color: styles.colors.teal,
+    bg: styles.colors.tealLight,
+  },
+  {
+    icon: Fingerprint,
+    label: 'Biometric Auth',
+    color: styles.colors.amber,
+    bg: styles.colors.amberLight,
+  },
+  {
+    icon: Bell,
+    label: 'Notifications',
+    color: styles.colors.pink,
+    bg: styles.colors.pinkLight,
+  },
 ];
 
 const Settings = () => {
@@ -28,7 +53,10 @@ const Settings = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
-        <Header title="Settings" onMenuPress={() => navigation.getParent()?.openDrawer()} />
+        <Header
+          title="Settings"
+          onMenuPress={() => navigation.getParent()?.openDrawer()}
+        />
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -40,13 +68,24 @@ const Settings = () => {
               return (
                 <TouchableOpacity key={item.label} activeOpacity={0.7}>
                   <View style={styles.menuItem}>
-                    <View style={[styles.menuIconWrap, { backgroundColor: item.bg }]}>
+                    <View
+                      style={[
+                        styles.menuIconWrap,
+                        { backgroundColor: item.bg },
+                      ]}
+                    >
                       <Icon size={20} color={item.color} strokeWidth={1.8} />
                     </View>
                     <Text style={styles.menuLabel}>{item.label}</Text>
-                    <ChevronRight size={18} color={styles.colors.grayBorder} strokeWidth={2} />
+                    <ChevronRight
+                      size={18}
+                      color={styles.colors.grayBorder}
+                      strokeWidth={2}
+                    />
                   </View>
-                  {index < settingsItems.length - 1 && <View style={styles.menuDivider} />}
+                  {index < settingsItems.length - 1 && (
+                    <View style={styles.menuDivider} />
+                  )}
                 </TouchableOpacity>
               );
             })}

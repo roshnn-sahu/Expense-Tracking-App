@@ -1,4 +1,5 @@
-import { colors } from '../styles/style';
+import styles from '../styles';
+const { colors } = styles;
 
 export const categories = [
   { id: 1, name: 'Food', icon: 'Coffee', color: colors.amber },

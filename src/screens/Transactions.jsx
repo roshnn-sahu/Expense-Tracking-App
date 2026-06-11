@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import styles from '../styles/style';
+import styles from '../styles';
 import Header from '../components/Header';
 import TransactionCard from '../components/TransactionCard';
 import { allTransactions, filters } from '../data/transactions';
@@ -30,7 +30,10 @@ const Transactions = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
-        <Header title="Transactions" onMenuPress={() => navigation.getParent()?.openDrawer()} />
+        <Header
+          title="Transactions"
+          onMenuPress={() => navigation.getParent()?.openDrawer()}
+        />
 
         {/* Filter Chips */}
         <ScrollView

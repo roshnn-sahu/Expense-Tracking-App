@@ -13,7 +13,7 @@ import {
   MoreHorizontal,
   Delete,
 } from 'lucide-react-native';
-import styles from '../styles/style';
+import styles from '../styles';
 import Header from '../components/Header';
 import PrimaryButton from '../components/PrimaryButton';
 
@@ -72,7 +72,10 @@ const AddTransaction = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
-        <Header title="Add Transaction" onMenuPress={() => navigation.getParent()?.openDrawer()} />
+        <Header
+          title="Add Transaction"
+          onMenuPress={() => navigation.getParent()?.openDrawer()}
+        />
 
         {/* Amount Display */}
         <View style={[styles.py6, styles.alignCenter]}>
@@ -132,7 +135,11 @@ const AddTransaction = () => {
                       onPress={() => handleKeyPress(key)}
                       style={styles.keyBtn}
                     >
-                      <Delete size={24} color={styles.colors.navy} strokeWidth={1.8} />
+                      <Delete
+                        size={24}
+                        color={styles.colors.navy}
+                        strokeWidth={1.8}
+                      />
                     </TouchableOpacity>
                   );
                 }

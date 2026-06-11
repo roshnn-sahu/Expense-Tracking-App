@@ -15,31 +15,71 @@ import {
   LogOut,
   ChevronRight,
 } from 'lucide-react-native';
-import styles from '../styles/style';
+import styles from '../styles';
 import Header from '../components/Header';
 
 const menuSections = [
   {
     title: 'Preferences',
     items: [
-      { icon: Bell, label: 'Notifications', color: styles.colors.blue, bg: styles.colors.blueLight },
-      { icon: Shield, label: 'Privacy & Security', color: styles.colors.purple, bg: styles.colors.purpleLight },
-      { icon: CreditCard, label: 'Payment Methods', color: styles.colors.teal, bg: styles.colors.tealLight },
+      {
+        icon: Bell,
+        label: 'Notifications',
+        color: styles.colors.blue,
+        bg: styles.colors.blueLight,
+      },
+      {
+        icon: Shield,
+        label: 'Privacy & Security',
+        color: styles.colors.purple,
+        bg: styles.colors.purpleLight,
+      },
+      {
+        icon: CreditCard,
+        label: 'Payment Methods',
+        color: styles.colors.teal,
+        bg: styles.colors.tealLight,
+      },
     ],
   },
   {
     title: 'Finance',
     items: [
-      { icon: PiggyBank, label: 'Savings Goals', color: styles.colors.amber, bg: styles.colors.amberLight },
-      { icon: Target, label: 'Budgets', color: styles.colors.pink, bg: styles.colors.pinkLight },
-      { icon: Download, label: 'Export Data', color: styles.colors.green, bg: styles.colors.greenLight },
+      {
+        icon: PiggyBank,
+        label: 'Savings Goals',
+        color: styles.colors.amber,
+        bg: styles.colors.amberLight,
+      },
+      {
+        icon: Target,
+        label: 'Budgets',
+        color: styles.colors.pink,
+        bg: styles.colors.pinkLight,
+      },
+      {
+        icon: Download,
+        label: 'Export Data',
+        color: styles.colors.green,
+        bg: styles.colors.greenLight,
+      },
     ],
   },
   {
     title: 'Support',
     items: [
-      { icon: HelpCircle, label: 'Help & FAQ', color: styles.colors.gray, bg: styles.colors.surfaceAlt },
-      { icon: LogOut, label: 'Sign Out', color: styles.colors.red, bg: styles.colors.redLight },
+      {
+        icon: HelpCircle,
+        label: 'Help & FAQ',
+        color: styles.colors.gray,
+        bg: styles.colors.surfaceAlt,
+      },
+      {
+        icon: LogOut,
+        label: 'Sign Out',
+        color: styles.colors.red,
+        bg: styles.colors.redLight,
+      },
     ],
   },
 ];
@@ -50,7 +90,10 @@ const Profile = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
-        <Header title="Profile" onMenuPress={() => navigation.getParent()?.openDrawer()} />
+        <Header
+          title="Profile"
+          onMenuPress={() => navigation.getParent()?.openDrawer()}
+        />
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -69,22 +112,49 @@ const Profile = () => {
             {/* Quick Stats */}
             <View style={[styles.flexRow, styles.mt1]}>
               <View style={[styles.flex1, styles.alignCenter]}>
-                <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>142</Text>
-                <Text style={[styles.fontSM, styles.textGrayLight, styles.fw500, styles.mt1]}>
+                <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>
+                  142
+                </Text>
+                <Text
+                  style={[
+                    styles.fontSM,
+                    styles.textGrayLight,
+                    styles.fw500,
+                    styles.mt1,
+                  ]}
+                >
                   Transactions
                 </Text>
               </View>
               <View style={styles.dividerVertical} />
               <View style={[styles.flex1, styles.alignCenter]}>
-                <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>8</Text>
-                <Text style={[styles.fontSM, styles.textGrayLight, styles.fw500, styles.mt1]}>
+                <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>
+                  8
+                </Text>
+                <Text
+                  style={[
+                    styles.fontSM,
+                    styles.textGrayLight,
+                    styles.fw500,
+                    styles.mt1,
+                  ]}
+                >
                   Categories
                 </Text>
               </View>
               <View style={styles.dividerVertical} />
               <View style={[styles.flex1, styles.alignCenter]}>
-                <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>3</Text>
-                <Text style={[styles.fontSM, styles.textGrayLight, styles.fw500, styles.mt1]}>
+                <Text style={[styles.fontLG, styles.fw700, styles.textNavy]}>
+                  3
+                </Text>
+                <Text
+                  style={[
+                    styles.fontSM,
+                    styles.textGrayLight,
+                    styles.fw500,
+                    styles.mt1,
+                  ]}
+                >
                   Budgets
                 </Text>
               </View>
@@ -93,7 +163,10 @@ const Profile = () => {
 
           {/* Menu Sections */}
           {menuSections.map((section, sIdx) => (
-            <View key={section.title} style={[styles.px5, sIdx === 0 && styles.mt1]}>
+            <View
+              key={section.title}
+              style={[styles.px5, sIdx === 0 && styles.mt1]}
+            >
               <Text style={[styles.dateHeader, styles.mt4, styles.mb2]}>
                 {section.title}
               </Text>
@@ -103,13 +176,28 @@ const Profile = () => {
                   return (
                     <TouchableOpacity key={item.label} activeOpacity={0.7}>
                       <View style={styles.menuItem}>
-                        <View style={[styles.menuIconWrap, { backgroundColor: item.bg }]}>
-                          <Icon size={20} color={item.color} strokeWidth={1.8} />
+                        <View
+                          style={[
+                            styles.menuIconWrap,
+                            { backgroundColor: item.bg },
+                          ]}
+                        >
+                          <Icon
+                            size={20}
+                            color={item.color}
+                            strokeWidth={1.8}
+                          />
                         </View>
                         <Text style={styles.menuLabel}>{item.label}</Text>
-                        <ChevronRight size={18} color={styles.colors.grayBorder} strokeWidth={2} />
+                        <ChevronRight
+                          size={18}
+                          color={styles.colors.grayBorder}
+                          strokeWidth={2}
+                        />
                       </View>
-                      {iIdx < section.items.length - 1 && <View style={styles.menuDivider} />}
+                      {iIdx < section.items.length - 1 && (
+                        <View style={styles.menuDivider} />
+                      )}
                     </TouchableOpacity>
                   );
                 })}

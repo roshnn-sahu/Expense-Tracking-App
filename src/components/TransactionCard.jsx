@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import * as LucideIcons from 'lucide-react-native';
-import styles from '../styles/style';
+import styles from '../styles';
 
 const TransactionCard = ({ transaction, showDivider = true }) => {
-  const IconComponent = LucideIcons[transaction.icon] || LucideIcons.MoreHorizontal;
+  const IconComponent =
+    LucideIcons[transaction.icon] || LucideIcons.MoreHorizontal;
   const isPositive = transaction.amount > 0;
 
   return (
@@ -16,7 +17,11 @@ const TransactionCard = ({ transaction, showDivider = true }) => {
             { backgroundColor: `${transaction.color}18` },
           ]}
         >
-          <IconComponent size={20} color={transaction.color} strokeWidth={1.8} />
+          <IconComponent
+            size={20}
+            color={transaction.color}
+            strokeWidth={1.8}
+          />
         </View>
         <View style={styles.txInfo}>
           <Text style={styles.txName}>{transaction.name}</Text>

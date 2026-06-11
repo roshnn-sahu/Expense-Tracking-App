@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Menu, User } from 'lucide-react-native';
 
-import styles from '../styles/style';
+import styles from '../styles';
 
 const Header = ({ title = 'Expense Tracker', onMenuPress, onUserPress }) => {
   return (

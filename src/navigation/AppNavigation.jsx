@@ -14,7 +14,7 @@ import Transactions from '../screens/Transactions';
 import Analytics from '../screens/Analytics';
 import AddTransaction from '../screens/AddTransaction';
 import Profile from '../screens/Profile';
-import styles from '../styles/style';
+import styles from '../styles';
 
 const Tab = createBottomTabNavigator();
 
