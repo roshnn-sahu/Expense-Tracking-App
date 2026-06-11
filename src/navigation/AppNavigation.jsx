@@ -1,6 +1,5 @@
 import React from 'react';
 import { View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   Home,
@@ -15,7 +14,7 @@ import Transactions from '../screens/Transactions';
 import Analytics from '../screens/Analytics';
 import AddTransaction from '../screens/AddTransaction';
 import Profile from '../screens/Profile';
-import { colors } from '../styles/custom';
+import styles from '../styles/style';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,11 +31,11 @@ const AddButton = ({ focused }) => (
         width: 58,
         height: 58,
         borderRadius: 20,
-        backgroundColor: colors.blue,
+        backgroundColor: styles.colors.blue,
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 10,
-        shadowColor: colors.blue,
+        shadowColor: styles.colors.blue,
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.35,
         shadowRadius: 16,
@@ -47,92 +46,98 @@ const AddButton = ({ focused }) => (
   </View>
 );
 
+// Extracted tab icon render functions to avoid nested component warnings
+const renderHomeIcon = ({ color, size, focused }) => (
+  <TabIcon Icon={Home} color={color} size={22} focused={focused} />
+);
+
+const renderTransactionsIcon = ({ color, size, focused }) => (
+  <TabIcon Icon={ArrowUpDown} color={color} size={22} focused={focused} />
+);
+
+const renderAnalyticsIcon = ({ color, size, focused }) => (
+  <TabIcon Icon={PieChart} color={color} size={22} focused={focused} />
+);
+
+const renderProfileIcon = ({ color, size, focused }) => (
+  <TabIcon Icon={User} color={color} size={22} focused={focused} />
+);
+
+const renderAddButton = ({ focused }) => <AddButton focused={focused} />;
+
+const renderEmptyLabel = () => null;
+
+// Extracted style objects to avoid inline styles
+const tabBarStyle = {
+  backgroundColor: '#FFFFFF',
+  borderTopWidth: 0,
+  elevation: 16,
+  shadowColor: '#0F172A',
+  shadowOffset: { width: 0, height: -4 },
+  shadowOpacity: 0.08,
+  shadowRadius: 20,
+  paddingTop: 8,
+  paddingBottom: 28,
+  height: 78,
+};
+
+const tabBarLabelStyle = {
+  fontSize: 11,
+  fontWeight: '600',
+  marginTop: 2,
+};
+
 const AppNavigation = () => (
-  <NavigationContainer>
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 0,
-          elevation: 16,
-          shadowColor: '#0F172A',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.08,
-          shadowRadius: 20,
-          paddingTop: 8,
-          paddingBottom: 28,
-          height: 78,
-        },
-        tabBarActiveTintColor: colors.blue,
-        tabBarInactiveTintColor: colors.grayLight,
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
-          marginTop: 2,
-        },
+  <Tab.Navigator
+    screenOptions={{
+      headerShown: false,
+      tabBarStyle,
+      tabBarActiveTintColor: styles.colors.blue,
+      tabBarInactiveTintColor: styles.colors.grayLight,
+      tabBarLabelStyle,
+    }}
+  >
+    <Tab.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: renderHomeIcon,
       }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon Icon={Home} color={color} size={22} focused={focused} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Transactions"
-        component={Transactions}
-        options={{
-          tabBarLabel: 'Transactions',
-          tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon
-              Icon={ArrowUpDown}
-              color={color}
-              size={22}
-              focused={focused}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="AddTransaction"
-        component={AddTransaction}
-        options={{
-          tabBarLabel: () => null,
-          tabBarIcon: ({ focused }) => <AddButton focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="Analytics"
-        component={Analytics}
-        options={{
-          tabBarLabel: 'Analytics',
-          tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon
-              Icon={PieChart}
-              color={color}
-              size={22}
-              focused={focused}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon Icon={User} color={color} size={22} focused={focused} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  </NavigationContainer>
+    />
+    <Tab.Screen
+      name="Transactions"
+      component={Transactions}
+      options={{
+        tabBarLabel: 'Transactions',
+        tabBarIcon: renderTransactionsIcon,
+      }}
+    />
+    <Tab.Screen
+      name="AddTransaction"
+      component={AddTransaction}
+      options={{
+        tabBarLabel: renderEmptyLabel,
+        tabBarIcon: renderAddButton,
+      }}
+    />
+    <Tab.Screen
+      name="Analytics"
+      component={Analytics}
+      options={{
+        tabBarLabel: 'Analytics',
+        tabBarIcon: renderAnalyticsIcon,
+      }}
+    />
+    <Tab.Screen
+      name="Profile"
+      component={Profile}
+      options={{
+        tabBarLabel: 'Profile',
+        tabBarIcon: renderProfileIcon,
+      }}
+    />
+  </Tab.Navigator>
 );
 
 export default AppNavigation;
