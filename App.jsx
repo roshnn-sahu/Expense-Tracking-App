@@ -1,11 +1,19 @@
 import React from 'react';
+
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AppNavigation from './src/navigation/AppNavigation';
+import { NavigationContainer } from '@react-navigation/native';
 
-const App = () => (
-  <SafeAreaProvider>
-    <AppNavigation />
-  </SafeAreaProvider>
-);
+import DrawerNavigation from './src/navigation/DrawerNavigation';
 
-export default App;
+export default function App() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <DrawerNavigation />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
+  );
+}

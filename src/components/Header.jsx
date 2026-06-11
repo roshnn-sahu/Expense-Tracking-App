@@ -1,28 +1,28 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Menu, User } from 'lucide-react-native';
-import s from '../styles/style';
-import { colors } from '../styles/custom';
+
+import styles from '../styles/style';
 
 const Header = ({ title = 'Expense Tracker', onMenuPress, onUserPress }) => {
   return (
-    <View style={s.headerContainer}>
+    <View style={styles.headerContainer}>
       <TouchableOpacity
-        style={[s.iconBtn, s.bgSurfaceAlt]}
+        style={[styles.iconBtn, styles.bgSurfaceAlt]}
         onPress={onMenuPress}
         activeOpacity={0.7}
       >
-        <Menu size={22} color={colors.navy} strokeWidth={2} />
+        <Menu size={22} color={styles.colors.navy} strokeWidth={2} />
       </TouchableOpacity>
 
-      <Text style={s.headerTitle}>{title}</Text>
+      <Text style={styles.headerTitle}>{title}</Text>
 
       <TouchableOpacity
-        style={[s.iconBtn, s.bgSurfaceAlt]}
+        style={[styles.iconBtn, styles.bgSurfaceAlt]}
         onPress={onUserPress}
         activeOpacity={0.7}
       >
-        <User size={22} color={colors.navy} strokeWidth={2} />
+        <User size={22} color={styles.colors.navy} strokeWidth={2} />
       </TouchableOpacity>
     </View>
   );
