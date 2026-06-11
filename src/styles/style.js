@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-// ─── Bootstrap v5 Design Tokens ─────────────────────────────
-const tokens = {
+// ─── Bootstrap v5 Design colors ─────────────────────────────
+const colors = {
   // Primary palette (Bootstrap 5)
   primary: '#0d6efd',
   secondary: '#6c757d',
@@ -48,14 +48,14 @@ const styles = StyleSheet.create({
   // ═══════════════════════════════════════════════════════════
   container: {
     flex: 1,
-    backgroundColor: tokens.bg,
+    backgroundColor: colors.bg,
   },
   containerFluid: {
     flex: 1,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: tokens.surface,
+    backgroundColor: colors.surface,
   },
   row: {
     flexDirection: 'row',
@@ -211,55 +211,55 @@ const styles = StyleSheet.create({
   trackingWider: { letterSpacing: 0.8 },
 
   // Text colors
-  textPrimary: { color: tokens.primary },
-  textSecondary: { color: tokens.secondary },
-  textSuccess: { color: tokens.success },
-  textDanger: { color: tokens.danger },
-  textWarning: { color: tokens.warning },
-  textInfo: { color: tokens.info },
-  textLight: { color: tokens.light },
-  textDark: { color: tokens.dark },
-  textWhite: { color: tokens.white },
-  textBlack: { color: tokens.black },
-  textNavy: { color: tokens.navy },
-  textSlate: { color: tokens.slate },
-  textGray: { color: tokens.gray },
-  textGrayLight: { color: tokens.grayLight },
-  textGreen: { color: tokens.green },
-  textGreenDark: { color: tokens.greenDark },
-  textRed: { color: tokens.red },
-  textRedDark: { color: tokens.redDark },
-  textBlue: { color: tokens.blue },
-  textBlueDark: { color: tokens.blueDark },
-  textAmber: { color: tokens.amber },
-  textPurple: { color: tokens.purple },
-  textPink: { color: tokens.pink },
-  textTeal: { color: tokens.teal },
+  textPrimary: { color: colors.primary },
+  textSecondary: { color: colors.secondary },
+  textSuccess: { color: colors.success },
+  textDanger: { color: colors.danger },
+  textWarning: { color: colors.warning },
+  textInfo: { color: colors.info },
+  textLight: { color: colors.light },
+  textDark: { color: colors.dark },
+  textWhite: { color: colors.white },
+  textBlack: { color: colors.black },
+  textNavy: { color: colors.navy },
+  textSlate: { color: colors.slate },
+  textGray: { color: colors.gray },
+  textGrayLight: { color: colors.grayLight },
+  textGreen: { color: colors.green },
+  textGreenDark: { color: colors.greenDark },
+  textRed: { color: colors.red },
+  textRedDark: { color: colors.redDark },
+  textBlue: { color: colors.blue },
+  textBlueDark: { color: colors.blueDark },
+  textAmber: { color: colors.amber },
+  textPurple: { color: colors.purple },
+  textPink: { color: colors.pink },
+  textTeal: { color: colors.teal },
 
   // ═══════════════════════════════════════════════════════════
   //  BACKGROUND UTILITIES
   // ═══════════════════════════════════════════════════════════
-  bgPrimary: { backgroundColor: tokens.primary },
-  bgSecondary: { backgroundColor: tokens.secondary },
-  bgSuccess: { backgroundColor: tokens.success },
-  bgDanger: { backgroundColor: tokens.danger },
-  bgWarning: { backgroundColor: tokens.warning },
-  bgInfo: { backgroundColor: tokens.info },
-  bgLight: { backgroundColor: tokens.light },
-  bgDark: { backgroundColor: tokens.dark },
-  bgWhite: { backgroundColor: tokens.white },
-  bgBlack: { backgroundColor: tokens.black },
-  bgNavy: { backgroundColor: tokens.navy },
-  bgSurface: { backgroundColor: tokens.surface },
-  bgSurfaceAlt: { backgroundColor: tokens.surfaceAlt },
-  bgGreenLight: { backgroundColor: tokens.greenLight },
-  bgRedLight: { backgroundColor: tokens.redLight },
-  bgBlueLight: { backgroundColor: tokens.blueLight },
-  bgAmberLight: { backgroundColor: tokens.amberLight },
-  bgPurpleLight: { backgroundColor: tokens.purpleLight },
-  bgPinkLight: { backgroundColor: tokens.pinkLight },
-  bgTealLight: { backgroundColor: tokens.tealLight },
-  bgApp: { backgroundColor: tokens.bg },
+  bgPrimary: { backgroundColor: colors.primary },
+  bgSecondary: { backgroundColor: colors.secondary },
+  bgSuccess: { backgroundColor: colors.success },
+  bgDanger: { backgroundColor: colors.danger },
+  bgWarning: { backgroundColor: colors.warning },
+  bgInfo: { backgroundColor: colors.info },
+  bgLight: { backgroundColor: colors.light },
+  bgDark: { backgroundColor: colors.dark },
+  bgWhite: { backgroundColor: colors.white },
+  bgBlack: { backgroundColor: colors.black },
+  bgNavy: { backgroundColor: colors.navy },
+  bgSurface: { backgroundColor: colors.surface },
+  bgSurfaceAlt: { backgroundColor: colors.surfaceAlt },
+  bgGreenLight: { backgroundColor: colors.greenLight },
+  bgRedLight: { backgroundColor: colors.redLight },
+  bgBlueLight: { backgroundColor: colors.blueLight },
+  bgAmberLight: { backgroundColor: colors.amberLight },
+  bgPurpleLight: { backgroundColor: colors.purpleLight },
+  bgPinkLight: { backgroundColor: colors.pinkLight },
+  bgTealLight: { backgroundColor: colors.tealLight },
+  bgApp: { backgroundColor: colors.bg },
 
   // ═══════════════════════════════════════════════════════════
   //  DISPLAY / FLEX HELPERS
@@ -293,13 +293,13 @@ const styles = StyleSheet.create({
   // ═══════════════════════════════════════════════════════════
   //  BORDERS & RADIUS
   // ═══════════════════════════════════════════════════════════
-  border: { borderWidth: 1, borderColor: tokens.grayBorder },
-  borderTop: { borderTopWidth: 1, borderTopColor: tokens.grayBorder },
-  borderBottom: { borderBottomWidth: 1, borderBottomColor: tokens.grayBorder },
-  borderLeft: { borderLeftWidth: 1, borderLeftColor: tokens.grayBorder },
-  borderRight: { borderRightWidth: 1, borderRightColor: tokens.grayBorder },
-  borderVertical: { borderTopWidth: 1, borderTopColor: tokens.grayBorder, borderBottomWidth: 1, borderBottomColor: tokens.grayBorder },
-  borderHorizontal: { borderLeftWidth: 1, borderLeftColor: tokens.grayBorder, borderRightWidth: 1, borderRightColor: tokens.grayBorder },
+  border: { borderWidth: 1, borderColor: colors.grayBorder },
+  borderTop: { borderTopWidth: 1, borderTopColor: colors.grayBorder },
+  borderBottom: { borderBottomWidth: 1, borderBottomColor: colors.grayBorder },
+  borderLeft: { borderLeftWidth: 1, borderLeftColor: colors.grayBorder },
+  borderRight: { borderRightWidth: 1, borderRightColor: colors.grayBorder },
+  borderVertical: { borderTopWidth: 1, borderTopColor: colors.grayBorder, borderBottomWidth: 1, borderBottomColor: colors.grayBorder },
+  borderHorizontal: { borderLeftWidth: 1, borderLeftColor: colors.grayBorder, borderRightWidth: 1, borderRightColor: colors.grayBorder },
   borderWidth0: { borderWidth: 0 },
   rounded: { borderRadius: 8 },
   roundedSm: { borderRadius: 6 },
@@ -343,10 +343,10 @@ const styles = StyleSheet.create({
   // ═══════════════════════════════════════════════════════════
   //  DIVIDERS
   // ═══════════════════════════════════════════════════════════
-  divider: { height: 1, backgroundColor: tokens.grayBorder },
-  dividerInset: { height: 1, backgroundColor: tokens.grayBorder, marginLeft: 62 },
-  dividerVertical: { width: 1, backgroundColor: tokens.grayBorder },
-  dividerThick: { height: 8, backgroundColor: tokens.bg },
+  divider: { height: 1, backgroundColor: colors.grayBorder },
+  dividerInset: { height: 1, backgroundColor: colors.grayBorder, marginLeft: 62 },
+  dividerVertical: { width: 1, backgroundColor: colors.grayBorder },
+  dividerThick: { height: 8, backgroundColor: colors.bg },
 
   // ═══════════════════════════════════════════════════════════
   //  ICON CONTAINERS
@@ -359,40 +359,66 @@ const styles = StyleSheet.create({
   // ═══════════════════════════════════════════════════════════
   //  CARD PATTERNS
   // ═══════════════════════════════════════════════════════════
-  card: { backgroundColor: tokens.surface, borderRadius: 24, padding: 20, marginBottom: 16, ...StyleSheet.flatten({ elevation: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 10 }) },
-  cardCompact: { backgroundColor: tokens.surface, borderRadius: 20, padding: 16, marginBottom: 12, ...StyleSheet.flatten({ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 }) },
-  cardFlat: { backgroundColor: tokens.surface, borderRadius: 16, padding: 16, marginBottom: 12 },
+  card: { backgroundColor: colors.surface, borderRadius: 24, padding: 20, marginBottom: 16, ...StyleSheet.flatten({ elevation: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 10 }) },
+  cardCompact: { backgroundColor: colors.surface, borderRadius: 20, padding: 16, marginBottom: 12, ...StyleSheet.flatten({ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 }) },
+  cardFlat: { backgroundColor: colors.surface, borderRadius: 16, padding: 16, marginBottom: 12 },
 
   // ═══════════════════════════════════════════════════════════
   //  HEADER
   // ═══════════════════════════════════════════════════════════
-  headerContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 14, backgroundColor: tokens.surface, marginBottom: 12 },
-  headerTitle: { fontSize: 18, fontWeight: '700', color: tokens.navy, letterSpacing: -0.4 },
+  headerContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 14, backgroundColor: colors.surface, marginBottom: 12 },
+  headerTitle: { fontSize: 18, fontWeight: '700', color: colors.navy, letterSpacing: -0.4 },
+
+  // ═══════════════════════════════════════════════════════════
+  //  HOME - GREETING
+  // ═══════════════════════════════════════════════════════════
+  welcomeRow: { marginBottom: 24 },
+  welcomeTitle: { fontSize: 28, fontWeight: '800', color: colors.navy, letterSpacing: -1 },
+  welcomeSubtitle: { fontSize: 14, color: colors.slate, marginTop: 4 },
+  greeting: { fontSize: 30, fontWeight: '800', color: colors.navy, letterSpacing: -1 },
+  greetingSub: { fontSize: 15, color: colors.slate, marginTop: 6 },
+
+  // ═══════════════════════════════════════════════════════════
+  //  HOME - BALANCE HERO
+  // ═══════════════════════════════════════════════════════════
+  balanceHero: { marginTop: 24, backgroundColor: colors.surface, borderRadius: 32, padding: 28, ...StyleSheet.flatten({ elevation: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.08, shadowRadius: 20 }) },
+  balanceTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  balanceHeroAmount: { fontSize: 42, fontWeight: '800', color: colors.navy, marginTop: 18, letterSpacing: -2 },
+  balanceBottomText: { marginTop: 8, color: colors.grayLight, fontSize: 13 },
+
+  // ═══════════════════════════════════════════════════════════
+  //  HOME - QUICK STAT CARDS
+  // ═══════════════════════════════════════════════════════════
+  quickCard: { flex: 1, borderRadius: 24, padding: 20 },
+  quickIcon: { width: 48, height: 48, borderRadius: 16, backgroundColor: colors.white, justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
+  quickLabel: { fontSize: 13, fontWeight: '600', color: colors.slate },
+  quickAmount: { fontSize: 24, fontWeight: '800', marginTop: 6 },
 
   // ═══════════════════════════════════════════════════════════
   //  BALANCE CARD
   // ═══════════════════════════════════════════════════════════
-  balanceCard: { borderRadius: 28, padding: 28, marginBottom: 20, backgroundColor: tokens.surface, ...StyleSheet.flatten({ elevation: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.12, shadowRadius: 20 }) },
-  balanceLabel: { fontSize: 13, fontWeight: '500', color: tokens.navy, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 4 },
-  balanceAmount: { fontSize: 42, fontWeight: '800', color: tokens.navy, letterSpacing: -1.5 },
+  balanceCard: { borderRadius: 28, padding: 28, marginBottom: 20, backgroundColor: colors.surface, ...StyleSheet.flatten({ elevation: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.12, shadowRadius: 20 }) },
+  balanceLabel: { fontSize: 13, fontWeight: '500', color: colors.navy, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 4 },
+  balanceAmount: { fontSize: 42, fontWeight: '800', color: colors.navy, letterSpacing: -1.5 },
+  balanceChangeRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12 },
   balanceBadge: { backgroundColor: 'rgba(16, 185, 129, 0.2)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, marginRight: 8 },
-  balanceBadgeText: { fontSize: 13, fontWeight: '700', color: tokens.green },
-  balancePeriod: { fontSize: 13, fontWeight: '500', color: 'rgba(255,255,255,0.5)' },
+  balanceBadgeText: { fontSize: 13, fontWeight: '700', color: colors.green },
+  balancePeriod: { fontSize: 13, fontWeight: '500', color: colors.grayLight },
 
   // ═══════════════════════════════════════════════════════════
   //  INCOME / EXPENSE CARDS
   // ═══════════════════════════════════════════════════════════
   ieCard: { flexDirection: 'row', alignItems: 'center', borderRadius: 20, padding: 18, flex: 1, ...StyleSheet.flatten({ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4 }) },
   ieIconWrap: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  ieLabel: { fontSize: 12, fontWeight: '600', color: tokens.gray, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 },
-  ieAmount: { fontSize: 20, fontWeight: '700', color: tokens.navy, letterSpacing: -0.5 },
+  ieLabel: { fontSize: 12, fontWeight: '600', color: colors.gray, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 },
+  ieAmount: { fontSize: 20, fontWeight: '700', color: colors.navy, letterSpacing: -0.5 },
 
   // ═══════════════════════════════════════════════════════════
   //  SECTION HEADERS
   // ═══════════════════════════════════════════════════════════
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: tokens.navy, letterSpacing: -0.3 },
-  sectionAction: { fontSize: 14, fontWeight: '600', color: tokens.blue },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: colors.navy, letterSpacing: -0.3 },
+  sectionAction: { fontSize: 14, fontWeight: '600', color: colors.blue },
 
   // ═══════════════════════════════════════════════════════════
   //  TRANSACTION ITEMS
@@ -400,27 +426,27 @@ const styles = StyleSheet.create({
   txItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14 },
   txIconWrap: { width: 48, height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
   txInfo: { flex: 1 },
-  txName: { fontSize: 15, fontWeight: '600', color: tokens.navy, marginBottom: 2 },
-  txMeta: { fontSize: 13, fontWeight: '500', color: tokens.grayLight },
+  txName: { fontSize: 15, fontWeight: '600', color: colors.navy, marginBottom: 2 },
+  txMeta: { fontSize: 13, fontWeight: '500', color: colors.grayLight },
   txAmount: { fontSize: 16, fontWeight: '700', textAlign: 'right', letterSpacing: -0.3 },
-  txDivider: { height: 1, backgroundColor: tokens.grayBorder, marginLeft: 62 },
+  txDivider: { height: 1, backgroundColor: colors.grayBorder, marginLeft: 62 },
 
   // ═══════════════════════════════════════════════════════════
   //  FILTER CHIPS
   // ═══════════════════════════════════════════════════════════
-  filterChip: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, backgroundColor: tokens.surfaceAlt, marginRight: 8, borderWidth: 1.5, borderColor: 'transparent' },
-  filterChipActive: { backgroundColor: tokens.blueLight, borderColor: tokens.blue },
-  filterChipText: { fontSize: 14, fontWeight: '500', color: tokens.slate },
-  filterChipTextActive: { color: tokens.blue, fontWeight: '600' },
-  dateHeader: { fontSize: 13, fontWeight: '700', color: tokens.gray, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 8, marginBottom: 4, paddingHorizontal: 4 },
+  filterChip: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, backgroundColor: colors.surfaceAlt, marginRight: 8, borderWidth: 1.5, borderColor: 'transparent' },
+  filterChipActive: { backgroundColor: colors.blueLight, borderColor: colors.blue },
+  filterChipText: { fontSize: 14, fontWeight: '500', color: colors.slate },
+  filterChipTextActive: { color: colors.blue, fontWeight: '600' },
+  dateHeader: { fontSize: 13, fontWeight: '700', color: colors.gray, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 8, marginBottom: 4, paddingHorizontal: 4 },
 
   // ═══════════════════════════════════════════════════════════
   //  DONUT CHART
   // ═══════════════════════════════════════════════════════════
   donutContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 12 },
   donutCenter: { position: 'absolute', alignItems: 'center', justifyContent: 'center' },
-  donutCenterAmount: { fontSize: 28, fontWeight: '800', color: tokens.navy, letterSpacing: -0.8 },
-  donutCenterLabel: { fontSize: 13, color: tokens.grayLight, fontWeight: '500', marginTop: 2 },
+  donutCenterAmount: { fontSize: 28, fontWeight: '800', color: colors.navy, letterSpacing: -0.8 },
+  donutCenterLabel: { fontSize: 13, color: colors.grayLight, fontWeight: '500', marginTop: 2 },
 
   // ═══════════════════════════════════════════════════════════
   //  CATEGORY BREAKDOWN
@@ -428,18 +454,18 @@ const styles = StyleSheet.create({
   catItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14 },
   catIconWrap: { width: 46, height: 46, borderRadius: 15, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
   catInfo: { flex: 1 },
-  catName: { fontSize: 15, fontWeight: '600', color: tokens.navy, marginBottom: 8 },
-  catBarTrack: { height: 6, backgroundColor: tokens.surfaceAlt, borderRadius: 3, overflow: 'hidden' },
+  catName: { fontSize: 15, fontWeight: '600', color: colors.navy, marginBottom: 8 },
+  catBarTrack: { height: 6, backgroundColor: colors.surfaceAlt, borderRadius: 3, overflow: 'hidden' },
   catBarFill: { height: 6, borderRadius: 3 },
   catBarRow: { flexDirection: 'row', alignItems: 'center' },
-  catPercent: { fontSize: 13, fontWeight: '600', color: tokens.gray, marginLeft: 10, minWidth: 36, textAlign: 'right' },
-  catAmount: { fontSize: 15, fontWeight: '700', color: tokens.navy, marginLeft: 12, minWidth: 60, textAlign: 'right', letterSpacing: -0.3 },
+  catPercent: { fontSize: 13, fontWeight: '600', color: colors.gray, marginLeft: 10, minWidth: 36, textAlign: 'right' },
+  catAmount: { fontSize: 15, fontWeight: '700', color: colors.navy, marginLeft: 12, minWidth: 60, textAlign: 'right', letterSpacing: -0.3 },
 
   // ═══════════════════════════════════════════════════════════
   //  SUMMARY CARDS
   // ═══════════════════════════════════════════════════════════
   summaryCard: { borderRadius: 20, padding: 18, flex: 1, ...StyleSheet.flatten({ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4 }) },
-  summaryLabel: { fontSize: 12, fontWeight: '600', color: tokens.gray, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 },
+  summaryLabel: { fontSize: 12, fontWeight: '600', color: colors.gray, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 },
   summaryValue: { fontSize: 22, fontWeight: '700', letterSpacing: -0.5 },
   summaryIconWrap: { width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
 
@@ -448,72 +474,74 @@ const styles = StyleSheet.create({
   // ═══════════════════════════════════════════════════════════
   legendContainer: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', marginTop: 8, gap: 20 },
   legendDot: { width: 10, height: 10, borderRadius: 3, marginRight: 6 },
-  legendText: { fontSize: 13, fontWeight: '500', color: tokens.slate },
+  legendText: { fontSize: 13, fontWeight: '500', color: colors.slate },
 
   // ═══════════════════════════════════════════════════════════
   //  BUTTONS
   // ═══════════════════════════════════════════════════════════
-  btnPrimary: { backgroundColor: tokens.primary, alignItems: 'center', justifyContent: 'center', borderRadius: 8, paddingVertical: 12, paddingHorizontal: 16 },
-  btnSecondary: { backgroundColor: tokens.secondary, alignItems: 'center', justifyContent: 'center', borderRadius: 8, paddingVertical: 12, paddingHorizontal: 16 },
-  btnOutlinePrimary: { borderWidth: 1, borderColor: tokens.primary, borderRadius: 8, paddingVertical: 12, paddingHorizontal: 16, alignItems: 'center', justifyContent: 'center' },
-  primaryButton: { backgroundColor: tokens.blue, borderRadius: 18, paddingVertical: 18, alignItems: 'center', justifyContent: 'center', ...StyleSheet.flatten({ elevation: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 10 }) },
+  btnPrimary: { backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', borderRadius: 8, paddingVertical: 12, paddingHorizontal: 16 },
+  btnSecondary: { backgroundColor: colors.secondary, alignItems: 'center', justifyContent: 'center', borderRadius: 8, paddingVertical: 12, paddingHorizontal: 16 },
+  btnOutlinePrimary: { borderWidth: 1, borderColor: colors.primary, borderRadius: 8, paddingVertical: 12, paddingHorizontal: 16, alignItems: 'center', justifyContent: 'center' },
+  primaryButton: { backgroundColor: colors.blue, borderRadius: 18, paddingVertical: 18, alignItems: 'center', justifyContent: 'center', ...StyleSheet.flatten({ elevation: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 10 }) },
   primaryButtonText: { fontSize: 16, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.3 },
 
   // ═══════════════════════════════════════════════════════════
   //  CATEGORY PILLS
   // ═══════════════════════════════════════════════════════════
-  categoryPill: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 18, borderRadius: 16, backgroundColor: tokens.surfaceAlt, marginRight: 10, borderWidth: 1.5, borderColor: 'transparent' },
-  categoryPillActive: { backgroundColor: tokens.blueLight, borderColor: tokens.blue },
-  categoryPillText: { fontSize: 14, fontWeight: '500', color: tokens.slate, marginLeft: 8 },
-  categoryPillTextActive: { color: tokens.blue, fontWeight: '600' },
+  categoryPill: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 18, borderRadius: 16, backgroundColor: colors.surfaceAlt, marginRight: 10, borderWidth: 1.5, borderColor: 'transparent' },
+  categoryPillActive: { backgroundColor: colors.blueLight, borderColor: colors.blue },
+  categoryPillText: { fontSize: 14, fontWeight: '500', color: colors.slate, marginLeft: 8 },
+  categoryPillTextActive: { color: colors.blue, fontWeight: '600' },
 
   // ═══════════════════════════════════════════════════════════
   //  KEYPAD
   // ═══════════════════════════════════════════════════════════
-  keypadContainer: { backgroundColor: tokens.surface, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 28, borderTopWidth: 1, borderTopColor: tokens.grayBorder },
+  keypadContainer: { backgroundColor: colors.surface, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 28, borderTopWidth: 1, borderTopColor: colors.grayBorder },
   keypadRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: 8 },
-  keyBtn: { width: 78, height: 64, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginHorizontal: 6, backgroundColor: tokens.surfaceAlt },
-  keyBtnZero: { width: 174, height: 64, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginHorizontal: 6, backgroundColor: tokens.surfaceAlt },
-  keyBtnText: { fontSize: 26, fontWeight: '600', color: tokens.navy },
-  amountDisplay: { fontSize: 44, fontWeight: '700', color: tokens.navy, letterSpacing: -1.5, textAlign: 'center', paddingVertical: 8 },
-  amountLabel: { fontSize: 13, color: tokens.grayLight, fontWeight: '500', textAlign: 'center', textTransform: 'uppercase', letterSpacing: 0.8 },
+  keyBtn: { width: 78, height: 64, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginHorizontal: 6, backgroundColor: colors.surfaceAlt },
+  keyBtnZero: { width: 174, height: 64, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginHorizontal: 6, backgroundColor: colors.surfaceAlt },
+  keyBtnText: { fontSize: 26, fontWeight: '600', color: colors.navy },
+  amountDisplay: { fontSize: 44, fontWeight: '700', color: colors.navy, letterSpacing: -1.5, textAlign: 'center', paddingVertical: 8 },
+  amountLabel: { fontSize: 13, color: colors.grayLight, fontWeight: '500', textAlign: 'center', textTransform: 'uppercase', letterSpacing: 0.8 },
 
   // ═══════════════════════════════════════════════════════════
   //  PROFILE
   // ═══════════════════════════════════════════════════════════
   profileHeader: { alignItems: 'center', paddingTop: 20, paddingBottom: 28 },
-  profileAvatar: { width: 80, height: 80, borderRadius: 28, backgroundColor: tokens.blueLight, alignItems: 'center', justifyContent: 'center', marginBottom: 14, ...StyleSheet.flatten({ elevation: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 10 }) },
-  profileName: { fontSize: 22, fontWeight: '700', color: tokens.navy, letterSpacing: -0.5, marginBottom: 4 },
-  profileEmail: { fontSize: 14, color: tokens.grayLight, fontWeight: '500' },
+  profileAvatar: { width: 80, height: 80, borderRadius: 28, backgroundColor: colors.blueLight, alignItems: 'center', justifyContent: 'center', marginBottom: 14, ...StyleSheet.flatten({ elevation: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 10 }) },
+  profileName: { fontSize: 22, fontWeight: '700', color: colors.navy, letterSpacing: -0.5, marginBottom: 4 },
+  profileEmail: { fontSize: 14, color: colors.grayLight, fontWeight: '500' },
   menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16, paddingHorizontal: 4 },
   menuIconWrap: { width: 42, height: 42, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
-  menuLabel: { flex: 1, fontSize: 15, fontWeight: '600', color: tokens.navy },
-  menuDivider: { height: 1, backgroundColor: tokens.grayBorder, marginLeft: 56 },
+  menuLabel: { flex: 1, fontSize: 15, fontWeight: '600', color: colors.navy },
+  menuDivider: { height: 1, backgroundColor: colors.grayBorder, marginLeft: 56 },
 
   // ═══════════════════════════════════════════════════════════
   //  DRAWER SIDEBAR
   // ═══════════════════════════════════════════════════════════
-  drawerContainer: { flex: 1, backgroundColor: tokens.surface },
-  drawerHeader: { paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24, borderBottomWidth: 1, borderBottomColor: tokens.grayBorder },
-  drawerAvatar: { width: 64, height: 64, borderRadius: 22, backgroundColor: tokens.blueLight, alignItems: 'center', justifyContent: 'center', marginBottom: 14, ...StyleSheet.flatten({ elevation: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8 }) },
-  drawerUserName: { fontSize: 18, fontWeight: '700', color: tokens.navy, letterSpacing: -0.3 },
-  drawerUserEmail: { fontSize: 13, fontWeight: '500', color: tokens.grayLight, marginTop: 2 },
-  drawerBalanceRow: { flexDirection: 'row', alignItems: 'center', marginTop: 14, backgroundColor: tokens.bg, borderRadius: 14, padding: 14 },
-  drawerBalanceLabel: { fontSize: 11, fontWeight: '600', color: tokens.gray, textTransform: 'uppercase', letterSpacing: 0.5 },
-  drawerBalanceAmount: { fontSize: 20, fontWeight: '800', color: tokens.navy, letterSpacing: -0.5 },
+  drawerContainer: { flex: 1, backgroundColor: colors.surface, },
+  drawerHeader: { paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24, borderBottomWidth: 1, borderBottomColor: colors.grayBorder },
+  drawerAvatar: { width: 50, height: 50, borderRadius: 10, backgroundColor: colors.blueLight, alignItems: 'center', justifyContent: 'center', marginBottom: 14, },
+  drawerUserName: { fontSize: 18, fontWeight: '700', color: colors.navy, letterSpacing: -0.3 },
+  drawerUserEmail: { fontSize: 13, fontWeight: '500', color: colors.grayLight, marginTop: 2 },
+  drawerBalanceRow: { flexDirection: 'row', alignItems: 'center', marginTop: 14, backgroundColor: colors.bg, borderRadius: 14, padding: 14 },
+  drawerBalanceLabel: { fontSize: 11, fontWeight: '600', color: colors.gray, textTransform: 'uppercase', letterSpacing: 0.5 },
+  drawerBalanceAmount: { fontSize: 20, fontWeight: '800', color: colors.navy, letterSpacing: -0.5 },
   drawerSection: { paddingTop: 12, paddingHorizontal: 16 },
-  drawerSectionTitle: { fontSize: 11, fontWeight: '700', color: tokens.grayLight, textTransform: 'uppercase', letterSpacing: 1.2, paddingHorizontal: 12, marginBottom: 8 },
+  drawerSectionTitle: { fontSize: 11, fontWeight: '700', color: colors.grayLight, textTransform: 'uppercase', letterSpacing: 1.2, paddingHorizontal: 12, marginBottom: 8 },
   drawerItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 12, borderRadius: 14, marginBottom: 2 },
-  drawerItemActive: { backgroundColor: tokens.blueLight },
+  drawerItemActive: { backgroundColor: colors.blueLight },
   drawerItemIcon: { width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
-  drawerItemLabel: { flex: 1, fontSize: 15, fontWeight: '500', color: tokens.navy },
-  drawerItemLabelActive: { fontWeight: '700', color: tokens.blue },
-  drawerItemBadge: { backgroundColor: tokens.danger, borderRadius: 10, paddingHorizontal: 7, paddingVertical: 2, minWidth: 22, alignItems: 'center' },
-  drawerItemBadgeText: { fontSize: 11, fontWeight: '700', color: tokens.white },
-  drawerFooter: { borderTopWidth: 1, borderTopColor: tokens.grayBorder, paddingHorizontal: 24, paddingVertical: 16 },
-  drawerVersion: { fontSize: 11, fontWeight: '500', color: tokens.grayLight, textAlign: 'center' },
-  drawerCloseBtn: { width: 40, height: 40, borderRadius: 12, backgroundColor: tokens.surfaceAlt, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  drawerItemLabel: { flex: 1, fontSize: 15, fontWeight: '500', color: colors.navy },
+  drawerItemLabelActive: { fontWeight: '700', color: colors.blue },
+  drawerItemBadge: { backgroundColor: colors.danger, borderRadius: 10, paddingHorizontal: 7, paddingVertical: 2, minWidth: 22, alignItems: 'center' },
+  drawerItemBadgeText: { fontSize: 11, fontWeight: '700', color: colors.white },
+  drawerFooter: { borderTopWidth: 1, borderTopColor: colors.grayBorder, paddingHorizontal: 24, paddingVertical: 16 },
+  drawerVersion: { fontSize: 11, fontWeight: '500', color: colors.grayLight, textAlign: 'center' },
+  drawerCloseBtn: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
 });
 
-export { tokens };
+export { colors };
 export default styles;
+
+styles.colors = colors;
