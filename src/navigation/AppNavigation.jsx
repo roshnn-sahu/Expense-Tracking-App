@@ -35,7 +35,7 @@ const AddButton = ({ focused }) => (
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 10,
-        shadowColor: styles.colors.blue,
+        shadowColor: styles.blue,
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.35,
         shadowRadius: 16,

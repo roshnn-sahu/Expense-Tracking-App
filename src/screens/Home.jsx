@@ -26,11 +26,11 @@ const HomeScreen = () => {
 
         {/* BODY */}
         <ScrollView
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.scrollContent}
         >
           {/* GREETING */}
-          <View style={styles.welcomeContainer}>
+          <View style={(styles.welcomeContainer, styles.mb3)}>
             <Text style={styles.greeting}>Welcome back 👋</Text>
 
             <Text style={styles.greetingSub}>

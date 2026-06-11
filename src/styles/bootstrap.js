@@ -28,6 +28,14 @@ export default StyleSheet.create({
     flexWrap: 'wrap',
   },
 
+
+  row: {
+    flexDirection: 'row',
+
+  },
+
+
+
   /* =========================
      JUSTIFY CONTENT
   ========================= */
@@ -288,6 +296,22 @@ export default StyleSheet.create({
     marginHorizontal: 'auto',
   },
 
+  ml1: {
+    marginLeft: 4,
+  },
+
+  ml2: {
+    marginLeft: 8,
+  },
+
+  ml15: {
+    marginLeft: 60,
+  },
+
+  mt8: {
+    marginTop: 32,
+  },
+
   /* =========================
      GAP
   ========================= */
@@ -360,6 +384,17 @@ export default StyleSheet.create({
     backgroundColor: colors.soft,
   },
 
+  bgSurfaceAlt: {
+    backgroundColor: colors.surfaceAlt,
+  },
+
+  bgGreenLight: {
+    backgroundColor: colors.greenLight,
+  },
+
+  bgRedLight: {
+    backgroundColor: colors.redLight,
+  },
   /* =========================
      TEXT COLORS
   ========================= */
@@ -379,6 +414,30 @@ export default StyleSheet.create({
   textGray: {
     color: colors.gray,
   },
+  textBlack: {
+    color: colors.black,
+  },
+
+  textRed: {
+    color: colors.red,
+  },
+
+  textGreen: {
+    color: colors.green,
+  },
+
+  textGrayLight: {
+    color: colors.grayLight,
+  },
+
+  textGreenDark: {
+    color: colors.greenDark,
+  },
+
+  textRedDark: {
+    color: colors.redDark,
+  },
+
 
   /* =========================
      FONT SIZE
@@ -414,6 +473,17 @@ export default StyleSheet.create({
 
   fs38: {
     fontSize: 38,
+  },
+  fontSM: {
+    fontSize: 12,
+  },
+
+  fontLG: {
+    fontSize: 20,
+  },
+
+  fontXXL: {
+    fontSize: 28,
   },
 
   /* =========================
@@ -527,4 +597,114 @@ export default StyleSheet.create({
   overflowHidden: {
     overflow: 'hidden',
   },
+
+  /* =========================
+     TEXT COLRS
+  ========================= */
+  /* =========================
+     DIVIDERS
+  ========================= */
+
+  divider: {
+    height: 1,
+    backgroundColor: colors.grayBorder,
+  },
+
+  dividerVertical: {
+    width: 1,
+    backgroundColor: colors.grayBorder,
+  },
+
+  /* =========================
+     SCROLL
+  ========================= */
+
+  scrollContentCompact: {
+    paddingHorizontal: 20,
+    paddingBottom: 80,
+  },
+
+  /* =========================
+     ICON BUTTON
+  ========================= */
+
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  /* =========================
+     PRIMARY BUTTON
+  ========================= */
+
+  primaryButton: {
+    backgroundColor: colors.blue,
+
+    borderRadius: 18,
+
+    paddingVertical: 18,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    elevation: 6,
+
+    shadowColor: '#000',
+
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    shadowOpacity: 0.08,
+
+    shadowRadius: 10,
+  },
+
+  primaryButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+
+    letterSpacing: 0.3,
+  },
+
+  /* =========================
+     FILTER CHIP
+  ========================= */
+
+  filterChip: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+
+    borderRadius: 20,
+
+    backgroundColor: colors.surfaceAlt,
+
+    marginRight: 8,
+
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+  },
+
+  filterChipActive: {
+    backgroundColor: colors.blueLight,
+    borderColor: colors.blue,
+  },
+
+  filterChipText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.slate,
+  },
+
+  filterChipTextActive: {
+    color: colors.blue,
+    fontWeight: '600',
+  },
+
 });
