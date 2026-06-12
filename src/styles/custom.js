@@ -36,10 +36,10 @@ export default StyleSheet.create({
   },
 
   headerTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: '700',
     color: colors.navy,
-    letterSpacing: -0.4,
+    letterSpacing: -0.6,
   },
 
   iconBtn: {

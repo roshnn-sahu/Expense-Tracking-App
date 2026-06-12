@@ -6,6 +6,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+    paddingHorizontal:5
   },
 
   flex1: {
@@ -673,38 +674,6 @@ export default StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  /* =========================
-     FILTER CHIP
-  ========================= */
 
-  filterChip: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-
-    borderRadius: 20,
-
-    backgroundColor: colors.surfaceAlt,
-
-    marginRight: 8,
-
-    borderWidth: 1.5,
-    borderColor: 'transparent',
-  },
-
-  filterChipActive: {
-    backgroundColor: colors.blueLight,
-    borderColor: colors.blue,
-  },
-
-  filterChipText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.slate,
-  },
-
-  filterChipTextActive: {
-    color: colors.blue,
-    fontWeight: '600',
-  },
 
 });

@@ -6,7 +6,7 @@ import styles from '../styles';
 
 const Header = ({ title = 'Expense Tracker', onMenuPress, onUserPress }) => {
   return (
-    <View style={styles.headerContainer}>
+    <View style={[styles.headerContainer, styles.borderBottom]}>
       <TouchableOpacity
         style={[styles.iconBtn, styles.bgSurfaceAlt]}
         onPress={onMenuPress}

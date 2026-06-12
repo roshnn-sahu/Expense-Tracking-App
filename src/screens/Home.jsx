@@ -17,7 +17,7 @@ const HomeScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
       <View style={styles.container}>
@@ -28,6 +28,7 @@ const HomeScreen = () => {
         <ScrollView
           showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.scrollContent}
+          style={[styles.mt3]}
         >
           {/* GREETING */}
           <View style={(styles.welcomeContainer, styles.mb3)}>
