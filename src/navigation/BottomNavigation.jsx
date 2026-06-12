@@ -6,14 +6,14 @@ import {
   ArrowUpDown,
   PlusCircle,
   PieChart,
-  User,
+ FileText
 } from 'lucide-react-native';
 
 import HomeScreen from '../screens/Home';
 import Transactions from '../screens/Transactions';
 import Analytics from '../screens/Analytics';
 import AddTransaction from '../screens/AddTransaction';
-import Profile from '../screens/Profile';
+import Statement from '../screens/Statement';
 import styles from '../styles';
 
 const Tab = createBottomTabNavigator();
@@ -59,8 +59,8 @@ const renderAnalyticsIcon = ({ color, size, focused }) => (
   <TabIcon Icon={PieChart} color={color} size={22} focused={focused} />
 );
 
-const renderProfileIcon = ({ color, size, focused }) => (
-  <TabIcon Icon={User} color={color} size={22} focused={focused} />
+const renderStatementIcon = ({ color, size, focused }) => (
+  <TabIcon Icon={FileText} color={color} size={22} focused={focused} />
 );
 
 const renderAddButton = ({ focused }) => <AddButton focused={focused} />;
@@ -87,7 +87,7 @@ const tabBarLabelStyle = {
   marginTop: 2,
 };
 
-const AppNavigation = () => (
+const BottomNavigation = () => (
   <Tab.Navigator
     screenOptions={{
       headerShown: false,
@@ -130,14 +130,14 @@ const AppNavigation = () => (
       }}
     />
     <Tab.Screen
-      name="Profile"
-      component={Profile}
+      name="Statement"
+      component={Statement}
       options={{
-        tabBarLabel: 'Profile',
-        tabBarIcon: renderProfileIcon,
+        tabBarLabel: 'Statement',
+        tabBarIcon: renderStatementIcon,
       }}
     />
   </Tab.Navigator>
 );
 
-export default AppNavigation;
+export default BottomNavigation;
