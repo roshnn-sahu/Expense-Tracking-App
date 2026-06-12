@@ -642,6 +642,7 @@ export default StyleSheet.create({
   ========================= */
 
   drawerHeader: {
+    
     paddingHorizontal: 24,
     paddingTop: 20,
     paddingBottom: 24,

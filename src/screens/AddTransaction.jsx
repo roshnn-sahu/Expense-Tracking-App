@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { formatDate } from '../utils/date';
 
 import {
   View,
@@ -37,19 +39,30 @@ const categories = [
   'Salary',
   'Investment',
 ];
+const PAYMENT_MODES = [
+  'Food',
+  'Shopping',
+  'Transport',
+  'Housing',
+  'Health',
+  'Entertainment',
+  'Bills',
+  'Travel',
+  'Salary',
+  'Investment',
+];
 
 const AddTransaction = () => {
   const navigation = useNavigation();
 
   const [type, setType] = useState('expense');
-
   const [amount, setAmount] = useState('');
-
   const [note, setNote] = useState('');
-
   const [category, setCategory] = useState('Food');
-
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleSave = () => {
     const payload = {
@@ -214,7 +227,6 @@ const AddTransaction = () => {
 
           <View>
             {/* CATEGORY */}
-
             <View style={[styles.mb4]}>
               <Text
                 style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
@@ -254,7 +266,6 @@ const AddTransaction = () => {
             </View>
 
             {/* DATE */}
-
             <View style={[styles.mb4]}>
               <Text
                 style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
@@ -264,9 +275,61 @@ const AddTransaction = () => {
 
               <TouchableOpacity
                 activeOpacity={0.9}
+                onPress={() => setShowDatePicker(true)}
                 style={[
                   styles.row,
                   styles.alignCenter,
+                  styles.justifyBetween,
+                  {
+                    height: 62,
+                    borderRadius: 20,
+                    paddingHorizontal: 18,
+                    borderWidth: 1,
+                    borderColor: '#E2E8F0',
+                    backgroundColor: '#FFFFFF',
+                  },
+                ]}
+              >
+                <View style={[styles.row, styles.alignCenter]}>
+                  <Calendar size={20} color="#64748B" />
+
+                  <Text style={[styles.ml3, styles.textNavy, styles.fw500]}>
+                    {formatDate(date)}
+                  </Text>
+                </View>
+
+                <ChevronDown size={18} color="#94A3B8" />
+              </TouchableOpacity>
+
+              <DateTimePickerModal
+                isVisible={showDatePicker}
+                mode="date"
+                date={date}
+                maximumDate={new Date()}
+                onConfirm={selectedDate => {
+                  setDate(selectedDate);
+
+                  setShowDatePicker(false);
+                }}
+                onCancel={() => setShowDatePicker(false)}
+              />
+            </View>
+
+
+             <View style={[styles.mb4]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
+                PAYMENT MODE
+              </Text>
+
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => setShowCategoryModal(true)}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+                  styles.justifyBetween,
 
                   {
                     height: 62,
@@ -283,16 +346,15 @@ const AddTransaction = () => {
                   },
                 ]}
               >
-                <Calendar size={20} color="#64748B" />
-
-                <Text style={[styles.ml3, styles.textNavy, styles.fw500]}>
-                  Today, Jun 12
+                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
+                  {PAYMENT_MODES}
                 </Text>
+
+                <ChevronDown size={20} color="#64748B" />
               </TouchableOpacity>
             </View>
 
             {/* NOTE */}
-
             <View style={[styles.mb8]}>
               <Text
                 style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
@@ -303,16 +365,11 @@ const AddTransaction = () => {
               <View
                 style={[
                   styles.row,
-
                   {
                     borderRadius: 20,
-
                     borderWidth: 1,
-
                     borderColor: '#E2E8F0',
-
                     paddingHorizontal: 18,
-
                     backgroundColor: '#FFFFFF',
                   },
                 ]}

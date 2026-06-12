@@ -23,7 +23,7 @@ const DrawerContent = ({ navigation }) => {
   return (
     <SafeAreaView>
       {/* User Info */}
-      <View style={styles.drawerHeader}>
+      <View style={[styles.drawerHeader,]}>
         <View style={styles.drawerAvatar}>
           <Text style={[styles.textBlack, styles.fw700]}>A</Text>
         </View>

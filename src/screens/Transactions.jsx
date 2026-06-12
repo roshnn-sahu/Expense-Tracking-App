@@ -91,7 +91,7 @@ const Transactions = () => {
         </View>
 
         {/* FILTERS */}
-        <View style={[styles.mt2, styles.px5 , styles.borderBottom]}>
+        <View style={[styles.mt2, styles.px5, styles.borderBottom]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
