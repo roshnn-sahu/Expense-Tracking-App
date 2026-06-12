@@ -69,7 +69,8 @@ const Statement = ({ navigation }) => {
       <StatusBar backgroundColor="#F8FAFC" barStyle="dark-content" />
 
       <View style={styles.container}>
-        <Header title="Statement" />
+        <Header title="Statement"
+         onMenuPress={() => navigation.getParent()?.openDrawer()} />
 
         <ScrollView
           showsVerticalScrollIndicator={false}

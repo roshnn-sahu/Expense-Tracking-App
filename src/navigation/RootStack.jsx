@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react-native';
 
 import DrawerNavigation from './DrawerNavigation';
 import EditProfile from '../screens/EditProfile';
+import Profile from '../screens/Profile';
 import styles from '../styles';
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +37,7 @@ const RootStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="DrawerRoot" component={DrawerNavigation} />
+      <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Notifications" component={PlaceholderScreen} />
       <Stack.Screen name="Security" component={PlaceholderScreen} />
