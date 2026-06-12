@@ -8,6 +8,7 @@ import { Download, ArrowDownLeft, ArrowUpRight } from 'lucide-react-native';
 
 import styles from '../styles';
 import Header from '../components/Header';
+import { useCurrency } from '../context/CurrencyContext';
 
 const FILTERS = ['This Month', 'Last Month', '3 Months'];
 
@@ -44,6 +45,7 @@ const statements = [
 
 const Statement = ({ navigation }) => {
   const [activeFilter, setActiveFilter] = useState('This Month');
+  const { formatCurrency } = useCurrency();
 
   const totals = useMemo(() => {
     let income = 0;
@@ -86,7 +88,7 @@ const Statement = ({ navigation }) => {
             </Text>
 
             <Text style={[styles.fs42, styles.fw800, styles.textNavy]}>
-              ${totals.balance.toFixed(2)}
+              {formatCurrency(totals.balance)}
             </Text>
 
             <View style={[styles.row, styles.justifyBetween, styles.mt4]}>
@@ -108,7 +110,7 @@ const Statement = ({ navigation }) => {
                       styles.ml1,
                     ]}
                   >
-                    ${totals.income.toFixed(2)}
+                    {formatCurrency(totals.income)}
                   </Text>
                 </View>
               </View>
@@ -131,7 +133,7 @@ const Statement = ({ navigation }) => {
                       styles.ml1,
                     ]}
                   >
-                    ${totals.expense.toFixed(2)}
+                    {formatCurrency(totals.expense)}
                   </Text>
                 </View>
               </View>
@@ -238,7 +240,7 @@ const Statement = ({ navigation }) => {
                         },
                       ]}
                     >
-                      {isIncome ? '+' : '-'}${Math.abs(item.amount).toFixed(2)}
+                      {isIncome ? '+' : '-'}{formatCurrency(Math.abs(item.amount))}
                     </Text>
                   </View>
 

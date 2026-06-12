@@ -1,6 +1,7 @@
 export const formatCurrency = (
   amount,
   showSymbol = true,
+  symbol = '$',
 ) => {
   const number = Number(amount || 0);
 
@@ -11,7 +12,7 @@ export const formatCurrency = (
     });
 
   return showSymbol
-    ? `$${formatted}`
+    ? `${symbol}${formatted}`
     : formatted;
 };
 

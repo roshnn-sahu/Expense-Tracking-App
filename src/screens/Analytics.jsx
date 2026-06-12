@@ -23,7 +23,7 @@ import Header from '../components/Header';
 
 import { analyticsCategories } from '../data/transactions';
 
-import { formatCurrency } from '../utils/currency';
+import { useCurrency } from '../context/CurrencyContext';
 
 const CHART_SIZE = 220;
 const STROKE_WIDTH = 22;
@@ -35,6 +35,7 @@ const FILTERS = ['Week', 'Month', 'Year'];
 
 const Analytics = () => {
   const navigation = useNavigation();
+  const { formatCurrency } = useCurrency();
 
   const [activeFilter, setActiveFilter] = useState('Month');
 
@@ -278,7 +279,7 @@ const Analytics = () => {
               Top Categories
             </Text>
 
-            <View style={styles.transactionCard}>
+            <View style={styles.card}>
               {analyticsCategories.map((cat, index) => {
                 const Icon = LucideIcons[cat.icon];
                 return (

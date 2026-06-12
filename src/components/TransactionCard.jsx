@@ -1,9 +1,13 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import * as LucideIcons from 'lucide-react-native';
+
 import styles from '../styles';
+import { useCurrency } from '../context/CurrencyContext';
 
 const TransactionCard = ({ transaction, showDivider = true }) => {
+  const { formatCurrency } = useCurrency();
+
   const IconComponent =
     LucideIcons[transaction.icon] || LucideIcons.MoreHorizontal;
   const isPositive = transaction.amount > 0;
@@ -35,7 +39,7 @@ const TransactionCard = ({ transaction, showDivider = true }) => {
             { color: isPositive ? styles.colors.green : styles.colors.red },
           ]}
         >
-          {isPositive ? '+' : '-'}${Math.abs(transaction.amount).toFixed(2)}
+          {isPositive ? '+' : '-'}{formatCurrency(Math.abs(transaction.amount))}
         </Text>
       </View>
       {showDivider && <View style={styles.txDivider} />}

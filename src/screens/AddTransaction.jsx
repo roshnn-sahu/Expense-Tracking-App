@@ -41,6 +41,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import styles from '../styles';
 import Button from '../components/ui/Button';
+import { useCurrency } from '../context/CurrencyContext';
 
 const categories = [
   'Food',
@@ -65,6 +66,7 @@ const PAYMENT_MODES = [
 
 const AddTransaction = () => {
   const navigation = useNavigation();
+  const { currencySymbol } = useCurrency();
 
   const [type, setType] = useState('expense');
   const [amount, setAmount] = useState('');
@@ -216,7 +218,7 @@ const AddTransaction = () => {
                   },
                 ]}
               >
-                $
+                {currencySymbol}
               </Text>
 
               <TextInput

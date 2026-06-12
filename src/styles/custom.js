@@ -59,7 +59,7 @@ export default StyleSheet.create({
   ========================= */
 
   greeting: {
-    fontSize: 38,
+    fontSize: 34,
     fontWeight: '700',
     color: colors.navy,
     letterSpacing: -1.8,
@@ -68,7 +68,7 @@ export default StyleSheet.create({
   greetingSub: {
     fontSize: 15,
     color: colors.gray,
-    marginTop: 8,
+    marginTop:2,
     lineHeight: 22,
     fontWeight: '500',
   },
@@ -133,7 +133,7 @@ export default StyleSheet.create({
   },
 
   balanceAmount: {
-    fontSize: 42,
+    fontSize: 36,
     fontWeight: '800',
     color: colors.navy,
     letterSpacing: -1.5,
@@ -173,22 +173,19 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 20,
-    padding: 18,
+    padding:12,
     flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.grayBorder,
   },
 
   ieIconWrap: {
-    width: 44,
-    height: 44,
+    width: 33,
+    height: 33,
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 8,
   },
 
   ieLabel: {
@@ -201,7 +198,7 @@ export default StyleSheet.create({
   },
 
   ieAmount: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '700',
     color: colors.navy,
     letterSpacing: -0.5,
