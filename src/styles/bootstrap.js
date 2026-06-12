@@ -6,7 +6,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
-    paddingHorizontal:5
+    paddingHorizontal: 5
   },
 
   flex1: {
@@ -35,6 +35,10 @@ export default StyleSheet.create({
 
   },
 
+  rowWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
 
 
   /* =========================
@@ -293,6 +297,10 @@ export default StyleSheet.create({
     marginBottom: 24,
   },
 
+  mb8: {
+    marginBottom: 32,
+  },
+
   mxAuto: {
     marginHorizontal: 'auto',
   },
@@ -303,6 +311,9 @@ export default StyleSheet.create({
 
   ml2: {
     marginLeft: 8,
+  },
+  ml3: {
+    marginLeft: 12,
   },
 
   ml15: {

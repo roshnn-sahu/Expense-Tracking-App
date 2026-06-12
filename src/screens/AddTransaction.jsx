@@ -1,141 +1,62 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   TextInput,
+  ScrollView,
   StatusBar,
+  Modal,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   ArrowLeft,
-  UtensilsCrossed,
-  ShoppingBag,
-  Car,
-  House,
-  HeartPulse,
-  Wallet,
+  ChevronDown,
   Calendar,
   FileText,
-  Delete,
+  Check,
 } from 'lucide-react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
 import styles from '../styles';
+import Button from '../components/ui/Button';
 
 const categories = [
-  {
-    id: 'food',
-    label: 'Food',
-    icon: UtensilsCrossed,
-    color: '#F59E0B',
-    bg: '#FEF3C7',
-  },
-
-  {
-    id: 'shopping',
-    label: 'Shopping',
-    icon: ShoppingBag,
-    color: '#7C3AED',
-    bg: '#F3E8FF',
-  },
-
-  {
-    id: 'transport',
-    label: 'Transport',
-    icon: Car,
-    color: '#2563EB',
-    bg: '#DBEAFE',
-  },
-
-  {
-    id: 'housing',
-    label: 'Housing',
-    icon: House,
-    color: '#DC2626',
-    bg: '#FEE2E2',
-  },
-
-  {
-    id: 'health',
-    label: 'Health',
-    icon: HeartPulse,
-    color: '#10B981',
-    bg: '#D1FAE5',
-  },
-
-  {
-    id: 'salary',
-    label: 'Income',
-    icon: Wallet,
-    color: '#059669',
-    bg: '#DCFCE7',
-  },
+  'Food',
+  'Shopping',
+  'Transport',
+  'Housing',
+  'Health',
+  'Entertainment',
+  'Bills',
+  'Travel',
+  'Salary',
+  'Investment',
 ];
 
-const keypad = [
-  ['1', '2', '3'],
-  ['4', '5', '6'],
-  ['7', '8', '9'],
-  ['.', '0', 'delete'],
-];
-
-const AddTransactionScreen = () => {
+const AddTransaction = () => {
   const navigation = useNavigation();
 
-  const [type, setType] = useState('balance');
+  const [type, setType] = useState('expense');
 
-  const [amount, setAmount] = useState('0');
+  const [amount, setAmount] = useState('');
 
   const [note, setNote] = useState('');
 
-  const [selectedCategory, setSelectedCategory] = useState('food');
+  const [category, setCategory] = useState('Food');
 
-  const formattedAmount = useMemo(() => {
-    const number = parseFloat(amount || '0');
-
-    return number.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  }, [amount]);
-
-  const handleKeyPress = key => {
-    if (key === 'delete') {
-      if (amount.length === 1) {
-        setAmount('0');
-        return;
-      }
-
-      setAmount(prev => prev.slice(0, -1));
-      return;
-    }
-
-    if (key === '.') {
-      if (amount.includes('.')) {
-        return;
-      }
-    }
-
-    if (amount === '0' && key !== '.') {
-      setAmount(key);
-      return;
-    }
-
-    setAmount(prev => prev + key);
-  };
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   const handleSave = () => {
     const payload = {
       type,
       amount,
       note,
-      category: selectedCategory,
+      category,
     };
 
     console.log(payload);
@@ -147,16 +68,17 @@ const AddTransactionScreen = () => {
     <SafeAreaView style={[styles.safeArea, styles.bgWhite]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-      <View style={[styles.flex1, styles.bgWhite]}>
+      <View style={[styles.flex1]}>
         {/* HEADER */}
 
         <View
           style={[
             styles.row,
-            styles.justifyBetween,
             styles.alignCenter,
+            styles.justifyBetween,
             styles.px5,
             styles.py4,
+            styles.borderBottom,
           ]}
         >
           <TouchableOpacity
@@ -167,40 +89,41 @@ const AddTransactionScreen = () => {
             <ArrowLeft size={22} color="#0F172A" />
           </TouchableOpacity>
 
-          <Text style={[styles.fs20, styles.fw700, styles.textNavy]}>
-            New Transaction
-          </Text>
+          <Text style={[styles.headerTitle]}>New Transaction</Text>
 
           <View style={{ width: 40 }} />
         </View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.px5, styles.pb10]}
+          contentContainerStyle={[styles.px5, styles.pb14]}
         >
-          {/* TOGGLE */}
+          {/* TYPE TOGGLE */}
 
-          <View style={[styles.alignCenter, styles.mt2, styles.mb6]}>
+          <View style={[styles.alignCenter, styles.mt2, styles.mb8]}>
             <View
               style={[
                 styles.row,
                 {
                   backgroundColor: '#F1F5F9',
+
                   padding: 4,
+
                   borderRadius: 999,
                 },
               ]}
             >
               <TouchableOpacity
-                onPress={() => setType('balance')}
+                activeOpacity={0.9}
+                onPress={() => setType('expense')}
                 style={[
                   {
-                    paddingHorizontal: 24,
-                    paddingVertical: 10,
+                    paddingHorizontal: 28,
+                    paddingVertical: 12,
                     borderRadius: 999,
                   },
 
-                  type === 'balance' && {
+                  type === 'expense' && {
                     backgroundColor: '#FFFFFF',
                   },
                 ]}
@@ -210,24 +133,25 @@ const AddTransactionScreen = () => {
                     styles.fw600,
 
                     {
-                      color: type === 'balance' ? '#0F172A' : '#64748B',
+                      color: type === 'expense' ? '#0F172A' : '#64748B',
                     },
                   ]}
                 >
-                  Balance
+                  Expense
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => setType('expence')}
+                activeOpacity={0.9}
+                onPress={() => setType('income')}
                 style={[
                   {
-                    paddingHorizontal: 24,
-                    paddingVertical: 10,
+                    paddingHorizontal: 28,
+                    paddingVertical: 12,
                     borderRadius: 999,
                   },
 
-                  type === 'expence' && {
+                  type === 'income' && {
                     backgroundColor: '#FFFFFF',
                   },
                 ]}
@@ -237,11 +161,11 @@ const AddTransactionScreen = () => {
                     styles.fw600,
 
                     {
-                      color: type === 'expence' ? '#0F172A' : '#64748B',
+                      color: type === 'income' ? '#0F172A' : '#64748B',
                     },
                   ]}
                 >
-                  Expence
+                  Income
                 </Text>
               </TouchableOpacity>
             </View>
@@ -254,206 +178,177 @@ const AddTransactionScreen = () => {
               Amount
             </Text>
 
-            <Text
-              style={[
-                styles.fw800,
-                {
-                  fontSize: 48,
-                  color: '#0F172A',
-                  letterSpacing: -2,
-                },
-              ]}
-            >
-              ${formattedAmount}
-            </Text>
-          </View>
-
-          {/* CATEGORIES */}
-
-          <View style={[styles.mb8]}>
-            <Text
-              style={[styles.fs13, styles.fw700, styles.textGray, styles.mb4]}
-            >
-              CATEGORY
-            </Text>
-
-            <View style={[styles.rowWrap, styles.justifyBetween]}>
-              {categories.map(item => {
-                const Icon = item.icon;
-
-                const active = selectedCategory === item.id;
-
-                return (
-                  <TouchableOpacity
-                    key={item.id}
-                    activeOpacity={0.9}
-                    onPress={() => setSelectedCategory(item.id)}
-                    style={[
-                      {
-                        width: '31%',
-                        paddingVertical: 18,
-                        borderRadius: 24,
-                        marginBottom: 14,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-
-                        backgroundColor: active ? item.bg : '#F8FAFC',
-
-                        borderWidth: 1.5,
-
-                        borderColor: active ? item.color : '#EEF2F7',
-                      },
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.center,
-                        {
-                          width: 46,
-                          height: 46,
-                          borderRadius: 16,
-                          backgroundColor: active ? '#FFFFFF' : '#FFFFFF',
-                          marginBottom: 10,
-                        },
-                      ]}
-                    >
-                      <Icon size={22} color={item.color} />
-                    </View>
-
-                    <Text
-                      style={[
-                        styles.fw600,
-                        {
-                          color: '#0F172A',
-                          fontSize: 13,
-                        },
-                      ]}
-                    >
-                      {item.label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-
-          {/* DETAILS */}
-
-          <View style={[styles.mb8]}>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              style={[
-                styles.row,
-                {
-                  backgroundColor: '#FFFFFF',
-
-                  borderWidth: 1,
-
-                  borderColor: '#EEF2F7',
-
-                  borderRadius: 18,
-
-                  paddingHorizontal: 16,
-
-                  paddingVertical: 16,
-
-                  marginBottom: 14,
-                },
-              ]}
-            >
-              <Calendar size={20} color="#64748B" />
-
+            <View style={[styles.row, styles.alignCenter]}>
               <Text
                 style={[
-                  styles.ml3,
-                  styles.fw500,
+                  styles.fw700,
                   {
+                    fontSize: 48,
                     color: '#0F172A',
+                    marginRight: 4,
                   },
                 ]}
               >
-                Today, Jun 12
+                $
               </Text>
-            </TouchableOpacity>
-
-            <View
-              style={[
-                styles.row,
-                {
-                  backgroundColor: '#FFFFFF',
-
-                  borderWidth: 1,
-
-                  borderColor: '#EEF2F7',
-
-                  borderRadius: 18,
-
-                  paddingHorizontal: 16,
-                },
-              ]}
-            >
-              <FileText size={20} color="#64748B" />
 
               <TextInput
-                placeholder="Add a note..."
-                placeholderTextColor="#94A3B8"
-                value={note}
-                onChangeText={setNote}
+                value={amount}
+                onChangeText={setAmount}
+                placeholder="0.00"
+                keyboardType="decimal-pad"
+                placeholderTextColor="#CBD5E1"
                 style={[
                   {
-                    flex: 1,
-                    paddingVertical: 16,
-                    marginLeft: 12,
+                    fontSize: 48,
+                    fontWeight: '700',
                     color: '#0F172A',
+                    letterSpacing: -2,
                   },
                 ]}
               />
             </View>
           </View>
 
-          {/* KEYPAD */}
+          {/* FORM */}
 
           <View>
-            {keypad.map((row, index) => (
-              <View
-                key={index}
-                style={[styles.row, styles.justifyBetween, styles.mb3]}
-              >
-                {row.map(key => (
-                  <TouchableOpacity
-                    key={key}
-                    activeOpacity={0.7}
-                    onPress={() => handleKeyPress(key)}
-                    style={[
-                      styles.center,
+            {/* CATEGORY */}
 
-                      {
-                        width: '30%',
-                        height: 74,
-                        borderRadius: 24,
-                        backgroundColor: '#F8FAFC',
-                      },
-                    ]}
-                  >
-                    {key === 'delete' ? (
-                      <Delete size={24} color="#64748B" />
-                    ) : (
-                      <Text
-                        style={[
-                          styles.fw700,
-                          {
-                            fontSize: 30,
-                            color: '#0F172A',
-                          },
-                        ]}
-                      >
-                        {key}
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-                ))}
+            <View style={[styles.mb4]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
+                CATEGORY
+              </Text>
+
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => setShowCategoryModal(true)}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+                  styles.justifyBetween,
+
+                  {
+                    height: 62,
+
+                    borderRadius: 20,
+
+                    paddingHorizontal: 18,
+
+                    borderWidth: 1,
+
+                    borderColor: '#E2E8F0',
+
+                    backgroundColor: '#FFFFFF',
+                  },
+                ]}
+              >
+                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
+                  {category}
+                </Text>
+
+                <ChevronDown size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* DATE */}
+
+            <View style={[styles.mb4]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
+                DATE
+              </Text>
+
+              <TouchableOpacity
+                activeOpacity={0.9}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+
+                  {
+                    height: 62,
+
+                    borderRadius: 20,
+
+                    paddingHorizontal: 18,
+
+                    borderWidth: 1,
+
+                    borderColor: '#E2E8F0',
+
+                    backgroundColor: '#FFFFFF',
+                  },
+                ]}
+              >
+                <Calendar size={20} color="#64748B" />
+
+                <Text style={[styles.ml3, styles.textNavy, styles.fw500]}>
+                  Today, Jun 12
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* NOTE */}
+
+            <View style={[styles.mb8]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
+                NOTE
+              </Text>
+
+              <View
+                style={[
+                  styles.row,
+
+                  {
+                    borderRadius: 20,
+
+                    borderWidth: 1,
+
+                    borderColor: '#E2E8F0',
+
+                    paddingHorizontal: 18,
+
+                    backgroundColor: '#FFFFFF',
+                  },
+                ]}
+              >
+                <FileText
+                  size={20}
+                  color="#64748B"
+                  style={{
+                    marginTop: 18,
+                  }}
+                />
+
+                <TextInput
+                  value={note}
+                  onChangeText={setNote}
+                  placeholder="Add a note..."
+                  multiline
+                  placeholderTextColor="#94A3B8"
+                  style={[
+                    {
+                      flex: 1,
+
+                      minHeight: 120,
+
+                      textAlignVertical: 'top',
+
+                      paddingTop: 18,
+
+                      paddingLeft: 12,
+
+                      color: '#0F172A',
+                    },
+                  ]}
+                />
               </View>
-            ))}
+            </View>
           </View>
         </ScrollView>
 
@@ -470,34 +365,81 @@ const AddTransactionScreen = () => {
             },
           ]}
         >
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <Button
+            label="Save Transaction"
             onPress={handleSave}
+            variant="primary"
+            size="lg"
+          />
+        </View>
+
+        {/* CATEGORY MODAL */}
+
+        <Modal visible={showCategoryModal} transparent animationType="slide">
+          <View
             style={[
-              styles.center,
+              styles.flex1,
+
               {
-                height: 60,
-                borderRadius: 22,
-                backgroundColor: '#2563EB',
+                backgroundColor: 'rgba(0,0,0,0.2)',
+
+                justifyContent: 'flex-end',
               },
             ]}
           >
-            <Text
-              style={[
-                styles.fw700,
-                {
-                  color: '#FFFFFF',
-                  fontSize: 16,
-                },
-              ]}
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+
+                borderTopLeftRadius: 28,
+
+                borderTopRightRadius: 28,
+
+                padding: 24,
+
+                maxHeight: '70%',
+              }}
             >
-              Save Transaction
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <Text
+                style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb6]}
+              >
+                Select Category
+              </Text>
+
+              {categories.map(item => (
+                <TouchableOpacity
+                  key={item}
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    setCategory(item);
+
+                    setShowCategoryModal(false);
+                  }}
+                  style={[
+                    styles.row,
+                    styles.alignCenter,
+                    styles.justifyBetween,
+
+                    {
+                      paddingVertical: 18,
+
+                      borderBottomWidth: 1,
+
+                      borderBottomColor: '#F1F5F9',
+                    },
+                  ]}
+                >
+                  <Text style={[styles.fs16, styles.textNavy]}>{item}</Text>
+
+                  {category === item && <Check size={20} color="#2563EB" />}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
 };
 
-export default AddTransactionScreen;
+export default AddTransaction;

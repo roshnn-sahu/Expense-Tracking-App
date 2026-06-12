@@ -1,19 +1,17 @@
-/**
- * Format a relative date string.
- * Currently handles pre-defined labels like "Today", "Yesterday", etc.
- * @param {string} dateLabel - Relative date label
- * @returns {string} Formatted date string
- */
-export const formatDate = (dateLabel) => {
-  return dateLabel;
+
+export const formatCurrency = (amount, showSymbol = true) => {
+  const formatted = Math.abs(amount).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return showSymbol ? `$${formatted}` : formatted;
 };
 
-/**
- * Format a date for display in transaction lists.
- * @param {string} dateGroup - Group label like "Today", "This Week", etc.
- * @param {string} date - Specific date label
- * @returns {string} Combined display string
- */
-export const formatTransactionDate = (dateGroup, date) => {
-  return `${dateGroup} · ${date}`;
+export const formatAmountWithSign = (amount) => {
+  const prefix = amount > 0 ? '+' : '';
+  return `${prefix}${formatCurrency(amount)}`;
+};
+
+export const getAmountColor = (amount, colors) => {
+  return amount > 0 ? colors.green : colors.red;
 };
