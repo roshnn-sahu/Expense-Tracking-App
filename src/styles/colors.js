@@ -3,7 +3,7 @@ const colors = {
   white: '#FFFFFF',
   navy: '#0F172A',
   gray: '#64748B',
-  border: '#EEF2F6',
+  border: '#d9d9d9ff',
   surface: '#FFFFFF',
   soft: '#F8FAFC',
   amber: '#F59E0B',

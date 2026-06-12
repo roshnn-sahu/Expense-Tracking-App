@@ -427,6 +427,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
+    position: 'relative'
   },
 
   donutCenter: {
@@ -642,7 +643,7 @@ export default StyleSheet.create({
   ========================= */
 
   drawerHeader: {
-    
+
     paddingHorizontal: 24,
     paddingTop: 20,
     paddingBottom: 24,
@@ -745,4 +746,99 @@ export default StyleSheet.create({
     color: colors.blue,
     fontWeight: '600',
   },
+
+  /* =========================
+     ANALYTICS MINI CARDS
+  ========================= */
+
+  analyticsMiniCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 18,
+    flex: 1,
+  },
+
+  analyticsIconGreen: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ECFDF5',
+  },
+
+  analyticsIconRed: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FEF2F2',
+  },
+
+  analyticsIconBlue: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EFF6FF',
+  },
+
+  insightIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: '#EFF6FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+
+  /* =========================
+     CATEGORY MODERN LIST
+  ========================= */
+
+  catModernItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  catModernLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+
+  catModernIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+
+  catProgress: {
+    height: 8,
+    backgroundColor: '#EEF2F7',
+    borderRadius: 999,
+    overflow: 'hidden',
+    marginTop: 14,
+  },
+
+  catProgressFill: {
+    height: 8,
+    borderRadius: 999,
+  },
+
+  fs15: {
+    fontSize: 15,
+  },
+
+  mr4: {
+    marginRight: 16,
+  },
+
 });

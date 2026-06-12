@@ -323,6 +323,12 @@ export default StyleSheet.create({
   mt8: {
     marginTop: 32,
   },
+  my2: {
+    marginVertical: 8,
+  },
+  my4: {
+    marginVertical: 16,
+  },
 
   /* =========================
      GAP
@@ -486,6 +492,9 @@ export default StyleSheet.create({
   fs38: {
     fontSize: 38,
   },
+  fs42: {
+    fontSize: 38,
+  },
   fontSM: {
     fontSize: 12,
   },
@@ -517,6 +526,10 @@ export default StyleSheet.create({
   fw700: {
     fontWeight: '700',
   },
+  fw800: {
+    fontWeight: '800',
+  },
+
 
   /* =========================
      TEXT ALIGN
