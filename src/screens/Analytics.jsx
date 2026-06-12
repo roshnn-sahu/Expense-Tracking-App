@@ -1,73 +1,67 @@
-import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+
 import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+
 import Svg, { Circle } from 'react-native-svg';
-import { TrendingUp, ArrowDownRight, ArrowUpRight } from 'lucide-react-native';
+
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  TrendingUp,
+  TrendingDown,
+  PiggyBank,
+} from 'lucide-react-native';
+
 import * as LucideIcons from 'lucide-react-native';
+
 import styles from '../styles';
+
 import Header from '../components/Header';
+
 import { analyticsCategories } from '../data/transactions';
 
-const CHART_SIZE = 200;
-const STROKE_WIDTH = 24;
+import { formatCurrency } from '../utils/currency';
+
+const CHART_SIZE = 220;
+const STROKE_WIDTH = 22;
+
 const RADIUS = (CHART_SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-const DonutChart = () => {
-  let accumulatedPercent = 0;
-
-  return (
-    <View style={styles.donutContainer}>
-      <View style={[styles.center, { width: CHART_SIZE, height: CHART_SIZE }]}>
-        <Svg width={CHART_SIZE} height={CHART_SIZE}>
-          <Circle
-            cx={CHART_SIZE / 2}
-            cy={CHART_SIZE / 2}
-            r={RADIUS}
-            stroke={styles.colors.surfaceAlt}
-            strokeWidth={STROKE_WIDTH}
-            fill="transparent"
-          />
-          {analyticsCategories.map(cat => {
-            const segmentLength = (cat.percentage / 100) * CIRCUMFERENCE;
-            const offset =
-              accumulatedPercent === 0
-                ? 0
-                : (accumulatedPercent / 100) * CIRCUMFERENCE;
-            accumulatedPercent += cat.percentage;
-            return (
-              <Circle
-                key={cat.id}
-                cx={CHART_SIZE / 2}
-                cy={CHART_SIZE / 2}
-                r={RADIUS}
-                stroke={cat.color}
-                strokeWidth={STROKE_WIDTH}
-                fill="transparent"
-                strokeDasharray={`${segmentLength} ${
-                  CIRCUMFERENCE - segmentLength
-                }`}
-                strokeDashoffset={offset - CIRCUMFERENCE * 0.25}
-              />
-            );
-          })}
-        </Svg>
-        <View style={styles.donutCenter}>
-          <Text style={styles.donutCenterAmount}>$2,850</Text>
-          <Text style={styles.donutCenterLabel}>Total spent</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
+const FILTERS = ['Week', 'Month', 'Year'];
 
 const Analytics = () => {
   const navigation = useNavigation();
+
+  const [activeFilter, setActiveFilter] = useState('Month');
+
+  const totalSpent = useMemo(
+    () => analyticsCategories.reduce((acc, item) => acc + item.amount, 0),
+    [],
+  );
+
+  // Pre-compute donut segments to avoid mutating during render
+  const segments = useMemo(() => {
+    let acc = 0;
+    return analyticsCategories.map(cat => {
+      const segment = (cat.percentage / 100) * CIRCUMFERENCE;
+      const offset = acc === 0 ? 0 : (acc / 100) * CIRCUMFERENCE;
+      acc += cat.percentage;
+      return { ...cat, segment, offset };
+    });
+  }, []);
+
+  // Dummy income for center percentage calculation
+  const totalIncome = 4500;
+  const expenseRatio = Math.round((totalSpent / totalIncome) * 100);
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
+      <StatusBar backgroundColor="#F8FAFC" barStyle="dark-content" />
+
       <View style={styles.container}>
         <Header
           title="Analytics"
@@ -76,112 +70,262 @@ const Analytics = () => {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.px5, styles.pb10]}
         >
-          {/* Donut Chart Card */}
-          <View style={styles.card}>
-            <DonutChart />
-            <View style={styles.legendContainer}>
-              {analyticsCategories.slice(0, 3).map(cat => (
-                <View key={cat.id} style={styles.row}>
-                  <View
-                    style={[styles.legendDot, { backgroundColor: cat.color }]}
+          {/* FILTERS */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.flexRow, styles.mt3, styles.mb5]}
+          >
+            {FILTERS.map(item => {
+              const active = activeFilter === item;
+              return (
+                <TouchableOpacity
+                  key={item}
+                  activeOpacity={0.7}
+                  onPress={() => setActiveFilter(item)}
+                  style={[styles.filterChip, active && styles.filterChipActive]}
+                >
+                  <Text
+                    style={[
+                      styles.filterChipText,
+                      active && styles.filterChipTextActive,
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+
+          {/* ======== HERO ======== */}
+          <View style={[styles.card, styles.alignCenter, styles.py6]}>
+            <Text style={[styles.fs13, styles.textGray, styles.fw600, styles.mb2]}>
+              Total Spending
+            </Text>
+
+            <Text style={[styles.fs42, styles.fw800, styles.textNavy]}>
+              {formatCurrency(totalSpent)}
+            </Text>
+
+            <View style={[styles.row, styles.alignCenter, styles.mt3]}>
+              <TrendingDown size={14} color="#EF4444" />
+              <Text style={[styles.ml2, styles.textRed, styles.fw700]}>
+                12%
+              </Text>
+              <Text style={[styles.ml2, styles.textGray, styles.fs14]}>
+                vs last month
+              </Text>
+            </View>
+
+            {/* ======== DONUT ======== */}
+            <View
+              style={[
+                styles.mt5,
+                {
+                  position: 'relative',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                },
+              ]}
+            >
+              <Svg width={CHART_SIZE} height={CHART_SIZE}>
+                {/* Background circle */}
+                <Circle
+                  cx={CHART_SIZE / 2}
+                  cy={CHART_SIZE / 2}
+                  r={RADIUS}
+                  stroke="#EEF2F7"
+                  strokeWidth={STROKE_WIDTH}
+                  fill="transparent"
+                />
+
+                {/* Segments */}
+                {segments.map(cat => (
+                  <Circle
+                    key={cat.id}
+                    cx={CHART_SIZE / 2}
+                    cy={CHART_SIZE / 2}
+                    r={RADIUS}
+                    stroke={cat.color}
+                    strokeWidth={STROKE_WIDTH}
+                    strokeLinecap="round"
+                    fill="transparent"
+                    strokeDasharray={`${cat.segment} ${CIRCUMFERENCE}`}
+                    strokeDashoffset={cat.offset - CIRCUMFERENCE * 0.25}
                   />
-                  <Text style={styles.legendText}>{cat.name}</Text>
+                ))}
+              </Svg>
+
+              {/* Center overlay */}
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={[styles.fs28, styles.fw800, styles.textNavy]}>
+                  {expenseRatio}%
+                </Text>
+                <Text style={[styles.textGray, styles.fs13, styles.mt1]}>
+                  of income
+                </Text>
+              </View>
+            </View>
+
+            {/* ======== LEGEND ======== */}
+            <View
+              style={[
+                styles.flexRow,
+                styles.flexWrap,
+                styles.justifyCenter,
+                styles.mt5,
+                { columnGap: 20, rowGap: 10 },
+              ]}
+            >
+              {analyticsCategories.map(cat => (
+                <View
+                  key={cat.id}
+                  style={[styles.row, styles.alignCenter]}
+                >
+                  <View
+                    style={[
+                      styles.legendDot,
+                      { backgroundColor: cat.color },
+                    ]}
+                  />
+                  <Text style={[styles.textGray, styles.fs13, styles.ml1]}>
+                    {cat.name}
+                  </Text>
                 </View>
               ))}
             </View>
           </View>
 
-          {/* Summary Row */}
-          <View style={[styles.flexRow, styles.gap2, styles.mb1]}>
-            <View style={[styles.summaryCard, styles.bgGreenLight]}>
-              <View style={[styles.summaryIconWrap, styles.bgWhite]}>
-                <ArrowUpRight
-                  size={18}
-                  color={styles.colors.green}
-                  strokeWidth={2.5}
-                />
+          {/* ======== SUMMARY ======== */}
+          <View style={[styles.flexRow, styles.mt5, { gap: 12 }]}>
+            {/* Income */}
+            <View style={[styles.flex1, styles.analyticsMiniCard]}>
+              <View style={[styles.analyticsIconGreen]}>
+                <ArrowUpRight size={18} color="#10B981" />
               </View>
-              <Text style={styles.summaryLabel}>Income</Text>
-              <Text style={[styles.summaryValue, styles.textGreenDark]}>
-                $4,500
+              <Text style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}>
+                Income
+              </Text>
+              <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}>
+                {formatCurrency(totalIncome)}
               </Text>
             </View>
-            <View style={[styles.summaryCard, styles.bgRedLight]}>
-              <View style={[styles.summaryIconWrap, styles.bgWhite]}>
-                <ArrowDownRight
-                  size={18}
-                  color={styles.colors.red}
-                  strokeWidth={2.5}
-                />
+
+            {/* Expense */}
+            <View style={[styles.flex1, styles.analyticsMiniCard]}>
+              <View style={[styles.analyticsIconRed]}>
+                <ArrowDownRight size={18} color="#EF4444" />
               </View>
-              <Text style={styles.summaryLabel}>Expenses</Text>
-              <Text style={[styles.summaryValue, styles.textRedDark]}>
-                $2,850
+              <Text style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}>
+                Expense
+              </Text>
+              <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}>
+                {formatCurrency(totalSpent)}
               </Text>
             </View>
-            <View
-              style={[styles.summaryCard, styles.alignCenter, styles.bgSurface]}
-            >
-              <TrendingUp
-                size={22}
-                color={styles.colors.green}
-                strokeWidth={2.5}
-              />
-              <Text style={[styles.summaryLabel, styles.mt1]}>Change</Text>
-              <Text
-                style={[styles.summaryValue, styles.fontLG, styles.textGreen]}
-              >
-                +8.2%
+
+            {/* Savings */}
+            <View style={[styles.flex1, styles.analyticsMiniCard]}>
+              <View style={[styles.analyticsIconBlue]}>
+                <PiggyBank size={18} color="#2563EB" />
+              </View>
+              <Text style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}>
+                Savings
+              </Text>
+              <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}>
+                {formatCurrency(totalIncome - totalSpent)}
               </Text>
             </View>
           </View>
 
-          {/* Category Breakdown */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Categories</Text>
+          {/* ======== INSIGHTS ======== */}
+          <View style={[styles.card, styles.mt5]}>
+            <Text style={[styles.fs16, styles.fw700, styles.textNavy, styles.mb4]}>
+              Insights
+            </Text>
+
+            <View style={[styles.row, styles.alignCenter]}>
+              <View style={[styles.insightIcon]}>
+                <TrendingUp size={18} color="#2563EB" />
+              </View>
+              <View style={styles.flex1}>
+                <Text style={[styles.fw600, styles.textNavy, styles.fs15]}>
+                  Shopping increased by 18%
+                </Text>
+                <Text style={[styles.textGray, styles.fs13, styles.mt1]}>
+                  compared to last month
+                </Text>
+              </View>
+            </View>
           </View>
 
-          <View style={styles.card}>
-            {analyticsCategories.map((cat, index) => {
-              const CatIcon = LucideIcons[cat.icon];
-              return (
-                <View key={cat.id}>
-                  <View style={styles.catItem}>
-                    <View
-                      style={[
-                        styles.catIconWrap,
-                        { backgroundColor: `${cat.color}18` },
-                      ]}
-                    >
-                      <CatIcon size={20} color={cat.color} strokeWidth={1.8} />
-                    </View>
-                    <View style={styles.catInfo}>
-                      <Text style={styles.catName}>{cat.name}</Text>
-                      <View style={styles.catBarRow}>
-                        <View style={[styles.catBarTrack, styles.flex1]}>
-                          <View
-                            style={[
-                              styles.catBarFill,
-                              {
-                                width: `${cat.percentage}%`,
-                                backgroundColor: cat.color,
-                              },
-                            ]}
-                          />
+          {/* ======== TOP CATEGORIES ======== */}
+          <View style={styles.mt5}>
+            <Text style={[styles.fs18, styles.fw700, styles.textNavy, styles.mb4]}>
+              Top Categories
+            </Text>
+
+            <View style={styles.transactionCard}>
+              {analyticsCategories.map((cat, index) => {
+                const Icon = LucideIcons[cat.icon];
+                return (
+                  <View key={cat.id}>
+                    <View style={[styles.catModernItem]}>
+                      <View style={[styles.catModernLeft]}>
+                        <View
+                          style={[
+                            styles.catModernIcon,
+                            { backgroundColor: `${cat.color}18` },
+                          ]}
+                        >
+                          <Icon size={20} color={cat.color} />
                         </View>
-                        <Text style={styles.catPercent}>{cat.percentage}%</Text>
+                        <View style={styles.flex1}>
+                          <Text style={[styles.fw600, styles.textNavy, styles.fs15]}>
+                            {cat.name}
+                          </Text>
+                          <Text style={[styles.textGray, styles.fs13, styles.mt1]}>
+                            {cat.percentage}% of expenses
+                          </Text>
+                        </View>
                       </View>
+                      <Text style={[styles.fw700, styles.textNavy, styles.fs16]}>
+                        {formatCurrency(cat.amount)}
+                      </Text>
                     </View>
-                    <Text style={styles.catAmount}>${cat.amount}</Text>
+
+                    <View style={[styles.catProgress]}>
+                      <View
+                        style={[
+                          styles.catProgressFill,
+                          {
+                            width: `${cat.percentage}%`,
+                            backgroundColor: cat.color,
+                          },
+                        ]}
+                      />
+                    </View>
+
+                    {index !== analyticsCategories.length - 1 && (
+                      <View style={[styles.divider, styles.my4]} />
+                    )}
                   </View>
-                  {index < analyticsCategories.length - 1 && (
-                    <View style={[styles.divider, styles.ml15]} />
-                  )}
-                </View>
-              );
-            })}
+                );
+              })}
+            </View>
           </View>
         </ScrollView>
       </View>

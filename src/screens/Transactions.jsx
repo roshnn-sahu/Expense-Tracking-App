@@ -69,7 +69,7 @@ const Transactions = () => {
           ]}
         >
           <TouchableOpacity
-            style={[styles.iconBtn, styles.bgSoft]}
+            style={[styles.iconBtn, styles.bgSurfaceAlt]}
             onPress={() => navigation.navigate('Home')}
             activeOpacity={0.7}
           >
@@ -83,7 +83,7 @@ const Transactions = () => {
           <Text style={styles.headerTitle}>Transactions</Text>
 
           <TouchableOpacity
-            style={[styles.iconBtn, styles.bgSoft]}
+            style={[styles.iconBtn, styles.bgSurfaceAlt]}
             activeOpacity={0.7}
           >
             <Search size={18} color={styles.colors.navy} strokeWidth={2} />

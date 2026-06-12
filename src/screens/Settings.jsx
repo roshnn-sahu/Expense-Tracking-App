@@ -62,7 +62,7 @@ const Settings = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContentCompact}
         >
-          <View style={styles.cardCompact}>
+          <View style={[styles.cardCompact,styles.mt3]}>
             {settingsItems.map((item, index) => {
               const Icon = item.icon;
               return (

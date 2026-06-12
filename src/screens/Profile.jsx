@@ -20,63 +20,91 @@ import Header from '../components/Header';
 
 const menuSections = [
   {
-    title: 'Preferences',
+    title: 'Account',
     items: [
       {
-        icon: Bell,
-        label: 'Notifications',
+        icon: User,
+        label: 'Edit Profile',
+        route: 'EditProfile',
         color: styles.colors.blue,
         bg: styles.colors.blueLight,
       },
+
       {
-        icon: Shield,
-        label: 'Privacy & Security',
+        icon: Bell,
+        label: 'Notifications',
+        route: 'Notifications',
         color: styles.colors.purple,
         bg: styles.colors.purpleLight,
       },
+
       {
-        icon: CreditCard,
-        label: 'Payment Methods',
+        icon: Shield,
+        label: 'Security',
+        route: 'Security',
         color: styles.colors.teal,
         bg: styles.colors.tealLight,
       },
     ],
   },
+
   {
     title: 'Finance',
     items: [
       {
-        icon: PiggyBank,
-        label: 'Savings Goals',
-        color: styles.colors.amber,
-        bg: styles.colors.amberLight,
-      },
-      {
-        icon: Target,
-        label: 'Budgets',
-        color: styles.colors.pink,
-        bg: styles.colors.pinkLight,
-      },
-      {
-        icon: Download,
-        label: 'Export Data',
+        icon: CreditCard,
+        label: 'Currency & Region',
+        route: 'CurrencySettings',
         color: styles.colors.green,
         bg: styles.colors.greenLight,
       },
+
+      {
+        icon: PiggyBank,
+        label: 'Savings Goals',
+        route: 'SavingsGoals',
+        color: styles.colors.amber,
+        bg: styles.colors.amberLight,
+      },
+
+      {
+        icon: Target,
+        label: 'Budget Settings',
+        route: 'BudgetSettings',
+        color: styles.colors.pink,
+        bg: styles.colors.pinkLight,
+      },
     ],
   },
+
+  {
+    title: 'Data',
+    items: [
+      {
+        icon: Download,
+        label: 'Export Data',
+        route: 'ExportData',
+        color: styles.colors.blue,
+        bg: styles.colors.blueLight,
+      },
+    ],
+  },
+
   {
     title: 'Support',
     items: [
       {
         icon: HelpCircle,
-        label: 'Help & FAQ',
+        label: 'Help Center',
+        route: 'Help',
         color: styles.colors.gray,
         bg: styles.colors.surfaceAlt,
       },
+
       {
         icon: LogOut,
         label: 'Sign Out',
+        route: 'Logout',
         color: styles.colors.red,
         bg: styles.colors.redLight,
       },
@@ -96,11 +124,12 @@ const Profile = () => {
         />
 
         <ScrollView
+          style={[styles.mt3]}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContentCompact}
         >
           {/* Avatar Card */}
-          <View style={styles.cardCompact}>
+          <View style={styles.border}>
             <View style={styles.profileHeader}>
               <View style={styles.profileAvatar}>
                 <User size={36} color={styles.colors.blue} strokeWidth={2} />
@@ -174,7 +203,18 @@ const Profile = () => {
                 {section.items.map((item, iIdx) => {
                   const Icon = item.icon;
                   return (
-                    <TouchableOpacity key={item.label} activeOpacity={0.7}>
+                    <TouchableOpacity
+                      key={item.label}
+                      activeOpacity={0.7}
+                      onPress={() => {
+                        if (item.route === 'Logout') {
+                      
+                          return;
+                        }
+
+                        navigation.navigate(item.route);
+                      }}
+                    >
                       <View style={styles.menuItem}>
                         <View
                           style={[
