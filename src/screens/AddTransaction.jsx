@@ -10,6 +10,7 @@ import {
   ScrollView,
   StatusBar,
   Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +21,20 @@ import {
   Calendar,
   FileText,
   Check,
+  Coffee,
+  ShoppingBag,
+  Car,
+  Home,
+  Heart,
+  Tv,
+  Receipt,
+  Plane,
+  DollarSign,
+  TrendingUp,
+  CreditCard,
+  Building,
+  Smartphone,
+  MoreHorizontal,
 } from 'lucide-react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -40,16 +55,12 @@ const categories = [
   'Investment',
 ];
 const PAYMENT_MODES = [
-  'Food',
-  'Shopping',
-  'Transport',
-  'Housing',
-  'Health',
-  'Entertainment',
-  'Bills',
-  'Travel',
-  'Salary',
-  'Investment',
+  'Cash',
+  'Credit Card',
+  'Debit Card',
+  'Bank Transfer',
+  'UPI',
+  'Other',
 ];
 
 const AddTransaction = () => {
@@ -58,8 +69,11 @@ const AddTransaction = () => {
   const [type, setType] = useState('expense');
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
+
   const [category, setCategory] = useState('Food');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [paymentMode, setPaymentMode] = useState('Cash');
+  const [showPaymentModeModal, setShowPaymentModeModal] = useState(false);
 
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -70,6 +84,7 @@ const AddTransaction = () => {
       amount,
       note,
       category,
+      paymentMode,
     };
 
     console.log(payload);
@@ -97,7 +112,7 @@ const AddTransaction = () => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => navigation.goBack()}
-            style={[styles.iconBtn, styles.bgSoft]}
+            style={[styles.iconBtn, styles.bgSurfaceAlt]}
           >
             <ArrowLeft size={22} color="#0F172A" />
           </TouchableOpacity>
@@ -185,7 +200,6 @@ const AddTransaction = () => {
           </View>
 
           {/* AMOUNT */}
-
           <View style={[styles.alignCenter, styles.mb8]}>
             <Text style={[styles.fs14, styles.textGray, styles.mb2]}>
               Amount
@@ -224,7 +238,6 @@ const AddTransaction = () => {
           </View>
 
           {/* FORM */}
-
           <View>
             {/* CATEGORY */}
             <View style={[styles.mb4]}>
@@ -315,8 +328,7 @@ const AddTransaction = () => {
               />
             </View>
 
-
-             <View style={[styles.mb4]}>
+            <View style={[styles.mb4]}>
               <Text
                 style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
               >
@@ -325,7 +337,7 @@ const AddTransaction = () => {
 
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() => setShowCategoryModal(true)}
+                onPress={() => setShowPaymentModeModal(true)}
                 style={[
                   styles.row,
                   styles.alignCenter,
@@ -347,7 +359,7 @@ const AddTransaction = () => {
                 ]}
               >
                 <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
-                  {PAYMENT_MODES}
+                  {paymentMode}
                 </Text>
 
                 <ChevronDown size={20} color="#64748B" />
@@ -432,67 +444,178 @@ const AddTransaction = () => {
 
         {/* CATEGORY MODAL */}
 
-        <Modal visible={showCategoryModal} transparent animationType="slide">
-          <View
+        <Modal
+          visible={showCategoryModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowCategoryModal(false)}
+        >
+          <TouchableOpacity
             style={[
               styles.flex1,
-
               {
                 backgroundColor: 'rgba(0,0,0,0.2)',
-
                 justifyContent: 'flex-end',
               },
             ]}
+            activeOpacity={1}
+            onPress={() => setShowCategoryModal(false)}
           >
-            <View
-              style={{
-                backgroundColor: '#FFFFFF',
-
-                borderTopLeftRadius: 28,
-
-                borderTopRightRadius: 28,
-
-                padding: 24,
-
-                maxHeight: '70%',
-              }}
-            >
-              <Text
-                style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb6]}
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  borderTopLeftRadius: 28,
+                  borderTopRightRadius: 28,
+                  padding: 24,
+                  maxHeight: '70%',
+                }}
               >
-                Select Category
-              </Text>
-
-              {categories.map(item => (
-                <TouchableOpacity
-                  key={item}
-                  activeOpacity={0.8}
-                  onPress={() => {
-                    setCategory(item);
-
-                    setShowCategoryModal(false);
-                  }}
+                <Text
                   style={[
-                    styles.row,
-                    styles.alignCenter,
-                    styles.justifyBetween,
-
-                    {
-                      paddingVertical: 18,
-
-                      borderBottomWidth: 1,
-
-                      borderBottomColor: '#F1F5F9',
-                    },
+                    styles.fs20,
+                    styles.fw700,
+                    styles.textNavy,
+                    styles.mb6,
                   ]}
                 >
-                  <Text style={[styles.fs16, styles.textNavy]}>{item}</Text>
+                  Select Category
+                </Text>
 
-                  {category === item && <Check size={20} color="#2563EB" />}
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
+                {categories.map(item => {
+                  let Icon = FileText;
+                  if (item === 'Food') Icon = Coffee;
+                  if (item === 'Shopping') Icon = ShoppingBag;
+                  if (item === 'Transport') Icon = Car;
+                  if (item === 'Housing') Icon = Home;
+                  if (item === 'Health') Icon = Heart;
+                  if (item === 'Entertainment') Icon = Tv;
+                  if (item === 'Bills') Icon = Receipt;
+                  if (item === 'Travel') Icon = Plane;
+                  if (item === 'Salary') Icon = DollarSign;
+                  if (item === 'Investment') Icon = TrendingUp;
+
+                  return (
+                    <TouchableOpacity
+                      key={item}
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        setCategory(item);
+                        setShowCategoryModal(false);
+                      }}
+                      style={[
+                        styles.row,
+                        styles.alignCenter,
+                        styles.justifyBetween,
+                        {
+                          paddingVertical: 18,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#F1F5F9',
+                        },
+                      ]}
+                    >
+                      <View style={[styles.row, styles.alignCenter]}>
+                        <Icon size={20} color="#64748B" />
+                        <Text
+                          style={[styles.fs16, styles.textNavy, styles.ml3]}
+                        >
+                          {item}
+                        </Text>
+                      </View>
+
+                      {category === item && <Check size={20} color="#2563EB" />}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </TouchableWithoutFeedback>
+          </TouchableOpacity>
+        </Modal>
+
+        {/* PAYMENT MODE MODAL */}
+
+        <Modal
+          visible={showPaymentModeModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowPaymentModeModal(false)}
+        >
+          <TouchableOpacity
+            style={[
+              styles.flex1,
+              {
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                justifyContent: 'flex-end',
+              },
+            ]}
+            activeOpacity={1}
+            onPress={() => setShowPaymentModeModal(false)}
+          >
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  borderTopLeftRadius: 28,
+                  borderTopRightRadius: 28,
+                  padding: 24,
+                  maxHeight: '70%',
+                }}
+              >
+                <Text
+                  style={[
+                    styles.fs20,
+                    styles.fw700,
+                    styles.textNavy,
+                    styles.mb6,
+                  ]}
+                >
+                  Select Payment Mode
+                </Text>
+
+                {PAYMENT_MODES.map(item => {
+                  let Icon = CreditCard;
+                  if (item === 'Cash') Icon = DollarSign;
+                  if (item === 'Bank Transfer') Icon = Building;
+                  if (item === 'UPI') Icon = Smartphone;
+                  if (item === 'Other') Icon = MoreHorizontal;
+
+                  return (
+                    <TouchableOpacity
+                      key={item}
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        setPaymentMode(item);
+                        setShowPaymentModeModal(false);
+                      }}
+                      style={[
+                        styles.row,
+                        styles.alignCenter,
+                        styles.justifyBetween,
+                        {
+                          paddingVertical: 18,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#F1F5F9',
+                        },
+                      ]}
+                    >
+                      <View style={[styles.row, styles.alignCenter]}>
+                        <Icon size={20} color="#64748B" />
+                        <Text
+                          style={[styles.fs16, styles.textNavy, styles.ml3]}
+                        >
+                          {item}
+                        </Text>
+                      </View>
+
+                      {paymentMode === item && (
+                        <Check size={20} color="#2563EB" />
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </Modal>
       </View>
     </SafeAreaView>

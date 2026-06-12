@@ -4,14 +4,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 
-import DrawerNavigation from './src/navigation/DrawerNavigation';
+import RootStack from './src/navigation/RootStack';
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <NavigationContainer>
-          <DrawerNavigation />
+          <RootStack />
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>

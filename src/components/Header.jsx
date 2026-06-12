@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Menu, User } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import styles from '../styles';
 
 const Header = ({ title = 'Expense Tracker', onMenuPress, onUserPress }) => {
+  const navigation = useNavigation();
   return (
     <View style={[styles.headerContainer, styles.borderBottom]}>
       <TouchableOpacity
@@ -19,7 +21,7 @@ const Header = ({ title = 'Expense Tracker', onMenuPress, onUserPress }) => {
 
       <TouchableOpacity
         style={[styles.iconBtn, styles.bgSurfaceAlt]}
-        onPress={onUserPress}
+        onPress={()=>{navigation.navigate("Profile")}}
         activeOpacity={0.7}
       >
         <User size={22} color={styles.colors.navy} strokeWidth={2} />

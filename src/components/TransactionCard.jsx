@@ -35,7 +35,7 @@ const TransactionCard = ({ transaction, showDivider = true }) => {
             { color: isPositive ? styles.colors.green : styles.colors.red },
           ]}
         >
-          {isPositive ? '+' : ''}${Math.abs(transaction.amount).toFixed(2)}
+          {isPositive ? '+' : '-'}${Math.abs(transaction.amount).toFixed(2)}
         </Text>
       </View>
       {showDivider && <View style={styles.txDivider} />}

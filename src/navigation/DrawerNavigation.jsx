@@ -1,6 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import AppNavigation from './AppNavigation';
+import BottomNavigation from './BottomNavigation';
 import DrawerContent from '../components/DrawerContent';
 import SettingsScreen from '../screens/Settings';
 
@@ -22,7 +22,7 @@ const DrawerNavigation = () => {
         },
       }}
     >
-      <Drawer.Screen name="Main" component={AppNavigation} />
+      <Drawer.Screen name="Main" component={BottomNavigation} />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
     </Drawer.Navigator>
   );

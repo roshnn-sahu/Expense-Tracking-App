@@ -8,21 +8,7 @@ import {
 } from 'react-native';
 import colors from '../../styles/colors';
 
-/**
- * Button — reusable default button for the app.
- *
- * Props:
- *  label       {string}    Button text
- *  onPress     {func}      Press handler
- *  variant     {string}    'primary' | 'secondary' | 'ghost' | 'danger'  (default: 'primary')
- *  size        {string}    'sm' | 'md' | 'lg'  (default: 'lg')
- *  icon        {ReactNode} Optional icon rendered to the left of the label
- *  iconRight   {ReactNode} Optional icon rendered to the right of the label
- *  loading     {bool}      Shows a spinner and disables the button
- *  disabled    {bool}      Disables the button
- *  fullWidth   {bool}      Stretches to full width (default: true)
- *  style       {object}    Extra container style overrides
- */
+
 const Button = ({
   label,
   onPress,
