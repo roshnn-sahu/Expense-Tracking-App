@@ -12,7 +12,7 @@ import {
   ChevronRight,
 } from 'lucide-react-native';
 import styles from '../styles';
-import Header from '../components/Header';
+import Header from '../components/includes/Header';
 
 const settingsItems = [
   {
@@ -62,7 +62,7 @@ const Settings = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContentCompact}
         >
-          <View style={[styles.cardCompact,styles.mt3]}>
+          <View style={[styles.cardCompact, styles.mt3]}>
             {settingsItems.map((item, index) => {
               const Icon = item.icon;
               return (

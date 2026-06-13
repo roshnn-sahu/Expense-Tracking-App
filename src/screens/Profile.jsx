@@ -14,9 +14,11 @@ import {
   HelpCircle,
   LogOut,
   ChevronRight,
+  ChevronLeft,
+  Search,
 } from 'lucide-react-native';
 import styles from '../styles';
-import Header from '../components/Header';
+import Header from '../components/includes/Header';
 
 const menuSections = [
   {
@@ -118,10 +120,31 @@ const Profile = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
-        <Header
-          title="Profile"
-          onMenuPress={() => navigation.getParent()?.openDrawer()}
-        />
+           <View
+                style={[
+                  styles.row,
+                  styles.justifyBetween,
+                  styles.alignCenter,
+                  styles.px5,
+                  styles.py4,
+                ]}
+              >
+                <TouchableOpacity
+                  style={[styles.iconBtn, styles.bgSurfaceAlt]}
+                  onPress={() => navigation.goBack()}
+                  activeOpacity={0.7}
+                >
+                  <ChevronLeft
+                    size={22}
+                    color={styles.colors.navy}
+                    strokeWidth={2.2}
+                  />
+                </TouchableOpacity>
+      
+                <Text style={styles.headerTitle}>Profile</Text>
+      
+                <View style={{ width: 40 }} />
+              </View>
 
         <ScrollView
           style={[styles.mt3]}
@@ -129,7 +152,7 @@ const Profile = () => {
           contentContainerStyle={styles.scrollContentCompact}
         >
           {/* Avatar Card */}
-          <View style={styles.border}>
+          <View style={styles.card}>
             <View style={styles.profileHeader}>
               <View style={styles.profileAvatar}>
                 <User size={36} color={styles.colors.blue} strokeWidth={2} />

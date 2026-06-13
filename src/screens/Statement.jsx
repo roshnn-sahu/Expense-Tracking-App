@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Download, ArrowDownLeft, ArrowUpRight } from 'lucide-react-native';
 
 import styles from '../styles';
-import Header from '../components/Header';
+import Header from '../components/includes/Header';
 import { useCurrency } from '../context/CurrencyContext';
 
 const FILTERS = ['This Month', 'Last Month', '3 Months'];
@@ -71,8 +71,10 @@ const Statement = ({ navigation }) => {
       <StatusBar backgroundColor="#F8FAFC" barStyle="dark-content" />
 
       <View style={styles.container}>
-        <Header title="Statement"
-         onMenuPress={() => navigation.getParent()?.openDrawer()} />
+        <Header
+          title="Statement"
+          onMenuPress={() => navigation.getParent()?.openDrawer()}
+        />
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -80,7 +82,7 @@ const Statement = ({ navigation }) => {
         >
           {/* SUMMARY CARD */}
 
-          <View style={[styles.balanceCard,styles.mt3]}>
+          <View style={[styles.balanceCard, styles.mt3]}>
             <Text
               style={[styles.fs13, styles.textGray, styles.fw600, styles.mb2]}
             >
@@ -240,7 +242,8 @@ const Statement = ({ navigation }) => {
                         },
                       ]}
                     >
-                      {isIncome ? '+' : '-'}{formatCurrency(Math.abs(item.amount))}
+                      {isIncome ? '+' : '-'}
+                      {formatCurrency(Math.abs(item.amount))}
                     </Text>
                   </View>
 
