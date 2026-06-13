@@ -27,8 +27,8 @@ import {
   MapPin,
 } from 'lucide-react-native';
 
-import styles from '../styles';
-import { useCurrency, CURRENCY_OPTIONS } from '../context/CurrencyContext';
+import styles from '@/styles';
+import { useCurrency, CURRENCY_OPTIONS } from '@/context/CurrencyContext';
 
 const COUNTRIES = [
   { label: '\uD83C\uDDFA\uD83C\uDDF8  United States', value: 'United States' },

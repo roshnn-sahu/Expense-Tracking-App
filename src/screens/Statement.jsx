@@ -6,9 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Download, ArrowDownLeft, ArrowUpRight } from 'lucide-react-native';
 
-import styles from '../styles';
-import Header from '../components/includes/Header';
-import { useCurrency } from '../context/CurrencyContext';
+import styles from '@/styles';
+import Header from '@/components/includes/Header';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const FILTERS = ['This Month', 'Last Month', '3 Months'];
 

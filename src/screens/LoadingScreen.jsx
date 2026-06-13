@@ -6,24 +6,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
-import styles from '../styles';
+import styles from '@/styles';
+import { useCompany } from '@/context/CompanyContext';
 
 const LoadingScreen = ({ navigation }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('DrawerRoot');
-    }, 2200);
+  const { company, loading } = useCompany();
 
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => {
+        navigation.replace('DrawerRoot');
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, navigation]);
+
+  const appName = company?.name || 'FinTrack';
 
   return (
     <SafeAreaView style={[styles.flex1, styles.bgWhite]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-      <View style={[styles.flex1, styles.alignCenter,styles.justifyCenter, styles.px5]}>
-        {/* LOGO */}
-
+      <View style={[styles.flex1, styles.alignCenter, styles.justifyCenter, styles.px5]}>
         <Animated.View
           entering={FadeIn.duration(500)}
           style={[
@@ -32,21 +36,24 @@ const LoadingScreen = ({ navigation }) => {
               width: 110,
               height: 110,
               borderRadius: 36,
-
               backgroundColor: '#2563EB',
             },
           ]}
         >
-          <Text style={[styles.fs42, styles.textWhite, styles.fw800]}>₹</Text>
+          {company?.logo ? (
+            <Text style={[styles.fs42, styles.textWhite, styles.fw800]}>
+              {company.logo}
+            </Text>
+          ) : (
+            <Text style={[styles.fs42, styles.textWhite, styles.fw800]}>₹</Text>
+          )}
         </Animated.View>
-
-        {/* APP NAME */}
 
         <Animated.Text
           entering={FadeInDown.delay(300).duration(600)}
           style={[styles.fs32, styles.fw800, styles.textNavy, styles.mt5]}
         >
-          FinTrack
+          {appName}
         </Animated.Text>
 
         <Animated.Text
@@ -55,8 +62,6 @@ const LoadingScreen = ({ navigation }) => {
         >
           Smart Expense Tracking
         </Animated.Text>
-
-        {/* LOADER */}
 
         <Animated.View
           entering={FadeInDown.delay(700).duration(600)}

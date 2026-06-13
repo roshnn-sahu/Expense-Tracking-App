@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { formatDate } from '../utils/date';
+import { formatDate } from '@/utils/date';
 
 import {
   View,
@@ -39,9 +39,9 @@ import {
 
 import { useNavigation } from '@react-navigation/native';
 
-import styles from '../styles';
-import Button from '../components/ui/Button';
-import { useCurrency } from '../context/CurrencyContext';
+import styles from '@/styles';
+import Button from '@/components/ui/Button';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const categories = [
   'Food',

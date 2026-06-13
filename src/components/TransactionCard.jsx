@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import * as LucideIcons from 'lucide-react-native';
 
-import styles from '../styles';
-import { useCurrency } from '../context/CurrencyContext';
+import styles from '@/styles';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const TransactionCard = ({ transaction, showDivider = true }) => {
   const { formatCurrency } = useCurrency();

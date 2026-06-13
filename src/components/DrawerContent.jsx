@@ -9,7 +9,7 @@ import {
   LogOut,
   FileText,
 } from 'lucide-react-native';
-import styles from '../styles';
+import styles from '@/styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const menus = [

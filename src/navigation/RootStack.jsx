@@ -22,13 +22,13 @@ import {
 
 import DrawerNavigation from './DrawerNavigation';
 
-import EditProfile from '../screens/EditProfile';
+import EditProfile from '@/screens/EditProfile';
 
-import Profile from '../screens/Profile';
+import Profile from '@/screens/Profile';
 
-import LoadingScreen from '../screens/LoadingScreen';
+import LoadingScreen from '@/screens/LoadingScreen';
 
-import styles from '../styles';
+import styles from '@/styles';
 
 const Stack = createNativeStackNavigator();
 

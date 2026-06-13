@@ -11,8 +11,8 @@ import {
   Bell,
   ChevronRight,
 } from 'lucide-react-native';
-import styles from '../styles';
-import Header from '../components/includes/Header';
+import styles from '@/styles';
+import Header from '@/components/includes/Header';
 
 const settingsItems = [
   {

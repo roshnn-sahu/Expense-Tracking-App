@@ -9,12 +9,12 @@ import {
  FileText
 } from 'lucide-react-native';
 
-import HomeScreen from '../screens/Home';
-import Transactions from '../screens/Transactions';
-import Analytics from '../screens/Analytics';
-import AddTransaction from '../screens/AddTransaction';
-import Statement from '../screens/Statement';
-import styles from '../styles';
+import HomeScreen from '@/screens/Home';
+import Transactions from '@/screens/Transactions';
+import Analytics from '@/screens/Analytics';
+import AddTransaction from '@/screens/AddTransaction';
+import Statement from '@/screens/Statement';
+import styles from '@/styles';
 
 const Tab = createBottomTabNavigator();
 

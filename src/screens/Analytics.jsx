@@ -17,13 +17,13 @@ import {
 
 import * as LucideIcons from 'lucide-react-native';
 
-import styles from '../styles';
+import styles from '@/styles';
 
-import Header from '../components/includes/Header';
+import Header from '@/components/includes/Header';
 
-import { analyticsCategories } from '../data/transactions';
+import { analyticsCategories } from '@/data/transactions';
 
-import { useCurrency } from '../context/CurrencyContext';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const CHART_SIZE = 220;
 const STROKE_WIDTH = 22;

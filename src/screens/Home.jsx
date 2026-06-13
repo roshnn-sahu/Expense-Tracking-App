@@ -3,15 +3,15 @@ import { View, Text, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
-import styles from '../styles';
+import styles from '@/styles';
 
-import Header from '../components/includes/Header';
-import BalanceCard from '../components/BalanceCard';
-import QuickStats from '../components/QuickStats';
-import SectionHeader from '../components/SectionHeader';
-import TransactionCard from '../components/TransactionCard';
+import Header from '@/components/includes/Header';
+import BalanceCard from '@/components/BalanceCard';
+import QuickStats from '@/components/QuickStats';
+import SectionHeader from '@/components/SectionHeader';
+import TransactionCard from '@/components/TransactionCard';
 
-import { recentTransactions } from '../data/transactions';
+import { recentTransactions } from '@/data/transactions';
 
 const HomeScreen = () => {
   const navigation = useNavigation();

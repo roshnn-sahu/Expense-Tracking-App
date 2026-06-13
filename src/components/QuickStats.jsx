@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react-native';
 
-import styles from '../styles';
-import { useCurrency } from '../context/CurrencyContext';
+import styles from '@/styles';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const QuickStats = () => {
   const { formatCurrency } = useCurrency();

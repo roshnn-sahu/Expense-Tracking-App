@@ -11,9 +11,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ChevronLeft, Search } from 'lucide-react-native';
 
-import styles from '../styles';
-import TransactionCard from '../components/TransactionCard';
-import { allTransactions, filters } from '../data/transactions';
+import styles from '@/styles';
+import TransactionCard from '@/components/TransactionCard';
+import { allTransactions, filters } from '@/data/transactions';
 
 const DATE_GROUP_ORDER = ['Today', 'Yesterday', 'This Week', 'Last Week'];
 
