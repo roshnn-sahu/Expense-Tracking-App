@@ -36,7 +36,7 @@ export default StyleSheet.create({
   },
 
   headerTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '700',
     color: colors.navy,
     letterSpacing: -0.6,
@@ -674,13 +674,13 @@ export default StyleSheet.create({
 
   drawerSection: {
     paddingTop: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 6,
   },
 
   drawerItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 13,
+    paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 14,
     marginBottom: 2,
