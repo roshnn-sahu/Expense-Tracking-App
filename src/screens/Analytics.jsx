@@ -19,7 +19,7 @@ import * as LucideIcons from 'lucide-react-native';
 
 import styles from '../styles';
 
-import Header from '../components/Header';
+import Header from '../components/includes/Header';
 
 import { analyticsCategories } from '../data/transactions';
 
@@ -103,7 +103,9 @@ const Analytics = () => {
 
           {/* ======== HERO ======== */}
           <View style={[styles.card, styles.alignCenter, styles.py6]}>
-            <Text style={[styles.fs13, styles.textGray, styles.fw600, styles.mb2]}>
+            <Text
+              style={[styles.fs13, styles.textGray, styles.fw600, styles.mb2]}
+            >
               Total Spending
             </Text>
 
@@ -192,15 +194,9 @@ const Analytics = () => {
               ]}
             >
               {analyticsCategories.map(cat => (
-                <View
-                  key={cat.id}
-                  style={[styles.row, styles.alignCenter]}
-                >
+                <View key={cat.id} style={[styles.row, styles.alignCenter]}>
                   <View
-                    style={[
-                      styles.legendDot,
-                      { backgroundColor: cat.color },
-                    ]}
+                    style={[styles.legendDot, { backgroundColor: cat.color }]}
                   />
                   <Text style={[styles.textGray, styles.fs13, styles.ml1]}>
                     {cat.name}
@@ -217,10 +213,14 @@ const Analytics = () => {
               <View style={[styles.analyticsIconGreen]}>
                 <ArrowUpRight size={18} color="#10B981" />
               </View>
-              <Text style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}>
+              <Text
+                style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}
+              >
                 Income
               </Text>
-              <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}>
+              <Text
+                style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}
+              >
                 {formatCurrency(totalIncome)}
               </Text>
             </View>
@@ -230,10 +230,14 @@ const Analytics = () => {
               <View style={[styles.analyticsIconRed]}>
                 <ArrowDownRight size={18} color="#EF4444" />
               </View>
-              <Text style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}>
+              <Text
+                style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}
+              >
                 Expense
               </Text>
-              <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}>
+              <Text
+                style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}
+              >
                 {formatCurrency(totalSpent)}
               </Text>
             </View>
@@ -243,10 +247,14 @@ const Analytics = () => {
               <View style={[styles.analyticsIconBlue]}>
                 <PiggyBank size={18} color="#2563EB" />
               </View>
-              <Text style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}>
+              <Text
+                style={[styles.textGray, styles.fs12, styles.fw600, styles.mt3]}
+              >
                 Savings
               </Text>
-              <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}>
+              <Text
+                style={[styles.fs20, styles.fw700, styles.textNavy, styles.mt1]}
+              >
                 {formatCurrency(totalIncome - totalSpent)}
               </Text>
             </View>
@@ -254,7 +262,9 @@ const Analytics = () => {
 
           {/* ======== INSIGHTS ======== */}
           <View style={[styles.card, styles.mt5]}>
-            <Text style={[styles.fs16, styles.fw700, styles.textNavy, styles.mb4]}>
+            <Text
+              style={[styles.fs16, styles.fw700, styles.textNavy, styles.mb4]}
+            >
               Insights
             </Text>
 
@@ -275,11 +285,13 @@ const Analytics = () => {
 
           {/* ======== TOP CATEGORIES ======== */}
           <View style={styles.mt5}>
-            <Text style={[styles.fs18, styles.fw700, styles.textNavy, styles.mb4]}>
+            <Text
+              style={[styles.fs18, styles.fw700, styles.textNavy, styles.mb4]}
+            >
               Top Categories
             </Text>
 
-            <View style={styles.card}>
+            <View style={styles.transactionCard}>
               {analyticsCategories.map((cat, index) => {
                 const Icon = LucideIcons[cat.icon];
                 return (
@@ -295,15 +307,21 @@ const Analytics = () => {
                           <Icon size={20} color={cat.color} />
                         </View>
                         <View style={styles.flex1}>
-                          <Text style={[styles.fw600, styles.textNavy, styles.fs15]}>
+                          <Text
+                            style={[styles.fw600, styles.textNavy, styles.fs15]}
+                          >
                             {cat.name}
                           </Text>
-                          <Text style={[styles.textGray, styles.fs13, styles.mt1]}>
+                          <Text
+                            style={[styles.textGray, styles.fs13, styles.mt1]}
+                          >
                             {cat.percentage}% of expenses
                           </Text>
                         </View>
                       </View>
-                      <Text style={[styles.fw700, styles.textNavy, styles.fs16]}>
+                      <Text
+                        style={[styles.fw700, styles.textNavy, styles.fs16]}
+                      >
                         {formatCurrency(cat.amount)}
                       </Text>
                     </View>
