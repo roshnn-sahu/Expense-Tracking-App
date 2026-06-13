@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Menu, User } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import styles from '../styles';
+import styles from '../../styles';
 
 const Header = ({ title = 'Expense Tracker', onMenuPress, onUserPress }) => {
   const navigation = useNavigation();
