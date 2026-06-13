@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import styles from '../styles';
 
-import Header from '../components/Header';
+import Header from '../components/includes/Header';
 import BalanceCard from '../components/BalanceCard';
 import QuickStats from '../components/QuickStats';
 import SectionHeader from '../components/SectionHeader';
