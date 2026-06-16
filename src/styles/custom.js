@@ -235,7 +235,7 @@ export default StyleSheet.create({
   txItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: 8,
   },
 
   txIconWrap: {
@@ -250,10 +250,10 @@ export default StyleSheet.create({
   txInfo: { flex: 1 },
 
   txName: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '600',
     color: colors.navy,
-    marginBottom: 2,
+   lineHeight: 14,
   },
 
   txMeta: {
@@ -263,7 +263,7 @@ export default StyleSheet.create({
   },
 
   txAmount: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     textAlign: 'right',
     letterSpacing: -0.3,

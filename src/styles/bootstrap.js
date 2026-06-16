@@ -435,6 +435,9 @@ export default StyleSheet.create({
   textBlack: {
     color: colors.black,
   },
+  textMidBlack:{
+color:colors.midBlack
+  },
 
   textRed: {
     color: colors.red,
@@ -546,7 +549,9 @@ export default StyleSheet.create({
   textRight: {
     textAlign: 'right',
   },
-
+textItalic:{
+  fontStyle:'italic'
+},
   /* =========================
      BORDERS
   ========================= */

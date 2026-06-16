@@ -11,6 +11,7 @@ const colors = {
   red: '#EF4444',
   green: '#10B981',
   blue: '#2563EB',
+  black: '#000',
 
   // Light Colors Section
   greenLight: '#D1FAE5',
@@ -31,6 +32,7 @@ const colors = {
   bg: '#F8F9FC',
   greenDark: '#059669',
   redDark: '#DC2626',
+  midBlack: '#333333'
 };
 
 export default colors;
