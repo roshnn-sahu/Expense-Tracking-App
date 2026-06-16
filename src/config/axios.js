@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API } from '@env';
+import { API, AUTH_TOKEN } from '@env';
 
 const apiClient = axios.create({
   baseURL: API,
@@ -8,6 +8,16 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+apiClient.interceptors.request.use(
+  (config) => {
+    if (AUTH_TOKEN) {
+      config.headers.Authorization = `Bearer ${AUTH_TOKEN}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 apiClient.interceptors.response.use(
   (response) => response,

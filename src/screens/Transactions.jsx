@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
   ScrollView,
+  RefreshControl,
   StatusBar,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,7 +15,8 @@ import { ChevronLeft, Search } from 'lucide-react-native';
 
 import styles from '@/styles';
 import TransactionCard from '@/components/TransactionCard';
-import { allTransactions, filters } from '@/data/transactions';
+import { filters } from '@/data/transactions';
+import { getTransactions } from '@/api';
 
 const DATE_GROUP_ORDER = ['Today', 'Yesterday', 'This Week', 'Last Week'];
 
@@ -25,7 +28,6 @@ const groupByDate = items => {
     if (found.length) groups[group] = found;
   });
 
-  // Catch any items that don't match known groups
   items.forEach(item => {
     if (!DATE_GROUP_ORDER.includes(item.dateGroup)) {
       const key = item.dateGroup || 'Other';
@@ -40,15 +42,37 @@ const groupByDate = items => {
 const Transactions = () => {
   const navigation = useNavigation();
   const [activeFilter, setActiveFilter] = useState('All');
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
+
+  const loadTransactions = async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    else setLoading(true);
+    setError(null);
+    try {
+      const data = await getTransactions(activeFilter);
+      setTransactions(data);
+    } catch (err) {
+      setError(err.message || 'Failed to load transactions');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTransactions();
+  }, [activeFilter]);
 
   const filteredTransactions = useMemo(() => {
-    if (activeFilter === 'All') return allTransactions;
     if (activeFilter === 'Income')
-      return allTransactions.filter(t => t.amount > 0);
+      return transactions.filter(t => t.amount > 0);
     if (activeFilter === 'Expense')
-      return allTransactions.filter(t => t.amount < 0);
-    return allTransactions.filter(t => t.category === activeFilter);
-  }, [activeFilter]);
+      return transactions.filter(t => t.amount < 0);
+    return transactions;
+  }, [activeFilter, transactions]);
 
   const grouped = groupByDate(filteredTransactions);
   const groupKeys = Object.keys(grouped);
@@ -130,8 +154,40 @@ const Transactions = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[styles.px5, styles.pb14, styles.pt3]}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => loadTransactions(true)}
+              colors={[styles.colors.navy]}
+              tintColor={styles.colors.navy}
+            />
+          }
         >
-          {groupKeys.length === 0 ? (
+          {loading ? (
+            <View
+              style={[
+                styles.card,
+                styles.roundedXXL,
+                styles.shadowSm,
+                { padding: 32, alignItems: 'center' },
+              ]}
+            >
+              <ActivityIndicator size="large" color={styles.colors.navy} />
+            </View>
+          ) : error ? (
+            <View
+              style={[
+                styles.card,
+                styles.roundedXXL,
+                styles.shadowSm,
+                { padding: 32, alignItems: 'center' },
+              ]}
+            >
+              <Text style={[styles.fs16, styles.textRed]}>
+                {error}
+              </Text>
+            </View>
+          ) : groupKeys.length === 0 ? (
             <View
               style={[
                 styles.card,
