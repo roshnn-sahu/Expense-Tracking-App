@@ -40,12 +40,14 @@ const groupByDate = items => {
 };
 
 const Transactions = () => {
+
   const navigation = useNavigation();
   const [activeFilter, setActiveFilter] = useState('All');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
+
 
   const loadTransactions = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -65,6 +67,7 @@ const Transactions = () => {
   useEffect(() => {
     loadTransactions();
   }, [activeFilter]);
+  
 
   const filteredTransactions = useMemo(() => {
     if (activeFilter === 'Income')

@@ -1,32 +1,16 @@
-import { isThisWeek, isToday, isYesterday, parseISO, subDays } from 'date-fns';
 import apiClient from '@/config/axios';
 
-const getResponseRows = (data) => {
-  if (Array.isArray(data)) return data;
+const getTransactionRows = (data) => {
   if (Array.isArray(data?.data?.aRow)) return data.data.aRow;
+  if (Array.isArray(data)) return data;
   return [];
 };
 
-const getDateGroup = (dateValue) => {
-  if (!dateValue) return 'Other';
-
-  const date = parseISO(dateValue);
-  if (Number.isNaN(date.getTime())) return 'Other';
-
-  if (isToday(date)) return 'Today';
-  if (isYesterday(date)) return 'Yesterday';
-  if (isThisWeek(date)) return 'This Week';
-  if (date >= subDays(new Date(), 7)) return 'Last Week';
-
-  return 'Other';
-};
-
 const mapApiResponseToTransactions = (data) => {
-  const rows = getResponseRows(data);
+  const rows = getTransactionRows(data);
 
   return rows.map((item, index) => {
-    const rawAmount = parseFloat(item.amount ?? item.value ?? 0);
-    const amount = Number.isNaN(rawAmount) ? 0 : rawAmount;
+    const amount = parseFloat(item.amount ?? item.value ?? 0) || 0;
     const isIncome = item.type === 'Income';
 
     return {
@@ -34,33 +18,24 @@ const mapApiResponseToTransactions = (data) => {
       name: item.name ?? item.title ?? item.description ?? 'Untitled',
       category: item.category ?? 'Other',
       amount: isIncome ? Math.abs(amount) : -Math.abs(amount),
-      date: item.date ?? item.created_at ?? '',
-      dateGroup: getDateGroup(item.date ?? item.entry_date ?? item.created_at),
+      date: item.date ?? item.entry_date ?? item.created_at ?? '',
+      dateGroup: 'Other',
       icon: item.icon ?? 'MoreHorizontal',
       color: isIncome ? '#10B981' : '#EF4444',
-      type: isIncome ? 'Income' : 'Expense',
-      description: item.description ?? '',
-      mode: item.mode ?? '',
-      billNo: item.bill_no ?? '',
     };
   });
 };
 
 export const getTransactions = async (filter = 'All') => {
-  try {
-    const response = await apiClient.get('/transaction/list/All/', {
-      params: { pagination_limit: 100 },
-    });
-    const transactions = mapApiResponseToTransactions(response.data);
+  const response = await apiClient.get('/transaction/list/All/');
 
-    if (filter === 'Income') return transactions.filter(t => t.amount > 0);
-    if (filter === 'Expense') return transactions.filter(t => t.amount < 0);
-    if (filter !== 'All') return transactions.filter(t => t.category === filter);
+  const transactions = mapApiResponseToTransactions(response.data);
 
-    return transactions;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || error.message || 'Failed to fetch transactions');
-  }
+  if (filter === 'Income') return transactions.filter(t => t.amount > 0);
+  if (filter === 'Expense') return transactions.filter(t => t.amount < 0);
+  if (filter !== 'All') return transactions.filter(t => t.category === filter);
+
+  return transactions;
 };
 
 export default { getTransactions };
