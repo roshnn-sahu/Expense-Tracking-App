@@ -675,7 +675,7 @@ textItalic:{
   },
 
   /* =========================
-     PRIMARY BUTTON
+     BUTTONs
   ========================= */
 
   primaryButton: {

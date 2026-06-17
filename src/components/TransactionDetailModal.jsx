@@ -1,21 +1,33 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Modal,
   View,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   StyleSheet,
   ScrollView,
+  useWindowDimensions,
 } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  runOnJS,
+} from 'react-native-reanimated';
 import {
   CircleArrowOutDownLeft,
   CircleArrowOutUpRight,
+  ArrowDownLeft,
+  ArrowUpRight,
   X,
 } from 'lucide-react-native';
 import { useCurrency } from '@/context/CurrencyContext';
 import colors from '@/styles/colors';
 import styles from '@/styles';
+
+const DISMISS_THRESHOLD = 120;
+const SPRING_CONFIG = { damping: 20, stiffness: 200 };
 
 const DetailRow = ({ label, value }) => {
   if (!value) return null;
@@ -29,13 +41,44 @@ const DetailRow = ({ label, value }) => {
 
 const TransactionDetailModal = ({ visible, onClose, transaction }) => {
   const { formatCurrency } = useCurrency();
+  const { height: screenHeight } = useWindowDimensions();
+
+  const translateY = useSharedValue(0);
+
+  const dismiss = useCallback(() => {
+    translateY.value = 0;
+    onClose();
+  }, [onClose, translateY]);
+
+  const panGesture = Gesture.Pan()
+    .activeOffsetY(10)
+    .onUpdate(e => {
+      if (e.translationY > 0) {
+        translateY.value = e.translationY;
+      }
+    })
+    .onEnd(e => {
+      if (e.translationY > DISMISS_THRESHOLD || e.velocityY > 500) {
+        translateY.value = withSpring(
+          screenHeight,
+          { damping: 30, stiffness: 300 },
+          () => {
+            runOnJS(dismiss)();
+          },
+        );
+      } else {
+        translateY.value = withSpring(0, SPRING_CONFIG);
+      }
+    });
+
+  const sheetStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
 
   if (!transaction) return null;
 
   const isPositive = transaction.amount > 0;
-  const IconComponent = isPositive
-    ? CircleArrowOutDownLeft
-    : CircleArrowOutUpRight;
+  const IconComponent = isPositive ? ArrowDownLeft : ArrowUpRight;
 
   return (
     <Modal
@@ -44,101 +87,118 @@ const TransactionDetailModal = ({ visible, onClose, transaction }) => {
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={[s.overlay]}>
-        <TouchableWithoutFeedback onPress={onClose}>
-          <View style={s.overlayBg} />
-        </TouchableWithoutFeedback>
+      <View
+        style={[
+          styles.flex1,
+          {
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            justifyContent: 'flex-end',
+          },
+        ]}
+      >
+        {/* Tap-to-close hit area (behind the sheet) */}
+        <TouchableOpacity
+          style={StyleSheet.absoluteFill}
+          activeOpacity={1}
+          onPress={onClose}
+        />
 
-        <View style={s.sheet}>
-          {/* Handle */}
-          <View style={s.sheetHeader}>
-            <View style={s.sheetHandle} />
-          </View>
+        {/* Bottom sheet with swipe-down gesture */}
+        <GestureDetector gesture={panGesture}>
+          <Animated.View style={[s.sheet, sheetStyle]}>
+            {/* Handle */}
+            <View style={s.sheetHeader}>
+              <View style={s.sheetHandle} />
+            </View>
 
-          {/* Close button */}
-          <TouchableOpacity
-            style={s.closeBtn}
-            onPress={onClose}
-            activeOpacity={0.7}
-          >
-            <X size={18} color={colors.gray} strokeWidth={2} />
-          </TouchableOpacity>
+            {/* Close button */}
+            <TouchableOpacity
+              style={s.closeBtn}
+              onPress={onClose}
+              activeOpacity={0.7}
+            >
+              <X size={18} color={colors.gray} strokeWidth={2} />
+            </TouchableOpacity>
 
-          <ScrollView
-            style={s.scrollArea}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={s.scrollContent}
-          >
-            {/* Icon + Amount */}
-            <View style={s.amountSection}>
-              <View
-                style={[
-                  s.iconWrap,
-                  {
-                    backgroundColor: isPositive
-                      ? 'rgba(16,185,129,0.12)'
-                      : 'rgba(239,68,68,0.12)',
-                  },
-                ]}
-              >
-                <IconComponent
-                  size={28}
-                  color={isPositive ? colors.green : colors.red}
-                  strokeWidth={1.8}
+            <ScrollView
+              style={s.scrollArea}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={s.scrollContent}
+            >
+              {/* Icon + Amount */}
+              <View style={s.amountSection}>
+                <View
+                  style={[
+                    s.iconWrap,
+                    {
+                      backgroundColor: isPositive
+                        ? 'rgba(16,185,129,0.12)'
+                        : 'rgba(239,68,68,0.12)',
+                    },
+                  ]}
+                >
+                  <IconComponent
+                    size={28}
+                    color={isPositive ? colors.green : colors.red}
+                    strokeWidth={1.8}
+                  />
+                </View>
+
+                <Text
+                  style={[
+                    s.amount,
+                    { color: isPositive ? colors.green : colors.red },
+                  ]}
+                >
+                  {isPositive ? '+' : '-'}
+                  {formatCurrency(Math.abs(transaction.amount))}
+                </Text>
+
+                <Text style={s.typeLabel}>
+                  {transaction.type || (isPositive ? 'Income' : 'Expense')}
+                </Text>
+              </View>
+
+              {/* Details Card */}
+              <View style={s.detailsCard}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Text style={s.txName}>{transaction.name}</Text>
+                  <Text style={styles.textPrimary}>#{transaction.id}</Text>
+                </View>
+
+                <View style={s.divider} />
+
+                <DetailRow
+                  label="Description"
+                  value={transaction.description}
                 />
+                <DetailRow
+                  label="Category"
+                  value={transaction.category || 'Other'}
+                />
+                <DetailRow label="Party" value={transaction.party} />
+                <DetailRow label="Bill No" value={transaction.bill_no} />
+                <DetailRow label="Payment Mode" value={transaction.mode} />
+                <DetailRow label="Txn ID" value={transaction.mode_no} />
+                <DetailRow label="Dated" value={transaction.date} />
               </View>
+            </ScrollView>
 
-              <Text
-                style={[
-                  s.amount,
-                  { color: isPositive ? colors.green : colors.red },
-                ]}
-              >
-                {isPositive ? '+' : '-'}
-                {formatCurrency(Math.abs(transaction.amount))}
-              </Text>
-
-              <Text style={s.typeLabel}>
-                {transaction.type || (isPositive ? 'Income' : 'Expense')}
-              </Text>
-            </View>
-
-            {/* Details Card */}
-            <View style={s.detailsCard}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text style={s.txName}>{transaction.name}</Text>
-                <Text style={styles.textPrimary}>{`#${transaction.id}`}</Text>
-              </View>
-
-              <View style={s.divider} />
-
-              <DetailRow label="Description" value={transaction.description} />
-              <DetailRow
-                label="Category"
-                value={transaction.category || 'Other'}
-              />
-              <DetailRow label="Party" value={transaction.party} />
-              <DetailRow label="Bill No" value={transaction.bill_no} />
-              <DetailRow label="Payment Mode" value={transaction.mode} />
-              <DetailRow label="Txn ID" value={transaction.mode_no} />
-              <DetailRow label="Dated" value={transaction.date} />
-            </View>
-          </ScrollView>
-
-          {/* Close Action */}
-          <TouchableOpacity
-            style={s.closeAction}
-            onPress={onClose}
-            activeOpacity={0.7}
-          >
-            <Text style={s.closeActionText}>Close</Text>
-          </TouchableOpacity>
-        </View>
+            {/* Close Action */}
+            <TouchableOpacity
+              style={s.closeAction}
+              onPress={onClose}
+              activeOpacity={0.7}
+            >
+              <Text style={s.closeActionText}>Close</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </GestureDetector>
       </View>
     </Modal>
   );
@@ -147,16 +207,10 @@ const TransactionDetailModal = ({ visible, onClose, transaction }) => {
 const s = StyleSheet.create({
   overlay: {
     flex: 1,
-  },
-  overlayBg: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: 'rgba(0, 0, 0, 0.33)',
+    justifyContent: 'flex-end',
   },
   sheet: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     backgroundColor: colors.white,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
@@ -239,7 +293,6 @@ const s = StyleSheet.create({
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-   
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(226,232,240,0.6)',
