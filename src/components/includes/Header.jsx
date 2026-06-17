@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { Menu, User } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -8,9 +8,17 @@ import { useCompany } from '@/context/CompanyContext';
 
 const Header = ({ onMenuPress, onUserPress }) => {
   const navigation = useNavigation();
-  const { company } = useCompany();
+  const { company, loading, refreshCompany } = useCompany();
+  const [imgError, setImgError] = useState(false);
 
-  const title = company?.display_name || 'Expense Tracker';
+  const logoUrl = company?.logo_url;
+  const companyName = company?.display_name || company?.name || 'Expense Tracker';
+  const showLogo = logoUrl && !imgError;
+
+  const handleLogoPress = () => {
+    setImgError(false);
+    refreshCompany();
+  };
 
   return (
     <View style={[styles.headerContainer, styles.borderBottom]}>
@@ -22,13 +30,30 @@ const Header = ({ onMenuPress, onUserPress }) => {
         <Menu size={22} color={styles.colors.navy} strokeWidth={2} />
       </TouchableOpacity>
 
-      <Text style={styles.headerTitle}>{title}</Text>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={handleLogoPress}
+        style={{ flex: 1, alignItems: 'center' }}
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color={styles.colors.navy} />
+        ) : showLogo ? (
+          <Image
+            source={{ uri: logoUrl, cache: 'reload' }}
+            style={{ width: 130, height: 42 }}
+            resizeMode="contain"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <Text style={[styles.headerTitle]} numberOfLines={1}>
+            {companyName}
+          </Text>
+        )}
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.iconBtn, styles.bgSurfaceAlt]}
-        onPress={() => {
-          navigation.navigate('Profile');
-        }}
+        onPress={() => navigation.navigate('Profile')}
         activeOpacity={0.7}
       >
         <User size={22} color={styles.colors.navy} strokeWidth={2} />
