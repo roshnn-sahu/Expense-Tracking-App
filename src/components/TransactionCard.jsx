@@ -47,8 +47,7 @@ const TransactionCard = ({ transaction, showDivider = true, onPress }) => {
               )}
               <Text style={styles.textMidBlack}>{transaction?.party}</Text>
             </Text>
-            {'\n'}
-            <Text style={[styles.textGray, styles.fs12]}>
+            <Text style={[styles.textGray, styles.fs12, styles.mt1]}>
               {transaction.date}
             </Text>
           </View>

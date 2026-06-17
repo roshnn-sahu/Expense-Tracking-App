@@ -11,7 +11,7 @@ import {
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ChevronLeft, Search } from 'lucide-react-native';
+import { ChevronLeft, Search, SlidersHorizontal } from 'lucide-react-native';
 import styles from '@/styles';
 import { filters } from '@/data/transactions';
 import { getTransactions } from '@/api';
@@ -33,7 +33,7 @@ const Transactions = () => {
   const [selectedTx, setSelectedTx] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleTransactionPress = (tx) => {
+  const handleTransactionPress = tx => {
     setSelectedTx(tx);
     setModalVisible(true);
   };
@@ -89,20 +89,11 @@ const Transactions = () => {
 
           <Text style={styles.headerTitle}>Transactions</Text>
 
-          <TouchableOpacity
-            style={[styles.iconBtn, styles.bgSurfaceAlt]}
-            activeOpacity={0.7}
-          >
-            <Search size={18} color={styles.colors.navy} strokeWidth={2} />
-          </TouchableOpacity>
+          <View style={{ width: 40 }} />
         </View>
 
         <View style={[styles.mt2, styles.px5, styles.borderBottom]}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={[styles.pb2]}
-          >
+          <View style={[styles.pb2]}>
             <View style={[styles.row, styles.gap1]}>
               {filters.map(filter => {
                 const active = activeFilter === filter;
@@ -128,8 +119,14 @@ const Transactions = () => {
                   </TouchableOpacity>
                 );
               })}
+            <TouchableOpacity
+              style={[styles.iconBtn, styles.bgSurfaceAlt]}
+              activeOpacity={0.7}
+            >
+              <SlidersHorizontal size={18} color={styles.colors.navy} strokeWidth={2} />
+            </TouchableOpacity>
             </View>
-          </ScrollView>
+          </View>
         </View>
 
         <ScrollView
