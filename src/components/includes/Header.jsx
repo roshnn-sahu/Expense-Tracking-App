@@ -10,7 +10,7 @@ const Header = ({ onMenuPress, onUserPress }) => {
   const navigation = useNavigation();
   const { company } = useCompany();
 
-  const title = company?.name || 'Expense Tracker';
+  const title = company?.display_name || 'Expense Tracker';
 
   return (
     <View style={[styles.headerContainer, styles.borderBottom]}>
@@ -26,7 +26,9 @@ const Header = ({ onMenuPress, onUserPress }) => {
 
       <TouchableOpacity
         style={[styles.iconBtn, styles.bgSurfaceAlt]}
-        onPress={() => { navigation.navigate('Profile'); }}
+        onPress={() => {
+          navigation.navigate('Profile');
+        }}
         activeOpacity={0.7}
       >
         <User size={22} color={styles.colors.navy} strokeWidth={2} />
