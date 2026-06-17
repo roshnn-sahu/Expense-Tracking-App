@@ -10,18 +10,20 @@ import {
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { ChevronLeft, Search, SlidersHorizontal } from 'lucide-react-native';
 import styles from '@/styles';
 import { filters } from '@/data/transactions';
 import { getTransactions } from '@/api';
 import TransactionCard from '@/components/TransactionCard';
 import TransactionDetailModal from '@/components/TransactionDetailModal';
+import { useTransactionRefresh } from '@/context/TransactionRefreshContext';
 
 const centerStateStyle = { padding: 32, alignItems: 'center' };
 
 const Transactions = () => {
   const navigation = useNavigation();
+  const { refreshCount } = useTransactionRefresh();
 
   const [activeFilter, setActiveFilter] = useState('All');
   const [transactions, setTransactions] = useState([]);
@@ -57,9 +59,15 @@ const Transactions = () => {
     [activeFilter],
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      loadTransactions();
+    }, [loadTransactions]),
+  );
+
   useEffect(() => {
-    loadTransactions();
-  }, [activeFilter, loadTransactions]);
+    if (refreshCount > 0) loadTransactions();
+  }, [refreshCount, loadTransactions]);
 
   return (
     <SafeAreaView style={[styles.safeArea]}>

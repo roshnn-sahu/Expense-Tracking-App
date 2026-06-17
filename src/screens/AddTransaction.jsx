@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { formatDate } from '@/utils/date';
-
+import { formatTransactionDateTime } from '@/utils/date';
 import {
   View,
   Text,
@@ -11,7 +10,12 @@ import {
   StatusBar,
   Modal,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
+
+import { addTransaction } from '@/api';
+import ErrorMessage from '@/components/ui/ErrorMessage';
+import { useTransactionRefresh } from '@/context/TransactionRefreshContext';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -35,6 +39,10 @@ import {
   Building,
   Smartphone,
   MoreHorizontal,
+  Search,
+  User,
+  Hash,
+  Users,
 } from 'lucide-react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -63,32 +71,162 @@ const PAYMENT_MODES = [
   'UPI',
   'Other',
 ];
+const PARTIES = [
+  'Self',
+  'Family',
+  'Friends',
+  'Business',
+  'Vendor',
+  'Client',
+  'Supplier',
+  'Other',
+];
 
 const AddTransaction = () => {
   const navigation = useNavigation();
   const { currencySymbol } = useCurrency();
+  const { triggerRefresh } = useTransactionRefresh();
 
-  const [type, setType] = useState('expense');
+  const [type, setType] = useState('Expense');
   const [amount, setAmount] = useState('');
-  const [note, setNote] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [party, setParty] = useState('');
+  const [showPartyModal, setShowPartyModal] = useState(false);
+  const [partySearch, setPartySearch] = useState('');
 
   const [category, setCategory] = useState('Food');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [categorySearch, setCategorySearch] = useState('');
+
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [showPaymentModeModal, setShowPaymentModeModal] = useState(false);
+  const [paymentModeSearch, setPaymentModeSearch] = useState('');
+  const [transactionId, setTransactionId] = useState('');
 
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const handleSave = () => {
-    const payload = {
-      type,
-      amount,
-      note,
-      category,
-      paymentMode,
-    };
-    navigation.goBack();
+  const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
+
+  const filteredCategories = useMemo(() => {
+    if (!categorySearch.trim()) return categories;
+    return categories.filter(c =>
+      c.toLowerCase().includes(categorySearch.toLowerCase()),
+    );
+  }, [categorySearch]);
+
+  const filteredPaymentModes = useMemo(() => {
+    if (!paymentModeSearch.trim()) return PAYMENT_MODES;
+    return PAYMENT_MODES.filter(m =>
+      m.toLowerCase().includes(paymentModeSearch.toLowerCase()),
+    );
+  }, [paymentModeSearch]);
+
+  const filteredParties = useMemo(() => {
+    if (!partySearch.trim()) return PARTIES;
+    return PARTIES.filter(p =>
+      p.toLowerCase().includes(partySearch.toLowerCase()),
+    );
+  }, [partySearch]);
+
+  const resetForm = () => {
+    setType('Expense');
+    setAmount('');
+    setName('');
+    setDescription('');
+    setParty('');
+    setCategory('Food');
+    setPaymentMode('Cash');
+    setTransactionId('');
+    setDate(new Date());
+    setErrors({});
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = 'Name is required';
+    if (!amount || parseFloat(amount) <= 0)
+      newErrors.amount = 'Valid amount is required';
+    if (!category) newErrors.category = 'Category is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = async () => {
+    if (!validate()) return;
+    setSaving(true);
+    try {
+      const dateStr = date.toISOString().split('T')[0];
+      const timeStr = date.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+      const payload = {
+        name: name.trim(),
+        type,
+        amount: parseFloat(amount),
+        category,
+        date: dateStr,
+        time: timeStr,
+        mode: paymentMode,
+        ...(party ? { party } : {}),
+        ...(paymentMode !== 'Cash' && transactionId.trim()
+          ? { mode_no: transactionId.trim() }
+          : {}),
+        ...(description.trim() ? { description: description.trim() } : {}),
+      };
+      
+      const response = await addTransaction(payload);
+      triggerRefresh();
+      resetForm();
+      Alert.alert(
+        'Success',
+        response?.message || 'Transaction saved successfully!',
+      );
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        error?.response?.data?.message || error?.message || 'Failed to save transaction.',
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const categoryIconMap = {
+    Food: Coffee,
+    Shopping: ShoppingBag,
+    Transport: Car,
+    Housing: Home,
+    Health: Heart,
+    Entertainment: Tv,
+    Bills: Receipt,
+    Travel: Plane,
+    Salary: DollarSign,
+    Investment: TrendingUp,
+  };
+
+  const paymentIconMap = {
+    Cash: DollarSign,
+    'Credit Card': CreditCard,
+    'Debit Card': CreditCard,
+    'Bank Transfer': Building,
+    UPI: Smartphone,
+    Other: MoreHorizontal,
+  };
+
+  const inputContainerStyle = {
+    height: 62,
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
   };
 
   return (
@@ -123,7 +261,7 @@ const AddTransaction = () => {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.px2, styles.pb14]}
+          contentContainerStyle={[styles.px3, styles.pb14]}
         >
           {/* TYPE TOGGLE */}
 
@@ -133,16 +271,14 @@ const AddTransaction = () => {
                 styles.row,
                 {
                   backgroundColor: '#F1F5F9',
-
                   padding: 4,
-
                   borderRadius: 999,
                 },
               ]}
             >
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() => setType('expense')}
+                onPress={() => setType('Expense')}
                 style={[
                   {
                     paddingHorizontal: 28,
@@ -150,8 +286,11 @@ const AddTransaction = () => {
                     borderRadius: 999,
                   },
 
-                  type === 'expense' && {
+                  type === 'Expense' && {
                     backgroundColor: '#FFFFFF',
+                    borderWidth: 1,
+                    borderColor: styles.grayLight,
+                    borderShadowColor: '#000',
                   },
                 ]}
               >
@@ -160,7 +299,7 @@ const AddTransaction = () => {
                     styles.fw600,
 
                     {
-                      color: type === 'expense' ? '#0F172A' : '#64748B',
+                      color: type === 'Expense' ? '#0F172A' : '#64748B',
                     },
                   ]}
                 >
@@ -170,7 +309,7 @@ const AddTransaction = () => {
 
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() => setType('income')}
+                onPress={() => setType('Income')}
                 style={[
                   {
                     paddingHorizontal: 28,
@@ -178,8 +317,11 @@ const AddTransaction = () => {
                     borderRadius: 999,
                   },
 
-                  type === 'income' && {
+                  type === 'Income' && {
                     backgroundColor: '#FFFFFF',
+                    borderWidth: 1,
+                    borderColor: styles.grayLight,
+                    borderShadowColor: '#000',
                   },
                 ]}
               >
@@ -188,7 +330,7 @@ const AddTransaction = () => {
                     styles.fw600,
 
                     {
-                      color: type === 'income' ? '#0F172A' : '#64748B',
+                      color: type === 'Income' ? '#0F172A' : '#64748B',
                     },
                   ]}
                 >
@@ -220,7 +362,11 @@ const AddTransaction = () => {
 
               <TextInput
                 value={amount}
-                onChangeText={setAmount}
+                onChangeText={value => {
+                  setAmount(value);
+                  if (errors.amount)
+                    setErrors(prev => ({ ...prev, amount: '' }));
+                }}
                 placeholder="0.00"
                 keyboardType="decimal-pad"
                 placeholderTextColor="#CBD5E1"
@@ -234,10 +380,44 @@ const AddTransaction = () => {
                 ]}
               />
             </View>
+            <ErrorMessage message={errors.amount} />
           </View>
 
           {/* FORM */}
-          <View>
+          <View style={[styles.px3]}>
+            {/* NAME */}
+            <View style={[styles.mb4]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
+                NAME
+              </Text>
+
+              <View
+                style={[styles.row, styles.alignCenter, inputContainerStyle]}
+              >
+                <User size={20} color="#64748B" />
+                <TextInput
+                  value={name}
+                  onChangeText={value => {
+                    setName(value);
+                    if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                  }}
+                  placeholder="Transaction name..."
+                  placeholderTextColor="#94A3B8"
+                  style={[
+                    {
+                      flex: 1,
+                      marginLeft: 12,
+                      fontSize: 16,
+                      color: '#0F172A',
+                    },
+                  ]}
+                />
+              </View>
+              <ErrorMessage message={errors.name} />
+            </View>
+
             {/* CATEGORY */}
             <View style={[styles.mb4]}>
               <Text
@@ -253,20 +433,7 @@ const AddTransaction = () => {
                   styles.row,
                   styles.alignCenter,
                   styles.justifyBetween,
-
-                  {
-                    height: 62,
-
-                    borderRadius: 20,
-
-                    paddingHorizontal: 18,
-
-                    borderWidth: 1,
-
-                    borderColor: '#E2E8F0',
-
-                    backgroundColor: '#FFFFFF',
-                  },
+                  inputContainerStyle,
                 ]}
               >
                 <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
@@ -275,6 +442,7 @@ const AddTransaction = () => {
 
                 <ChevronDown size={20} color="#64748B" />
               </TouchableOpacity>
+              <ErrorMessage message={errors.category} />
             </View>
 
             {/* DATE */}
@@ -292,21 +460,14 @@ const AddTransaction = () => {
                   styles.row,
                   styles.alignCenter,
                   styles.justifyBetween,
-                  {
-                    height: 62,
-                    borderRadius: 20,
-                    paddingHorizontal: 18,
-                    borderWidth: 1,
-                    borderColor: '#E2E8F0',
-                    backgroundColor: '#FFFFFF',
-                  },
+                  inputContainerStyle,
                 ]}
               >
                 <View style={[styles.row, styles.alignCenter]}>
                   <Calendar size={20} color="#64748B" />
 
                   <Text style={[styles.ml3, styles.textNavy, styles.fw500]}>
-                    {formatDate(date)}
+                    {formatTransactionDateTime(date)}
                   </Text>
                 </View>
 
@@ -315,18 +476,18 @@ const AddTransaction = () => {
 
               <DateTimePickerModal
                 isVisible={showDatePicker}
-                mode="date"
+                mode="datetime"
                 date={date}
                 maximumDate={new Date()}
-                onConfirm={selectedDate => {
-                  setDate(selectedDate);
-
+                onConfirm={selectedDateTime => {
+                  setDate(selectedDateTime);
                   setShowDatePicker(false);
                 }}
                 onCancel={() => setShowDatePicker(false)}
               />
             </View>
 
+            {/* PAYMENT MODE */}
             <View style={[styles.mb4]}>
               <Text
                 style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
@@ -341,20 +502,7 @@ const AddTransaction = () => {
                   styles.row,
                   styles.alignCenter,
                   styles.justifyBetween,
-
-                  {
-                    height: 62,
-
-                    borderRadius: 20,
-
-                    paddingHorizontal: 18,
-
-                    borderWidth: 1,
-
-                    borderColor: '#E2E8F0',
-
-                    backgroundColor: '#FFFFFF',
-                  },
+                  inputContainerStyle,
                 ]}
               >
                 <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
@@ -365,12 +513,85 @@ const AddTransaction = () => {
               </TouchableOpacity>
             </View>
 
-            {/* NOTE */}
+            {/* TRANSACTION ID - shown when payment mode is not Cash */}
+            {paymentMode !== 'Cash' && (
+              <View style={[styles.mb4]}>
+                <Text
+                  style={[
+                    styles.fs13,
+                    styles.fw700,
+                    styles.textGray,
+                    styles.mb2,
+                  ]}
+                >
+                  TRANSACTION ID
+                </Text>
+
+                <View
+                  style={[styles.row, styles.alignCenter, inputContainerStyle]}
+                >
+                  <Hash size={20} color="#64748B" />
+                  <TextInput
+                    value={transactionId}
+                    onChangeText={value => {
+                      setTransactionId(value);
+                      if (errors.transactionId)
+                        setErrors(prev => ({ ...prev, transactionId: '' }));
+                    }}
+                    placeholder="Enter transaction ID..."
+                    placeholderTextColor="#94A3B8"
+                    style={[
+                      {
+                        flex: 1,
+                        marginLeft: 12,
+                        fontSize: 16,
+                        color: '#0F172A',
+                      },
+                    ]}
+                  />
+                </View>
+                <ErrorMessage message={errors.transactionId} />
+              </View>
+            )}
+
+            {/* PARTY */}
+            <View style={[styles.mb4]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
+                PARTY
+              </Text>
+
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => setShowPartyModal(true)}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+                  styles.justifyBetween,
+                  inputContainerStyle,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.fs16,
+                    styles.fw500,
+                    party ? styles.textNavy : { color: '#94A3B8' },
+                  ]}
+                >
+                  {party || 'Select party...'}
+                </Text>
+
+                <ChevronDown size={20} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+
+            {/* DESCRIPTION */}
             <View style={[styles.mb8]}>
               <Text
                 style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
               >
-                NOTE
+                DESCRIPTION
               </Text>
 
               <View
@@ -394,23 +615,18 @@ const AddTransaction = () => {
                 />
 
                 <TextInput
-                  value={note}
-                  onChangeText={setNote}
-                  placeholder="Add a note..."
+                  value={description}
+                  onChangeText={setDescription}
+                  placeholder="Add a description..."
                   multiline
                   placeholderTextColor="#94A3B8"
                   style={[
                     {
                       flex: 1,
-
                       minHeight: 120,
-
                       textAlignVertical: 'top',
-
                       paddingTop: 18,
-
                       paddingLeft: 12,
-
                       color: '#0F172A',
                     },
                   ]}
@@ -434,10 +650,11 @@ const AddTransaction = () => {
           ]}
         >
           <Button
-            label="Save Transaction"
+            label={saving ? 'Saving...' : `Save Transaction`}
             onPress={handleSave}
             variant="primary"
             size="lg"
+            disabled={saving}
           />
         </View>
 
@@ -447,7 +664,10 @@ const AddTransaction = () => {
           visible={showCategoryModal}
           transparent
           animationType="slide"
-          onRequestClose={() => setShowCategoryModal(false)}
+          onRequestClose={() => {
+            setShowCategoryModal(false);
+            setCategorySearch('');
+          }}
         >
           <TouchableOpacity
             style={[
@@ -458,7 +678,10 @@ const AddTransaction = () => {
               },
             ]}
             activeOpacity={1}
-            onPress={() => setShowCategoryModal(false)}
+            onPress={() => {
+              setShowCategoryModal(false);
+              setCategorySearch('');
+            }}
           >
             <TouchableWithoutFeedback>
               <View
@@ -475,57 +698,100 @@ const AddTransaction = () => {
                     styles.fs20,
                     styles.fw700,
                     styles.textNavy,
-                    styles.mb6,
+                    styles.mb4,
                   ]}
                 >
                   Select Category
                 </Text>
 
-                {categories.map(item => {
-                  let Icon = FileText;
-                  if (item === 'Food') Icon = Coffee;
-                  if (item === 'Shopping') Icon = ShoppingBag;
-                  if (item === 'Transport') Icon = Car;
-                  if (item === 'Housing') Icon = Home;
-                  if (item === 'Health') Icon = Heart;
-                  if (item === 'Entertainment') Icon = Tv;
-                  if (item === 'Bills') Icon = Receipt;
-                  if (item === 'Travel') Icon = Plane;
-                  if (item === 'Salary') Icon = DollarSign;
-                  if (item === 'Investment') Icon = TrendingUp;
+                {/* Search Input */}
+                <View
+                  style={[
+                    styles.row,
+                    styles.alignCenter,
+                    {
+                      borderRadius: 16,
+                      borderWidth: 1,
+                      borderColor: '#E2E8F0',
+                      backgroundColor: '#F8FAFC',
+                      paddingHorizontal: 14,
+                      height: 50,
+                      marginBottom: 16,
+                    },
+                  ]}
+                >
+                  <Search size={18} color="#94A3B8" />
+                  <TextInput
+                    value={categorySearch}
+                    onChangeText={setCategorySearch}
+                    placeholder="Search categories..."
+                    placeholderTextColor="#94A3B8"
+                    autoCorrect={false}
+                    style={[
+                      {
+                        flex: 1,
+                        marginLeft: 10,
+                        fontSize: 15,
+                        color: '#0F172A',
+                      },
+                    ]}
+                  />
+                </View>
 
-                  return (
-                    <TouchableOpacity
-                      key={item}
-                      activeOpacity={0.8}
-                      onPress={() => {
-                        setCategory(item);
-                        setShowCategoryModal(false);
-                      }}
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  {filteredCategories.length === 0 && (
+                    <Text
                       style={[
-                        styles.row,
-                        styles.alignCenter,
-                        styles.justifyBetween,
-                        {
-                          paddingVertical: 18,
-                          borderBottomWidth: 1,
-                          borderBottomColor: '#F1F5F9',
-                        },
+                        styles.fs14,
+                        { color: '#94A3B8', textAlign: 'center', padding: 20 },
                       ]}
                     >
-                      <View style={[styles.row, styles.alignCenter]}>
-                        <Icon size={20} color="#64748B" />
-                        <Text
-                          style={[styles.fs16, styles.textNavy, styles.ml3]}
-                        >
-                          {item}
-                        </Text>
-                      </View>
+                      No categories found
+                    </Text>
+                  )}
 
-                      {category === item && <Check size={20} color="#2563EB" />}
-                    </TouchableOpacity>
-                  );
-                })}
+                  {filteredCategories.map(item => {
+                    const Icon = categoryIconMap[item] || FileText;
+
+                    return (
+                      <TouchableOpacity
+                        key={item}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                          setCategory(item);
+                          setShowCategoryModal(false);
+                          setCategorySearch('');
+                        }}
+                        style={[
+                          styles.row,
+                          styles.alignCenter,
+                          styles.justifyBetween,
+                          {
+                            paddingVertical: 18,
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#F1F5F9',
+                          },
+                        ]}
+                      >
+                        <View style={[styles.row, styles.alignCenter]}>
+                          <Icon size={20} color="#64748B" />
+                          <Text
+                            style={[styles.fs16, styles.textNavy, styles.ml3]}
+                          >
+                            {item}
+                          </Text>
+                        </View>
+
+                        {category === item && (
+                          <Check size={20} color="#2563EB" />
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
               </View>
             </TouchableWithoutFeedback>
           </TouchableOpacity>
@@ -537,7 +803,10 @@ const AddTransaction = () => {
           visible={showPaymentModeModal}
           transparent
           animationType="slide"
-          onRequestClose={() => setShowPaymentModeModal(false)}
+          onRequestClose={() => {
+            setShowPaymentModeModal(false);
+            setPaymentModeSearch('');
+          }}
         >
           <TouchableOpacity
             style={[
@@ -548,7 +817,10 @@ const AddTransaction = () => {
               },
             ]}
             activeOpacity={1}
-            onPress={() => setShowPaymentModeModal(false)}
+            onPress={() => {
+              setShowPaymentModeModal(false);
+              setPaymentModeSearch('');
+            }}
           >
             <TouchableWithoutFeedback>
               <View
@@ -565,26 +837,211 @@ const AddTransaction = () => {
                     styles.fs20,
                     styles.fw700,
                     styles.textNavy,
-                    styles.mb6,
+                    styles.mb4,
                   ]}
                 >
                   Select Payment Mode
                 </Text>
 
-                {PAYMENT_MODES.map(item => {
-                  let Icon = CreditCard;
-                  if (item === 'Cash') Icon = DollarSign;
-                  if (item === 'Bank Transfer') Icon = Building;
-                  if (item === 'UPI') Icon = Smartphone;
-                  if (item === 'Other') Icon = MoreHorizontal;
+                {/* Search Input */}
+                <View
+                  style={[
+                    styles.row,
+                    styles.alignCenter,
+                    {
+                      borderRadius: 16,
+                      borderWidth: 1,
+                      borderColor: '#E2E8F0',
+                      backgroundColor: '#F8FAFC',
+                      paddingHorizontal: 14,
+                      height: 50,
+                      marginBottom: 16,
+                    },
+                  ]}
+                >
+                  <Search size={18} color="#94A3B8" />
+                  <TextInput
+                    value={paymentModeSearch}
+                    onChangeText={setPaymentModeSearch}
+                    placeholder="Search payment modes..."
+                    placeholderTextColor="#94A3B8"
+                    autoCorrect={false}
+                    style={[
+                      {
+                        flex: 1,
+                        marginLeft: 10,
+                        fontSize: 15,
+                        color: '#0F172A',
+                      },
+                    ]}
+                  />
+                </View>
 
-                  return (
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  {filteredPaymentModes.length === 0 && (
+                    <Text
+                      style={[
+                        styles.fs14,
+                        { color: '#94A3B8', textAlign: 'center', padding: 20 },
+                      ]}
+                    >
+                      No payment modes found
+                    </Text>
+                  )}
+
+                  {filteredPaymentModes.map(item => {
+                    const Icon = paymentIconMap[item] || CreditCard;
+
+                    return (
+                      <TouchableOpacity
+                        key={item}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                          setPaymentMode(item);
+                          setShowPaymentModeModal(false);
+                          setPaymentModeSearch('');
+                          if (item === 'Cash') {
+                            setTransactionId('');
+                          }
+                        }}
+                        style={[
+                          styles.row,
+                          styles.alignCenter,
+                          styles.justifyBetween,
+                          {
+                            paddingVertical: 18,
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#F1F5F9',
+                          },
+                        ]}
+                      >
+                        <View style={[styles.row, styles.alignCenter]}>
+                          <Icon size={20} color="#64748B" />
+                          <Text
+                            style={[styles.fs16, styles.textNavy, styles.ml3]}
+                          >
+                            {item}
+                          </Text>
+                        </View>
+
+                        {paymentMode === item && (
+                          <Check size={20} color="#2563EB" />
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            </TouchableWithoutFeedback>
+          </TouchableOpacity>
+        </Modal>
+
+        {/* PARTY MODAL */}
+
+        <Modal
+          visible={showPartyModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => {
+            setShowPartyModal(false);
+            setPartySearch('');
+          }}
+        >
+          <TouchableOpacity
+            style={[
+              styles.flex1,
+              {
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                justifyContent: 'flex-end',
+              },
+            ]}
+            activeOpacity={1}
+            onPress={() => {
+              setShowPartyModal(false);
+              setPartySearch('');
+            }}
+          >
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  borderTopLeftRadius: 28,
+                  borderTopRightRadius: 28,
+                  padding: 24,
+                  maxHeight: '70%',
+                }}
+              >
+                <Text
+                  style={[
+                    styles.fs20,
+                    styles.fw700,
+                    styles.textNavy,
+                    styles.mb4,
+                  ]}
+                >
+                  Select Party
+                </Text>
+
+                {/* Search Input */}
+                <View
+                  style={[
+                    styles.row,
+                    styles.alignCenter,
+                    {
+                      borderRadius: 16,
+                      borderWidth: 1,
+                      borderColor: '#E2E8F0',
+                      backgroundColor: '#F8FAFC',
+                      paddingHorizontal: 14,
+                      height: 50,
+                      marginBottom: 16,
+                    },
+                  ]}
+                >
+                  <Search size={18} color="#94A3B8" />
+                  <TextInput
+                    value={partySearch}
+                    onChangeText={setPartySearch}
+                    placeholder="Search parties..."
+                    placeholderTextColor="#94A3B8"
+                    autoCorrect={false}
+                    style={[
+                      {
+                        flex: 1,
+                        marginLeft: 10,
+                        fontSize: 15,
+                        color: '#0F172A',
+                      },
+                    ]}
+                  />
+                </View>
+
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  {filteredParties.length === 0 && (
+                    <Text
+                      style={[
+                        styles.fs14,
+                        { color: '#94A3B8', textAlign: 'center', padding: 20 },
+                      ]}
+                    >
+                      No parties found
+                    </Text>
+                  )}
+
+                  {filteredParties.map(item => (
                     <TouchableOpacity
                       key={item}
                       activeOpacity={0.8}
                       onPress={() => {
-                        setPaymentMode(item);
-                        setShowPaymentModeModal(false);
+                        setParty(item);
+                        setShowPartyModal(false);
+                        setPartySearch('');
                       }}
                       style={[
                         styles.row,
@@ -598,7 +1055,7 @@ const AddTransaction = () => {
                       ]}
                     >
                       <View style={[styles.row, styles.alignCenter]}>
-                        <Icon size={20} color="#64748B" />
+                        <Users size={20} color="#64748B" />
                         <Text
                           style={[styles.fs16, styles.textNavy, styles.ml3]}
                         >
@@ -606,12 +1063,10 @@ const AddTransaction = () => {
                         </Text>
                       </View>
 
-                      {paymentMode === item && (
-                        <Check size={20} color="#2563EB" />
-                      )}
+                      {party === item && <Check size={20} color="#2563EB" />}
                     </TouchableOpacity>
-                  );
-                })}
+                  ))}
+                </ScrollView>
               </View>
             </TouchableWithoutFeedback>
           </TouchableOpacity>
