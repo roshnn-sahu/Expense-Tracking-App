@@ -73,10 +73,6 @@ export default StyleSheet.create({
     fontWeight: '500',
   },
 
-  trackingTighter: {
-    letterSpacing: -1.8,
-  },
-
   /* =========================
      CARD
   ========================= */
@@ -301,98 +297,6 @@ export default StyleSheet.create({
   },
 
   /* =========================
-     ADD TRANSACTION / KEYPAD
-  ========================= */
-
-  amountLabel: {
-    fontSize: 13,
-    color: colors.grayLight,
-    fontWeight: '500',
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-  },
-
-  amountDisplay: {
-    fontSize: 44,
-    fontWeight: '700',
-    color: colors.navy,
-    letterSpacing: -1.5,
-    textAlign: 'center',
-    paddingVertical: 8,
-  },
-
-  categoryPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 16,
-    backgroundColor: colors.surfaceAlt,
-    marginRight: 10,
-    borderWidth: 1.5,
-    borderColor: 'transparent',
-  },
-
-  categoryPillActive: {
-    backgroundColor: colors.blueLight,
-    borderColor: colors.blue,
-  },
-
-  categoryPillText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.slate,
-    marginLeft: 8,
-  },
-
-  categoryPillTextActive: {
-    color: colors.blue,
-    fontWeight: '600',
-  },
-
-  keypadContainer: {
-    backgroundColor: colors.surface,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 28,
-    borderTopWidth: 1,
-    borderTopColor: colors.grayBorder,
-  },
-
-  keypadRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-
-  keyBtn: {
-    width: 78,
-    height: 64,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 6,
-    backgroundColor: colors.surfaceAlt,
-  },
-
-  keyBtnZero: {
-    width: 174,
-    height: 64,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 6,
-    backgroundColor: colors.surfaceAlt,
-  },
-
-  keyBtnText: {
-    fontSize: 26,
-    fontWeight: '600',
-    color: colors.navy,
-  },
-
-  /* =========================
      PRIMARY BUTTON
   ========================= */
 
@@ -420,147 +324,11 @@ export default StyleSheet.create({
      ANALYTICS / DONUT CHART
   ========================= */
 
-  donutContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    position: 'relative'
-  },
-
-  donutCenter: {
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  donutCenterAmount: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: colors.navy,
-    letterSpacing: -0.8,
-  },
-
-  donutCenterLabel: {
-    fontSize: 13,
-    color: colors.grayLight,
-    fontWeight: '500',
-    marginTop: 2,
-  },
-
-  legendContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    marginTop: 8,
-    gap: 20,
-  },
-
   legendDot: {
     width: 10,
     height: 10,
     borderRadius: 3,
     marginRight: 6,
-  },
-
-  legendText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: colors.slate,
-  },
-
-  summaryCard: {
-    borderRadius: 20,
-    padding: 18,
-    flex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-
-  summaryIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-
-  summaryLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.gray,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 4,
-  },
-
-  summaryValue: {
-    fontSize: 22,
-    fontWeight: '700',
-    letterSpacing: -0.5,
-  },
-
-  catItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-  },
-
-  catIconWrap: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 14,
-  },
-
-  catInfo: { flex: 1 },
-
-  catName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.navy,
-    marginBottom: 8,
-  },
-
-  catBarRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  catBarTrack: {
-    height: 6,
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-
-  catBarFill: {
-    height: 6,
-    borderRadius: 3,
-  },
-
-  catPercent: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.gray,
-    marginLeft: 10,
-    minWidth: 36,
-    textAlign: 'right',
-  },
-
-  catAmount: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.navy,
-    marginLeft: 12,
-    minWidth: 60,
-    textAlign: 'right',
-    letterSpacing: -0.3,
   },
 
   /* =========================
@@ -832,10 +600,6 @@ export default StyleSheet.create({
 
   fs15: {
     fontSize: 15,
-  },
-
-  mr4: {
-    marginRight: 16,
   },
 
 });

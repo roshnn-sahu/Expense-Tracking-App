@@ -28,6 +28,10 @@ import Profile from '@/screens/Profile';
 
 import LoadingScreen from '@/screens/LoadingScreen';
 
+import EditExpense from '@/screens/EditExpense';
+
+import EditIncome from '@/screens/EditIncome';
+
 import styles from '@/styles';
 
 const Stack = createNativeStackNavigator();
@@ -175,6 +179,18 @@ const RootStack = () => {
       <Stack.Screen
         name="Help"
         component={PlaceholderScreen}
+      />
+
+      {/* EDIT TRANSACTIONS */}
+
+      <Stack.Screen
+        name="EditExpense"
+        component={EditExpense}
+      />
+
+      <Stack.Screen
+        name="EditIncome"
+        component={EditIncome}
       />
     </Stack.Navigator>
   );

@@ -13,7 +13,7 @@ import {
   Alert,
 } from 'react-native';
 
-import { addTransaction, updateTransaction } from '@/api';
+import { updateTransaction } from '@/api';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import { useTransactionRefresh } from '@/context/TransactionRefreshContext';
 
@@ -43,6 +43,7 @@ import {
   User,
   Hash,
   Users,
+  ArrowUpRight,
 } from 'lucide-react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -51,7 +52,7 @@ import styles from '@/styles';
 import Button from '@/components/ui/Button';
 import { useCurrency } from '@/context/CurrencyContext';
 
-const categories = [
+const EXPENSE_CATEGORIES = [
   'Food',
   'Shopping',
   'Transport',
@@ -60,9 +61,9 @@ const categories = [
   'Entertainment',
   'Bills',
   'Travel',
-  'Salary',
-  'Investment',
+  'Other',
 ];
+
 const PAYMENT_MODES = [
   'Cash',
   'Credit Card',
@@ -71,6 +72,7 @@ const PAYMENT_MODES = [
   'UPI',
   'Other',
 ];
+
 const PARTIES = [
   'Self',
   'Family',
@@ -82,54 +84,52 @@ const PARTIES = [
   'Other',
 ];
 
-const AddTransaction = () => {
+const EditExpense = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { currencySymbol } = useCurrency();
   const { triggerRefresh } = useTransactionRefresh();
 
-  const editTx = route.params?.editTransaction;
-  const isEditing = !!editTx;
+  const tx = route.params?.transaction;
+  const txId = tx?.id || tx?.transaction_id;
 
-  const parseEditDate = () => {
-    if (!editTx) return new Date();
-    if (editTx.entry_date) return new Date(editTx.entry_date);
-    if (editTx.date) {
-      const parsed = new Date(editTx.date);
+  const parseDate = () => {
+    if (!tx) return new Date();
+    if (tx.entry_date) return new Date(tx.entry_date);
+    if (tx.date) {
+      const parsed = new Date(tx.date);
       if (!isNaN(parsed.getTime())) return parsed;
     }
     return new Date();
   };
 
-  const editAmount = editTx ? String(Math.abs(parseFloat(editTx.amount) || 0)) : '';
-  const editType = editTx?.type || (editTx?.amount > 0 ? 'Income' : 'Expense');
-
-  const [type, setType] = useState(editType);
-  const [amount, setAmount] = useState(editAmount);
-  const [name, setName] = useState(editTx?.name || '');
-  const [description, setDescription] = useState(editTx?.description || '');
-  const [party, setParty] = useState(editTx?.party || '');
+  const [amount, setAmount] = useState(
+    tx ? String(Math.abs(parseFloat(tx.amount) || 0)) : '',
+  );
+  const [name, setName] = useState(tx?.name || '');
+  const [description, setDescription] = useState(tx?.description || '');
+  const [party, setParty] = useState(tx?.party || '');
   const [showPartyModal, setShowPartyModal] = useState(false);
   const [partySearch, setPartySearch] = useState('');
 
-  const [category, setCategory] = useState(editTx?.category || 'Food');
+  const [category, setCategory] = useState(tx?.category || 'Food');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categorySearch, setCategorySearch] = useState('');
 
-  const [paymentMode, setPaymentMode] = useState(editTx?.mode || 'Cash');
+  const [paymentMode, setPaymentMode] = useState(tx?.mode || 'Cash');
   const [showPaymentModeModal, setShowPaymentModeModal] = useState(false);
   const [paymentModeSearch, setPaymentModeSearch] = useState('');
-  const [transactionId, setTransactionId] = useState(editTx?.mode_no || '');
+  const [transactionId, setTransactionId] = useState(tx?.mode_no || '');
 
-  const [date, setDate] = useState(parseEditDate());
+  const [date, setDate] = useState(parseDate());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
   const filteredCategories = useMemo(() => {
-    if (!categorySearch.trim()) return categories;
-    return categories.filter(c =>
+    if (!categorySearch.trim()) return EXPENSE_CATEGORIES;
+    return EXPENSE_CATEGORIES.filter(c =>
       c.toLowerCase().includes(categorySearch.toLowerCase()),
     );
   }, [categorySearch]);
@@ -148,26 +148,12 @@ const AddTransaction = () => {
     );
   }, [partySearch]);
 
-  const resetForm = () => {
-    setType('Expense');
-    setAmount('');
-    setName('');
-    setDescription('');
-    setParty('');
-    setCategory('Food');
-    setPaymentMode('Cash');
-    setTransactionId('');
-    setDate(new Date());
-    setErrors({});
-  };
-
   const validate = () => {
     const newErrors = {};
     if (!name.trim()) newErrors.name = 'Name is required';
     if (!amount || parseFloat(amount) <= 0)
       newErrors.amount = 'Valid amount is required';
     if (!category) newErrors.category = 'Category is required';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -185,37 +171,34 @@ const AddTransaction = () => {
       });
       const payload = {
         name: name.trim(),
-        type,
+        type: 'Expense',
         amount: parseFloat(amount),
         category,
         date: dateStr,
         time: timeStr,
         mode: paymentMode,
+        id: txId,
+        transaction_id: txId,
         ...(party ? { party } : {}),
         ...(paymentMode !== 'Cash' && transactionId.trim()
           ? { mode_no: transactionId.trim() }
           : {}),
         ...(description.trim() ? { description: description.trim() } : {}),
       };
-      
-      let response;
-      if (isEditing && editTx?.id) {
-        response = await updateTransaction({ ...payload, id: editTx.id, transaction_id: editTx.transaction_id || editTx.id });
-      } else {
-        response = await addTransaction(payload);
-      }
 
+      const response = await updateTransaction(payload);
       triggerRefresh();
-      resetForm();
       navigation.goBack();
       Alert.alert(
         'Success',
-        response?.message || (isEditing ? 'Transaction updated successfully!' : 'Transaction saved successfully!'),
+        response?.message || 'Expense updated successfully!',
       );
     } catch (error) {
       Alert.alert(
         'Error',
-        error?.response?.data?.message || error?.message || 'Failed to save transaction.',
+        error?.response?.data?.message ||
+          error?.message ||
+          'Failed to update expense.',
       );
     } finally {
       setSaving(false);
@@ -231,8 +214,7 @@ const AddTransaction = () => {
     Entertainment: Tv,
     Bills: Receipt,
     Travel: Plane,
-    Salary: DollarSign,
-    Investment: TrendingUp,
+    Other: MoreHorizontal,
   };
 
   const paymentIconMap = {
@@ -259,7 +241,6 @@ const AddTransaction = () => {
 
       <View style={[styles.flex1]}>
         {/* HEADER */}
-
         <View
           style={[
             styles.row,
@@ -278,7 +259,7 @@ const AddTransaction = () => {
             <ArrowLeft size={22} color="#0F172A" />
           </TouchableOpacity>
 
-          <Text style={[styles.headerTitle]}>{isEditing ? 'Edit Transaction' : 'New Transaction'}</Text>
+          <Text style={[styles.headerTitle]}>Edit Expense</Text>
 
           <View style={{ width: 40 }} />
         </View>
@@ -287,80 +268,29 @@ const AddTransaction = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[styles.px3, styles.pb14]}
         >
-          {/* TYPE TOGGLE */}
-
+          {/* TYPE BADGE */}
           <View style={[styles.alignCenter, styles.mt2, styles.mb8]}>
             <View
               style={[
                 styles.row,
+                styles.alignCenter,
                 {
-                  backgroundColor: '#F1F5F9',
-                  padding: 4,
+                  backgroundColor: '#FEE2E2',
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
                   borderRadius: 999,
                 },
               ]}
             >
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => setType('Expense')}
+              <ArrowUpRight size={18} color="#EF4444" strokeWidth={2.5} />
+              <Text
                 style={[
-                  {
-                    paddingHorizontal: 28,
-                    paddingVertical: 12,
-                    borderRadius: 999,
-                  },
-
-                  type === 'Expense' && {
-                    backgroundColor: '#FFFFFF',
-                    borderWidth: 1,
-                    borderColor: styles.grayLight,
-                    borderShadowColor: '#000',
-                  },
+                  styles.fw700,
+                  { color: '#DC2626', fontSize: 14, marginLeft: 8 },
                 ]}
               >
-                <Text
-                  style={[
-                    styles.fw600,
-
-                    {
-                      color: type === 'Expense' ? '#0F172A' : '#64748B',
-                    },
-                  ]}
-                >
-                  Expense
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => setType('Income')}
-                style={[
-                  {
-                    paddingHorizontal: 28,
-                    paddingVertical: 12,
-                    borderRadius: 999,
-                  },
-
-                  type === 'Income' && {
-                    backgroundColor: '#FFFFFF',
-                    borderWidth: 1,
-                    borderColor: styles.grayLight,
-                    borderShadowColor: '#000',
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.fw600,
-
-                    {
-                      color: type === 'Income' ? '#0F172A' : '#64748B',
-                    },
-                  ]}
-                >
-                  Income
-                </Text>
-              </TouchableOpacity>
+                Expense Transaction
+              </Text>
             </View>
           </View>
 
@@ -369,21 +299,15 @@ const AddTransaction = () => {
             <Text style={[styles.fs14, styles.textGray, styles.mb2]}>
               Amount
             </Text>
-
             <View style={[styles.row, styles.alignCenter]}>
               <Text
                 style={[
                   styles.fw700,
-                  {
-                    fontSize: 48,
-                    color: '#0F172A',
-                    marginRight: 4,
-                  },
+                  { fontSize: 48, color: '#0F172A', marginRight: 4 },
                 ]}
               >
                 {currencySymbol}
               </Text>
-
               <TextInput
                 value={amount}
                 onChangeText={value => {
@@ -394,14 +318,12 @@ const AddTransaction = () => {
                 placeholder="0.00"
                 keyboardType="decimal-pad"
                 placeholderTextColor="#CBD5E1"
-                style={[
-                  {
-                    fontSize: 48,
-                    fontWeight: '700',
-                    color: '#0F172A',
-                    letterSpacing: -2,
-                  },
-                ]}
+                style={{
+                  fontSize: 48,
+                  fontWeight: '700',
+                  color: '#0F172A',
+                  letterSpacing: -2,
+                }}
               />
             </View>
             <ErrorMessage message={errors.amount} />
@@ -411,32 +333,21 @@ const AddTransaction = () => {
           <View style={[styles.px3]}>
             {/* NAME */}
             <View style={[styles.mb4]}>
-              <Text
-                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
-              >
+              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
                 NAME
               </Text>
-
-              <View
-                style={[styles.row, styles.alignCenter, inputContainerStyle]}
-              >
+              <View style={[styles.row, styles.alignCenter, inputContainerStyle]}>
                 <User size={20} color="#64748B" />
                 <TextInput
                   value={name}
                   onChangeText={value => {
                     setName(value);
-                    if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                    if (errors.name)
+                      setErrors(prev => ({ ...prev, name: '' }));
                   }}
-                  placeholder="Transaction name..."
+                  placeholder="Expense name..."
                   placeholderTextColor="#94A3B8"
-                  style={[
-                    {
-                      flex: 1,
-                      marginLeft: 12,
-                      fontSize: 16,
-                      color: '#0F172A',
-                    },
-                  ]}
+                  style={{ flex: 1, marginLeft: 12, fontSize: 16, color: '#0F172A' }}
                 />
               </View>
               <ErrorMessage message={errors.name} />
@@ -444,26 +355,15 @@ const AddTransaction = () => {
 
             {/* CATEGORY */}
             <View style={[styles.mb4]}>
-              <Text
-                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
-              >
+              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
                 CATEGORY
               </Text>
-
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowCategoryModal(true)}
-                style={[
-                  styles.row,
-                  styles.alignCenter,
-                  styles.justifyBetween,
-                  inputContainerStyle,
-                ]}
+                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
               >
-                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
-                  {category}
-                </Text>
-
+                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>{category}</Text>
                 <ChevronDown size={20} color="#64748B" />
               </TouchableOpacity>
               <ErrorMessage message={errors.category} />
@@ -471,33 +371,22 @@ const AddTransaction = () => {
 
             {/* DATE */}
             <View style={[styles.mb4]}>
-              <Text
-                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
-              >
+              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
                 DATE
               </Text>
-
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowDatePicker(true)}
-                style={[
-                  styles.row,
-                  styles.alignCenter,
-                  styles.justifyBetween,
-                  inputContainerStyle,
-                ]}
+                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
               >
                 <View style={[styles.row, styles.alignCenter]}>
                   <Calendar size={20} color="#64748B" />
-
                   <Text style={[styles.ml3, styles.textNavy, styles.fw500]}>
                     {formatTransactionDateTime(date)}
                   </Text>
                 </View>
-
                 <ChevronDown size={18} color="#94A3B8" />
               </TouchableOpacity>
-
               <DateTimePickerModal
                 isVisible={showDatePicker}
                 mode="datetime"
@@ -513,88 +402,47 @@ const AddTransaction = () => {
 
             {/* PAYMENT MODE */}
             <View style={[styles.mb4]}>
-              <Text
-                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
-              >
+              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
                 PAYMENT MODE
               </Text>
-
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowPaymentModeModal(true)}
-                style={[
-                  styles.row,
-                  styles.alignCenter,
-                  styles.justifyBetween,
-                  inputContainerStyle,
-                ]}
+                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
               >
-                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
-                  {paymentMode}
-                </Text>
-
+                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>{paymentMode}</Text>
                 <ChevronDown size={20} color="#64748B" />
               </TouchableOpacity>
             </View>
 
-            {/* TRANSACTION ID - shown when payment mode is not Cash */}
+            {/* TRANSACTION ID */}
             {paymentMode !== 'Cash' && (
               <View style={[styles.mb4]}>
-                <Text
-                  style={[
-                    styles.fs13,
-                    styles.fw700,
-                    styles.textGray,
-                    styles.mb2,
-                  ]}
-                >
+                <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
                   TRANSACTION ID
                 </Text>
-
-                <View
-                  style={[styles.row, styles.alignCenter, inputContainerStyle]}
-                >
+                <View style={[styles.row, styles.alignCenter, inputContainerStyle]}>
                   <Hash size={20} color="#64748B" />
                   <TextInput
                     value={transactionId}
-                    onChangeText={value => {
-                      setTransactionId(value);
-                      if (errors.transactionId)
-                        setErrors(prev => ({ ...prev, transactionId: '' }));
-                    }}
+                    onChangeText={setTransactionId}
                     placeholder="Enter transaction ID..."
                     placeholderTextColor="#94A3B8"
-                    style={[
-                      {
-                        flex: 1,
-                        marginLeft: 12,
-                        fontSize: 16,
-                        color: '#0F172A',
-                      },
-                    ]}
+                    style={{ flex: 1, marginLeft: 12, fontSize: 16, color: '#0F172A' }}
                   />
                 </View>
-                <ErrorMessage message={errors.transactionId} />
               </View>
             )}
 
             {/* PARTY */}
             <View style={[styles.mb4]}>
-              <Text
-                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
-              >
+              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
                 PARTY
               </Text>
-
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowPartyModal(true)}
-                style={[
-                  styles.row,
-                  styles.alignCenter,
-                  styles.justifyBetween,
-                  inputContainerStyle,
-                ]}
+                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
               >
                 <Text
                   style={[
@@ -605,19 +453,15 @@ const AddTransaction = () => {
                 >
                   {party || 'Select party...'}
                 </Text>
-
                 <ChevronDown size={20} color="#64748B" />
               </TouchableOpacity>
             </View>
 
             {/* DESCRIPTION */}
             <View style={[styles.mb8]}>
-              <Text
-                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
-              >
+              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
                 DESCRIPTION
               </Text>
-
               <View
                 style={[
                   styles.row,
@@ -630,30 +474,21 @@ const AddTransaction = () => {
                   },
                 ]}
               >
-                <FileText
-                  size={20}
-                  color="#64748B"
-                  style={{
-                    marginTop: 18,
-                  }}
-                />
-
+                <FileText size={20} color="#64748B" style={{ marginTop: 18 }} />
                 <TextInput
                   value={description}
                   onChangeText={setDescription}
                   placeholder="Add a description..."
                   multiline
                   placeholderTextColor="#94A3B8"
-                  style={[
-                    {
-                      flex: 1,
-                      minHeight: 120,
-                      textAlignVertical: 'top',
-                      paddingTop: 18,
-                      paddingLeft: 12,
-                      color: '#0F172A',
-                    },
-                  ]}
+                  style={{
+                    flex: 1,
+                    minHeight: 120,
+                    textAlignVertical: 'top',
+                    paddingTop: 18,
+                    paddingLeft: 12,
+                    color: '#0F172A',
+                  }}
                 />
               </View>
             </View>
@@ -661,7 +496,6 @@ const AddTransaction = () => {
         </ScrollView>
 
         {/* SAVE BUTTON */}
-
         <View
           style={[
             styles.px5,
@@ -674,7 +508,7 @@ const AddTransaction = () => {
           ]}
         >
           <Button
-            label={saving ? (isEditing ? 'Updating...' : 'Saving...') : (isEditing ? 'Update Transaction' : 'Save Transaction')}
+            label={saving ? 'Updating...' : 'Update Expense'}
             onPress={handleSave}
             variant="primary"
             size="lg"
@@ -683,7 +517,6 @@ const AddTransaction = () => {
         </View>
 
         {/* CATEGORY MODAL */}
-
         <Modal
           visible={showCategoryModal}
           transparent
@@ -694,13 +527,7 @@ const AddTransaction = () => {
           }}
         >
           <TouchableOpacity
-            style={[
-              styles.flex1,
-              {
-                backgroundColor: 'rgba(0,0,0,0.2)',
-                justifyContent: 'flex-end',
-              },
-            ]}
+            style={[styles.flex1, { backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'flex-end' }]}
             activeOpacity={1}
             onPress={() => {
               setShowCategoryModal(false);
@@ -717,18 +544,9 @@ const AddTransaction = () => {
                   maxHeight: '70%',
                 }}
               >
-                <Text
-                  style={[
-                    styles.fs20,
-                    styles.fw700,
-                    styles.textNavy,
-                    styles.mb4,
-                  ]}
-                >
+                <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb4]}>
                   Select Category
                 </Text>
-
-                {/* Search Input */}
                 <View
                   style={[
                     styles.row,
@@ -751,35 +569,17 @@ const AddTransaction = () => {
                     placeholder="Search categories..."
                     placeholderTextColor="#94A3B8"
                     autoCorrect={false}
-                    style={[
-                      {
-                        flex: 1,
-                        marginLeft: 10,
-                        fontSize: 15,
-                        color: '#0F172A',
-                      },
-                    ]}
+                    style={{ flex: 1, marginLeft: 10, fontSize: 15, color: '#0F172A' }}
                   />
                 </View>
-
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                >
+                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                   {filteredCategories.length === 0 && (
-                    <Text
-                      style={[
-                        styles.fs14,
-                        { color: '#94A3B8', textAlign: 'center', padding: 20 },
-                      ]}
-                    >
+                    <Text style={[styles.fs14, { color: '#94A3B8', textAlign: 'center', padding: 20 }]}>
                       No categories found
                     </Text>
                   )}
-
                   {filteredCategories.map(item => {
                     const Icon = categoryIconMap[item] || FileText;
-
                     return (
                       <TouchableOpacity
                         key={item}
@@ -793,25 +593,14 @@ const AddTransaction = () => {
                           styles.row,
                           styles.alignCenter,
                           styles.justifyBetween,
-                          {
-                            paddingVertical: 18,
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#F1F5F9',
-                          },
+                          { paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
                         ]}
                       >
                         <View style={[styles.row, styles.alignCenter]}>
                           <Icon size={20} color="#64748B" />
-                          <Text
-                            style={[styles.fs16, styles.textNavy, styles.ml3]}
-                          >
-                            {item}
-                          </Text>
+                          <Text style={[styles.fs16, styles.textNavy, styles.ml3]}>{item}</Text>
                         </View>
-
-                        {category === item && (
-                          <Check size={20} color="#2563EB" />
-                        )}
+                        {category === item && <Check size={20} color="#2563EB" />}
                       </TouchableOpacity>
                     );
                   })}
@@ -822,7 +611,6 @@ const AddTransaction = () => {
         </Modal>
 
         {/* PAYMENT MODE MODAL */}
-
         <Modal
           visible={showPaymentModeModal}
           transparent
@@ -833,13 +621,7 @@ const AddTransaction = () => {
           }}
         >
           <TouchableOpacity
-            style={[
-              styles.flex1,
-              {
-                backgroundColor: 'rgba(0,0,0,0.2)',
-                justifyContent: 'flex-end',
-              },
-            ]}
+            style={[styles.flex1, { backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'flex-end' }]}
             activeOpacity={1}
             onPress={() => {
               setShowPaymentModeModal(false);
@@ -856,18 +638,9 @@ const AddTransaction = () => {
                   maxHeight: '70%',
                 }}
               >
-                <Text
-                  style={[
-                    styles.fs20,
-                    styles.fw700,
-                    styles.textNavy,
-                    styles.mb4,
-                  ]}
-                >
+                <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb4]}>
                   Select Payment Mode
                 </Text>
-
-                {/* Search Input */}
                 <View
                   style={[
                     styles.row,
@@ -890,35 +663,12 @@ const AddTransaction = () => {
                     placeholder="Search payment modes..."
                     placeholderTextColor="#94A3B8"
                     autoCorrect={false}
-                    style={[
-                      {
-                        flex: 1,
-                        marginLeft: 10,
-                        fontSize: 15,
-                        color: '#0F172A',
-                      },
-                    ]}
+                    style={{ flex: 1, marginLeft: 10, fontSize: 15, color: '#0F172A' }}
                   />
                 </View>
-
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                >
-                  {filteredPaymentModes.length === 0 && (
-                    <Text
-                      style={[
-                        styles.fs14,
-                        { color: '#94A3B8', textAlign: 'center', padding: 20 },
-                      ]}
-                    >
-                      No payment modes found
-                    </Text>
-                  )}
-
+                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                   {filteredPaymentModes.map(item => {
                     const Icon = paymentIconMap[item] || CreditCard;
-
                     return (
                       <TouchableOpacity
                         key={item}
@@ -927,33 +677,20 @@ const AddTransaction = () => {
                           setPaymentMode(item);
                           setShowPaymentModeModal(false);
                           setPaymentModeSearch('');
-                          if (item === 'Cash') {
-                            setTransactionId('');
-                          }
+                          if (item === 'Cash') setTransactionId('');
                         }}
                         style={[
                           styles.row,
                           styles.alignCenter,
                           styles.justifyBetween,
-                          {
-                            paddingVertical: 18,
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#F1F5F9',
-                          },
+                          { paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
                         ]}
                       >
                         <View style={[styles.row, styles.alignCenter]}>
                           <Icon size={20} color="#64748B" />
-                          <Text
-                            style={[styles.fs16, styles.textNavy, styles.ml3]}
-                          >
-                            {item}
-                          </Text>
+                          <Text style={[styles.fs16, styles.textNavy, styles.ml3]}>{item}</Text>
                         </View>
-
-                        {paymentMode === item && (
-                          <Check size={20} color="#2563EB" />
-                        )}
+                        {paymentMode === item && <Check size={20} color="#2563EB" />}
                       </TouchableOpacity>
                     );
                   })}
@@ -964,7 +701,6 @@ const AddTransaction = () => {
         </Modal>
 
         {/* PARTY MODAL */}
-
         <Modal
           visible={showPartyModal}
           transparent
@@ -975,13 +711,7 @@ const AddTransaction = () => {
           }}
         >
           <TouchableOpacity
-            style={[
-              styles.flex1,
-              {
-                backgroundColor: 'rgba(0,0,0,0.2)',
-                justifyContent: 'flex-end',
-              },
-            ]}
+            style={[styles.flex1, { backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'flex-end' }]}
             activeOpacity={1}
             onPress={() => {
               setShowPartyModal(false);
@@ -998,18 +728,9 @@ const AddTransaction = () => {
                   maxHeight: '70%',
                 }}
               >
-                <Text
-                  style={[
-                    styles.fs20,
-                    styles.fw700,
-                    styles.textNavy,
-                    styles.mb4,
-                  ]}
-                >
+                <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb4]}>
                   Select Party
                 </Text>
-
-                {/* Search Input */}
                 <View
                   style={[
                     styles.row,
@@ -1032,32 +753,10 @@ const AddTransaction = () => {
                     placeholder="Search parties..."
                     placeholderTextColor="#94A3B8"
                     autoCorrect={false}
-                    style={[
-                      {
-                        flex: 1,
-                        marginLeft: 10,
-                        fontSize: 15,
-                        color: '#0F172A',
-                      },
-                    ]}
+                    style={{ flex: 1, marginLeft: 10, fontSize: 15, color: '#0F172A' }}
                   />
                 </View>
-
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                >
-                  {filteredParties.length === 0 && (
-                    <Text
-                      style={[
-                        styles.fs14,
-                        { color: '#94A3B8', textAlign: 'center', padding: 20 },
-                      ]}
-                    >
-                      No parties found
-                    </Text>
-                  )}
-
+                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                   {filteredParties.map(item => (
                     <TouchableOpacity
                       key={item}
@@ -1071,22 +770,13 @@ const AddTransaction = () => {
                         styles.row,
                         styles.alignCenter,
                         styles.justifyBetween,
-                        {
-                          paddingVertical: 18,
-                          borderBottomWidth: 1,
-                          borderBottomColor: '#F1F5F9',
-                        },
+                        { paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
                       ]}
                     >
                       <View style={[styles.row, styles.alignCenter]}>
                         <Users size={20} color="#64748B" />
-                        <Text
-                          style={[styles.fs16, styles.textNavy, styles.ml3]}
-                        >
-                          {item}
-                        </Text>
+                        <Text style={[styles.fs16, styles.textNavy, styles.ml3]}>{item}</Text>
                       </View>
-
                       {party === item && <Check size={20} color="#2563EB" />}
                     </TouchableOpacity>
                   ))}
@@ -1100,4 +790,4 @@ const AddTransaction = () => {
   );
 };
 
-export default AddTransaction;
+export default EditExpense;

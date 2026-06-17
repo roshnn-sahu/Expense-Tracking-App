@@ -96,4 +96,24 @@ export const addTransaction = async (payload) => {
   return response.data;
 };
 
-export default { getTransactions, addTransaction };
+export const updateTransaction = async (payload) => {
+  const userId = await getUserId();
+
+  const formData = new FormData();
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      formData.append(key, String(value));
+    }
+  });
+
+  const response = await apiClient.put(`/transaction/entry/${payload.id || payload.transaction_id}`, formData, {
+    headers: {
+      user_id: userId,
+      'Content-Type': 'multipart/form-data',
+      Accept: 'application/json',
+    },
+  });
+  return response.data;
+};
+
+export default { getTransactions, addTransaction, updateTransaction };

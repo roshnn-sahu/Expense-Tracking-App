@@ -48,6 +48,15 @@ const Transactions = () => {
     setModalVisible(true);
   };
 
+  const handleEditTransaction = tx => {
+    setModalVisible(false);
+    setSelectedTx(null);
+    const isExpense = tx.amount < 0;
+    navigation.navigate(isExpense ? 'EditExpense' : 'EditIncome', {
+      transaction: tx,
+    });
+  };
+
   const loadTransactions = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
@@ -379,6 +388,7 @@ const Transactions = () => {
             setModalVisible(false);
             setSelectedTx(null);
           }}
+          onEdit={handleEditTransaction}
         />
 
         <FilterModal

@@ -25,6 +25,15 @@ const HomeScreen = () => {
     setSelectedTx(tx);
     setModalVisible(true);
   };
+
+  const handleEditTransaction = (tx) => {
+    setModalVisible(false);
+    setSelectedTx(null);
+    const isExpense = tx.amount < 0;
+    navigation.navigate(isExpense ? 'EditExpense' : 'EditIncome', {
+      transaction: tx,
+    });
+  };
  
   return (
     <SafeAreaView style={[styles.safeArea]}>
@@ -84,6 +93,7 @@ const HomeScreen = () => {
             setModalVisible(false);
             setSelectedTx(null);
           }}
+          onEdit={handleEditTransaction}
         />
       </View>
     </SafeAreaView>

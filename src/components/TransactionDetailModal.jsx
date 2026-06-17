@@ -20,7 +20,7 @@ import {
   CircleArrowOutUpRight,
   ArrowDownLeft,
   ArrowUpRight,
-  X,
+  Pencil,
 } from 'lucide-react-native';
 import { useCurrency } from '@/context/CurrencyContext';
 import colors from '@/styles/colors';
@@ -39,7 +39,7 @@ const DetailRow = ({ label, value }) => {
   );
 };
 
-const TransactionDetailModal = ({ visible, onClose, transaction }) => {
+const TransactionDetailModal = ({ visible, onClose, onEdit, transaction }) => {
   const { formatCurrency } = useCurrency();
   const { height: screenHeight } = useWindowDimensions();
 
@@ -103,102 +103,106 @@ const TransactionDetailModal = ({ visible, onClose, transaction }) => {
           onPress={onClose}
         />
 
-        {/* Bottom sheet with swipe-down gesture */}
-        <GestureDetector gesture={panGesture}>
-          <Animated.View style={[s.sheet, sheetStyle]}>
-            {/* Handle */}
-            <View style={s.sheetHeader}>
-              <View style={s.sheetHandle} />
-            </View>
-
-            {/* Close button */}
+        {/* Bottom sheet wrapper — edit row outside GestureDetector to avoid Pan gesture interference */}
+        <View style={{ alignSelf: 'stretch' }}>
+          {/* Edit button row — OUTSIDE GestureDetector */}
+          <View style={s.editRow}>
             <TouchableOpacity
-              style={s.closeBtn}
-              onPress={onClose}
+              style={s.editBtn}
+              onPress={() => onEdit?.(transaction)}
               activeOpacity={0.7}
             >
-              <X size={18} color={colors.gray} strokeWidth={2} />
+              <Pencil size={18} color={colors.blue} strokeWidth={2.2} />
             </TouchableOpacity>
+          </View>
 
-            <ScrollView
-              style={s.scrollArea}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={s.scrollContent}
-            >
-              {/* Icon + Amount */}
-              <View style={s.amountSection}>
-                <View
-                  style={[
-                    s.iconWrap,
-                    {
-                      backgroundColor: isPositive
-                        ? 'rgba(16,185,129,0.12)'
-                        : 'rgba(239,68,68,0.12)',
-                    },
-                  ]}
-                >
-                  <IconComponent
-                    size={28}
-                    color={isPositive ? colors.green : colors.red}
-                    strokeWidth={1.8}
+          <GestureDetector gesture={panGesture}>
+            <Animated.View style={[s.sheet, sheetStyle]}>
+              {/* Handle */}
+              <View style={s.sheetHeader}>
+                <View style={s.sheetHandle} />
+              </View>
+
+              <ScrollView
+                style={s.scrollArea}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={s.scrollContent}
+              >
+                {/* Icon + Amount */}
+                <View style={s.amountSection}>
+                  <View
+                    style={[
+                      s.iconWrap,
+                      {
+                        backgroundColor: isPositive
+                          ? 'rgba(16,185,129,0.12)'
+                          : 'rgba(239,68,68,0.12)',
+                      },
+                    ]}
+                  >
+                    <IconComponent
+                      size={28}
+                      color={isPositive ? colors.green : colors.red}
+                      strokeWidth={1.8}
+                    />
+                  </View>
+
+                  <Text
+                    style={[
+                      s.amount,
+                      { color: isPositive ? colors.green : colors.red },
+                    ]}
+                  >
+                    {isPositive ? '+' : '-'}
+                    {formatCurrency(Math.abs(transaction.amount))}
+                  </Text>
+
+                  <Text style={s.typeLabel}>
+                    {transaction.type || (isPositive ? 'Income' : 'Expense')}
+                  </Text>
+                </View>
+
+                {/* Details Card */}
+                <View style={s.detailsCard}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Text style={s.txName}>{transaction.name}</Text>
+                    <Text style={styles.textPrimary}>#{transaction.id}</Text>
+                  </View>
+
+                  <View style={s.divider} />
+
+                  <DetailRow
+                    label="Description"
+                    value={transaction.description}
                   />
+                  <DetailRow
+                    label="Category"
+                    value={transaction.category || 'Other'}
+                  />
+                  <DetailRow label="Party" value={transaction.party} />
+                  <DetailRow label="Bill No" value={transaction.bill_no} />
+                  <DetailRow label="Payment Mode" value={transaction.mode} />
+                  <DetailRow label="Txn ID" value={transaction.mode_no} />
+                  <DetailRow label="Dated" value={transaction.date} />
                 </View>
+              </ScrollView>
 
-                <Text
-                  style={[
-                    s.amount,
-                    { color: isPositive ? colors.green : colors.red },
-                  ]}
-                >
-                  {isPositive ? '+' : '-'}
-                  {formatCurrency(Math.abs(transaction.amount))}
-                </Text>
-
-                <Text style={s.typeLabel}>
-                  {transaction.type || (isPositive ? 'Income' : 'Expense')}
-                </Text>
-              </View>
-
-              {/* Details Card */}
-              <View style={s.detailsCard}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Text style={s.txName}>{transaction.name}</Text>
-                  <Text style={styles.textPrimary}>#{transaction.id}</Text>
-                </View>
-
-                <View style={s.divider} />
-
-                <DetailRow
-                  label="Description"
-                  value={transaction.description}
-                />
-                <DetailRow
-                  label="Category"
-                  value={transaction.category || 'Other'}
-                />
-                <DetailRow label="Party" value={transaction.party} />
-                <DetailRow label="Bill No" value={transaction.bill_no} />
-                <DetailRow label="Payment Mode" value={transaction.mode} />
-                <DetailRow label="Txn ID" value={transaction.mode_no} />
-                <DetailRow label="Dated" value={transaction.date} />
-              </View>
-            </ScrollView>
-
-            {/* Close Action */}
-            <TouchableOpacity
-              style={s.closeAction}
-              onPress={onClose}
-              activeOpacity={0.7}
-            >
-              <Text style={s.closeActionText}>Close</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </GestureDetector>
+              {/* Close Action */}
+              <TouchableOpacity
+                style={s.closeAction}
+                onPress={onClose}
+                activeOpacity={0.7}
+              >
+                <Text style={s.closeActionText}>Close</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </GestureDetector>
+        </View>
       </View>
     </Modal>
   );
@@ -216,7 +220,6 @@ const s = StyleSheet.create({
     borderTopRightRadius: 28,
     paddingHorizontal: 24,
     paddingBottom: 20,
-    maxHeight: '85%',
   },
   sheetHeader: {
     alignItems: 'center',
@@ -229,16 +232,21 @@ const s = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: colors.grayBorder,
   },
-  closeBtn: {
-    position: 'absolute',
-    top: 22,
-    right: 20,
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: colors.surfaceAlt,
+  editRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 4,
+    marginBottom: 4,
+  },
+  editBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: colors.blueLight,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(37,99,235,0.2)',
   },
   scrollArea: {
     flexGrow: 0,
