@@ -1,8 +1,33 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '@/config/axios';
 
+const USER_ID_KEY = 'user_id';
+const DEFAULT_USER_ID = '1';
+
+const getUserId = async () => {
+  const userId = await AsyncStorage.getItem(USER_ID_KEY);
+  return userId || DEFAULT_USER_ID;
+};
+
+const parseResponseData = (data) => {
+  if (typeof data === 'string') {
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  return data;
+};
+
 const getTransactionRows = (data) => {
-  if (Array.isArray(data?.data?.aRow)) return data.data.aRow;
-  if (Array.isArray(data)) return data;
+  const parsedData = parseResponseData(data);
+  const rows = parsedData?.data?.aRow ?? parsedData?.data?.transactions ?? parsedData?.transactions;
+
+  if (Array.isArray(rows)) return rows;
+  if (Array.isArray(parsedData)) return parsedData;
+
   return [];
 };
 
@@ -20,14 +45,27 @@ const mapApiResponseToTransactions = (data) => {
       amount: isIncome ? Math.abs(amount) : -Math.abs(amount),
       date: item.date ?? item.entry_date ?? item.created_at ?? '',
       dateGroup: 'Other',
+      party: item.party ?? '',
       icon: item.icon ?? 'MoreHorizontal',
       color: isIncome ? '#10B981' : '#EF4444',
+      // Pass through all raw API fields for the detail modal
+      bill_no: item.bill_no ?? '',
+      description: item.description ?? '',
+      entry_date: item.entry_date ?? '',
+      mode: item.mode ?? '',
+      mode_no: item.mode_no ?? '',
+      user: item.user ?? '',
+      type: item.type ?? '',
     };
   });
 };
 
 export const getTransactions = async (filter = 'All') => {
-  const response = await apiClient.get('/transaction/list/All/');
+  const userId = await getUserId();
+  const response = await apiClient.get('/transaction/list/All/', {
+
+    headers: { user_id: userId },
+  });
 
   const transactions = mapApiResponseToTransactions(response.data);
 
