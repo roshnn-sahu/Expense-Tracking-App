@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
 import styles from '@/styles';
+import { useCompany } from '@/context/CompanyContext';
 
 import Header from '@/components/includes/Header';
 import BalanceCard from '@/components/BalanceCard';
 import QuickStats from '@/components/QuickStats';
 import SectionHeader from '@/components/SectionHeader';
 import TransactionCard from '@/components/TransactionCard';
+import TransactionDetailModal from '@/components/TransactionDetailModal';
 
 import { recentTransactions } from '@/data/transactions';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const { company } = useCompany();
+  const [selectedTx, setSelectedTx] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const handleTransactionPress = (tx) => {
+    setSelectedTx(tx);
+    setModalVisible(true);
+  };
+ 
   return (
     <SafeAreaView style={[styles.safeArea]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
@@ -35,7 +45,8 @@ const HomeScreen = () => {
             <Text style={styles.greeting}>Welcome back 👋</Text>
 
             <Text style={styles.greetingSub}>
-              Your spending summary is ready.
+              {company?.display_name ? `${company.display_name}'s ` : ''}Your
+              spending summary is ready.
             </Text>
           </View>
 
@@ -47,7 +58,11 @@ const HomeScreen = () => {
 
           {/* RECENT TRANSACTIONS */}
           <View style={styles.transactionsSection}>
-            <SectionHeader title="Recent Transactions" actionLabel="See All" />
+            <SectionHeader
+              title="Recent Transactions"
+              actionLabel="See All"
+              onActionPress={() => navigate('Transcations')}
+            />
 
             <View style={styles.transactionsCard}>
               {recentTransactions.map((item, index) => (
@@ -55,11 +70,21 @@ const HomeScreen = () => {
                   key={item.id}
                   transaction={item}
                   showDivider={index !== recentTransactions.length - 1}
+                  onPress={handleTransactionPress}
                 />
               ))}
             </View>
           </View>
         </ScrollView>
+
+        <TransactionDetailModal
+          visible={modalVisible}
+          transaction={selectedTx}
+          onClose={() => {
+            setModalVisible(false);
+            setSelectedTx(null);
+          }}
+        />
       </View>
     </SafeAreaView>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,80 +12,60 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ChevronLeft, Search } from 'lucide-react-native';
-
 import styles from '@/styles';
-import TransactionCard from '@/components/TransactionCard';
 import { filters } from '@/data/transactions';
 import { getTransactions } from '@/api';
+import TransactionCard from '@/components/TransactionCard';
+import TransactionDetailModal from '@/components/TransactionDetailModal';
 
-const DATE_GROUP_ORDER = ['Today', 'Yesterday', 'This Week', 'Last Week'];
-
-const groupByDate = items => {
-  const groups = {};
-
-  DATE_GROUP_ORDER.forEach(group => {
-    const found = items.filter(i => i.dateGroup === group);
-    if (found.length) groups[group] = found;
-  });
-
-  items.forEach(item => {
-    if (!DATE_GROUP_ORDER.includes(item.dateGroup)) {
-      const key = item.dateGroup || 'Other';
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(item);
-    }
-  });
-
-  return groups;
-};
+const centerStateStyle = { padding: 32, alignItems: 'center' };
 
 const Transactions = () => {
-
   const navigation = useNavigation();
+
   const [activeFilter, setActiveFilter] = useState('All');
   const [transactions, setTransactions] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
+  const [selectedTx, setSelectedTx] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const loadTransactions = async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setLoading(true);
-    setError(null);
-    try {
-      const data = await getTransactions(activeFilter);
-      setTransactions(data);
-    } catch (err) {
-      setError(err.message || 'Failed to load transactions');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+  const handleTransactionPress = (tx) => {
+    setSelectedTx(tx);
+    setModalVisible(true);
   };
+
+  const loadTransactions = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) setRefreshing(true);
+      else setLoading(true);
+      setError(null);
+
+      try {
+        const data = await getTransactions(activeFilter);
+        setTransactions(data);
+      } catch (err) {
+        setError(err.message || 'Failed to load transactions');
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [activeFilter],
+  );
 
   useEffect(() => {
     loadTransactions();
-  }, [activeFilter]);
-  
-
-  const filteredTransactions = useMemo(() => {
-    if (activeFilter === 'Income')
-      return transactions.filter(t => t.amount > 0);
-    if (activeFilter === 'Expense')
-      return transactions.filter(t => t.amount < 0);
-    return transactions;
-  }, [activeFilter, transactions]);
-
-  const grouped = groupByDate(filteredTransactions);
-  const groupKeys = Object.keys(grouped);
+  }, [activeFilter, loadTransactions]);
 
   return (
     <SafeAreaView style={[styles.safeArea]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
       <View style={[styles.container]}>
-        {/* HEADER */}
         <View
           style={[
             styles.row,
@@ -117,7 +97,6 @@ const Transactions = () => {
           </TouchableOpacity>
         </View>
 
-        {/* FILTERS */}
         <View style={[styles.mt2, styles.px5, styles.borderBottom]}>
           <ScrollView
             horizontal
@@ -153,50 +132,33 @@ const Transactions = () => {
           </ScrollView>
         </View>
 
-        {/* LIST */}
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.px5, styles.pb14, styles.pt3]}
+          contentContainerStyle={[styles.px2, styles.pb14, styles.pt3]}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => loadTransactions(true)}
-              colors={[styles.colors.navy]}
-              tintColor={styles.colors.navy}
+              colors={[styles.colors.blue]}
+              tintColor={styles.colors.blue}
             />
           }
         >
           {loading ? (
-            <View
-              style={[
-                styles.card,
-                styles.roundedXXL,
-                styles.shadowSm,
-                { padding: 32, alignItems: 'center' },
-              ]}
-            >
-              <ActivityIndicator size="large" color={styles.colors.navy} />
+            <View>
+              <ActivityIndicator size="large" color={styles.colors.blue} />
             </View>
           ) : error ? (
-            <View
-              style={[
-                styles.card,
-                styles.roundedXXL,
-                styles.shadowSm,
-                { padding: 32, alignItems: 'center' },
-              ]}
-            >
-              <Text style={[styles.fs16, styles.textRed]}>
-                {error}
-              </Text>
+            <View>
+              <Text style={[styles.fs16, styles.textRed]}>{error}</Text>
             </View>
-          ) : groupKeys.length === 0 ? (
+          ) : transactions.length === 0 ? (
             <View
               style={[
                 styles.card,
                 styles.roundedXXL,
                 styles.shadowSm,
-                { padding: 32, alignItems: 'center' },
+                centerStateStyle,
               ]}
             >
               <Text style={[styles.fs16, styles.textGray]}>
@@ -204,39 +166,29 @@ const Transactions = () => {
               </Text>
             </View>
           ) : (
-            <View style={[styles.TransactionCard]}>
-              {groupKeys.map(section => {
-                const items = grouped[section];
-
-                return (
-                  <View key={section}>
-                    {/* SECTION TITLE */}
-                    <Text
-                      style={[
-                        styles.fs12,
-                        styles.fw700,
-                        styles.textGray,
-                        styles.mb4,
-                        styles.mt2,
-                      ]}
-                    >
-                      {section.toUpperCase()}
-                    </Text>
-
-                    {/* ITEMS */}
-                    {items.map((transaction, index) => (
-                      <TransactionCard
-                        key={transaction.id}
-                        transaction={transaction}
-                        showDivider={index !== items.length - 1}
-                      />
-                    ))}
-                  </View>
-                );
-              })}
+            <View style={[styles.px2]}>
+              <View style={styles.transactionsCard}>
+                {transactions.map((item, index) => (
+                  <TransactionCard
+                    key={item.id}
+                    transaction={item}
+                    showDivider={index !== transactions.length - 1}
+                    onPress={handleTransactionPress}
+                  />
+                ))}
+              </View>
             </View>
           )}
         </ScrollView>
+
+        <TransactionDetailModal
+          visible={modalVisible}
+          transaction={selectedTx}
+          onClose={() => {
+            setModalVisible(false);
+            setSelectedTx(null);
+          }}
+        />
       </View>
     </SafeAreaView>
   );

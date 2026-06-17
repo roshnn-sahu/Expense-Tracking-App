@@ -21,7 +21,8 @@ export const CompanyProvider = ({ children }) => {
     setError(null);
     try {
       const result = await getCompanyData(forceRefresh);
-      setCompany(result.data);
+  
+      setCompany(result.data.data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -37,7 +38,9 @@ export const CompanyProvider = ({ children }) => {
   const clearCache = () => clearCompanyCache();
 
   return (
-    <CompanyContext.Provider value={{ company, loading, error, refreshCompany, clearCache }}>
+    <CompanyContext.Provider
+      value={{ company, loading, error, refreshCompany, clearCache }}
+    >
       {children}
     </CompanyContext.Provider>
   );

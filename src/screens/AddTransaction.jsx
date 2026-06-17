@@ -88,9 +88,6 @@ const AddTransaction = () => {
       category,
       paymentMode,
     };
-
-    console.log(payload);
-
     navigation.goBack();
   };
 
@@ -126,7 +123,7 @@ const AddTransaction = () => {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.px5, styles.pb14]}
+          contentContainerStyle={[styles.px2, styles.pb14]}
         >
           {/* TYPE TOGGLE */}
 

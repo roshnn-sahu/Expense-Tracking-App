@@ -21,13 +21,20 @@ const LoadingScreen = ({ navigation }) => {
     }
   }, [loading, navigation]);
 
-  const appName = company?.name || 'FinTrack';
+  const appName = company?.display_name || 'FinTrack';
 
   return (
     <SafeAreaView style={[styles.flex1, styles.bgWhite]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-      <View style={[styles.flex1, styles.alignCenter, styles.justifyCenter, styles.px5]}>
+      <View
+        style={[
+          styles.flex1,
+          styles.alignCenter,
+          styles.justifyCenter,
+          styles.px5,
+        ]}
+      >
         <Animated.View
           entering={FadeIn.duration(500)}
           style={[
@@ -45,7 +52,16 @@ const LoadingScreen = ({ navigation }) => {
               {company.logo}
             </Text>
           ) : (
-            <Text style={[styles.fs42, styles.textWhite, styles.fw800]}>₹</Text>
+            <Text
+              style={[
+                styles.fs42,
+                styles.textWhite,
+                styles.fw800,
+                styles.textCenter,
+              ]}
+            >
+              ₹
+            </Text>
           )}
         </Animated.View>
 
