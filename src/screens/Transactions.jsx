@@ -1,12 +1,20 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+} from 'react';
+import Toast from 'react-native-toast-message';
 import {
   View,
   Text,
-  ScrollView,
+  FlatList,
   RefreshControl,
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,26 +22,31 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { ChevronLeft, SlidersHorizontal } from 'lucide-react-native';
 import styles from '@/styles';
 import { filters } from '@/data/transactions';
-import { getTransactions } from '@/api';
+import { getTransactions, deleteTransaction } from '@/api';
 import TransactionCard from '@/components/TransactionCard';
 import TransactionDetailModal from '@/components/TransactionDetailModal';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import FilterModal from '@/components/FilterModal';
 import { useTransactionRefresh } from '@/context/TransactionRefreshContext';
 
-const centerStateStyle = { padding: 32, alignItems: 'center' };
-
 const Transactions = () => {
   const navigation = useNavigation();
-  const { refreshCount } = useTransactionRefresh();
+  const { refreshCount, triggerRefresh } = useTransactionRefresh();
+  const flatListRef = useRef(null);
 
   const [activeFilter, setActiveFilter] = useState('All');
   const [allTransactions, setAllTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const [selectedTx, setSelectedTx] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [deleteConfirmTx, setDeleteConfirmTx] = useState(null);
 
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
@@ -57,14 +70,47 @@ const Transactions = () => {
     });
   };
 
+  const handleDeleteRequest = useCallback(tx => {
+    setDeleteConfirmTx(tx);
+  }, []);
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (!deleteConfirmTx) return;
+    try {
+      await deleteTransaction(deleteConfirmTx.id);
+      setDeleteConfirmTx(null);
+      Toast.show({
+        type: 'info',
+        text1: 'Deleted',
+        text2: 'Transaction deleted successfully!',
+        visibilityTime: 2500,
+      });
+      triggerRefresh();
+    } catch (err) {
+      setDeleteConfirmTx(null);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2:
+          err?.response?.data?.message ||
+          err?.message ||
+          'Failed to delete transaction.',
+        visibilityTime: 3000,
+      });
+    }
+  }, [deleteConfirmTx]);
+
   const loadTransactions = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
     setError(null);
+    setPage(1);
+    setHasMore(true);
 
     try {
-      const data = await getTransactions('All');
-      setAllTransactions(data);
+      const result = await getTransactions('All', 1);
+      setAllTransactions(result.transactions);
+      setHasMore(result.hasMore);
     } catch (err) {
       setError(err.message || 'Failed to load transactions');
     } finally {
@@ -72,6 +118,23 @@ const Transactions = () => {
       setRefreshing(false);
     }
   }, []);
+
+  const loadMoreTransactions = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+
+    try {
+      const nextPage = page + 1;
+      const result = await getTransactions('All', nextPage);
+      setAllTransactions(prev => [...prev, ...result.transactions]);
+      setPage(nextPage);
+      setHasMore(result.hasMore);
+    } catch (err) {
+      // Silently fail — user can scroll again to retry
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [page, hasMore, loadingMore]);
 
   useFocusEffect(
     useCallback(() => {
@@ -136,6 +199,79 @@ const Transactions = () => {
     (activeFilters.dateRange ? 1 : 0);
 
   const hasActiveFilters = activeFilterCount > 0;
+
+  const renderTransactionItem = useCallback(
+    ({ item, index }) => (
+      <TransactionCard
+        index={index}
+        transaction={item}
+        showDivider={index !== filteredTransactions.length - 1}
+        onPress={handleTransactionPress}
+      />
+    ),
+    [filteredTransactions.length, handleTransactionPress],
+  );
+
+  const renderListFooter = () => {
+    if (loadingMore) {
+      return (
+        <View style={ls.footerLoader}>
+          <ActivityIndicator size="small" color={styles.colors.blue} />
+          <Text style={ls.footerText}>Loading more...</Text>
+        </View>
+      );
+    }
+    if (!hasMore && allTransactions.length > 0) {
+      return (
+        <View style={ls.footerEnd}>
+          <Text style={ls.footerEndText}>All transactions loaded</Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
+  const renderEmptyState = () => {
+    if (loading) return null;
+    return (
+      <View style={ls.emptyState}>
+        <Text style={[styles.fs16, styles.textGray, styles.textCenter]}>
+          {hasActiveFilters
+            ? 'No transactions match your filters.'
+            : 'No transactions found.'}
+        </Text>
+        {hasActiveFilters && (
+          <TouchableOpacity
+            onPress={() =>
+              setActiveFilters({
+                months: [],
+                categories: [],
+                paymentTypes: [],
+                dateRange: null,
+              })
+            }
+            style={{ marginTop: 8 }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '600',
+                color: styles.colors.blue,
+              }}
+            >
+              Clear filters
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
+
+  const handleEndReached = useCallback(() => {
+    if (!loadingMore && hasMore && !loading) {
+      loadMoreTransactions();
+    }
+  }, [loadingMore, hasMore, loading, loadMoreTransactions]);
 
   return (
     <SafeAreaView style={[styles.safeArea]}>
@@ -312,74 +448,38 @@ const Transactions = () => {
           )}
         </View>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.px2, styles.pb14, styles.pt3]}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => loadTransactions(true)}
-              colors={[styles.colors.blue]}
-              tintColor={styles.colors.blue}
-            />
-          }
-        >
-          {loading ? (
-            <View>
-              <ActivityIndicator size="large" color={styles.colors.blue} />
-            </View>
-          ) : error ? (
-            <View>
-              <Text style={[styles.fs16, styles.textRed, styles.textCenter]}>
-                {error}
-              </Text>
-            </View>
-          ) : filteredTransactions.length === 0 ? (
-            <View style={centerStateStyle}>
-              <Text style={[styles.fs16, styles.textGray, styles.textCenter]}>
-                {hasActiveFilters
-                  ? 'No transactions match your filters.'
-                  : 'No transactions found.'}
-              </Text>
-              {hasActiveFilters && (
-                <TouchableOpacity
-                  onPress={() =>
-                    setActiveFilters({
-                      months: [],
-                      categories: [],
-                      paymentTypes: [],
-                      dateRange: null,
-                    })
-                  }
-                  style={{ marginTop: 8 }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: '600',
-                      color: styles.colors.blue,
-                    }}
-                  >
-                    Clear filters
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ) : (
-            <View style={[styles.px2]}>
-              <View style={styles.transactionsCard}>
-                {filteredTransactions.map((item, index) => (
-                  <TransactionCard
-                    key={item.id}
-                    transaction={item}
-                    showDivider={index !== filteredTransactions.length - 1}
-                    onPress={handleTransactionPress}
-                  />
-                ))}
-              </View>
-            </View>
-          )}
-        </ScrollView>
+        {loading ? (
+          <View style={ls.centerLoader}>
+            <ActivityIndicator size="large" color={styles.colors.blue} />
+          </View>
+        ) : error ? (
+          <View style={ls.centerLoader}>
+            <Text style={[styles.fs16, styles.textRed, styles.textCenter]}>
+              {error}
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            data={filteredTransactions}
+            renderItem={renderTransactionItem}
+            keyExtractor={item => String(item.id)}
+            contentContainerStyle={[styles.px2, { paddingBottom: 24 }]}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => loadTransactions(true)}
+                colors={[styles.colors.blue]}
+                tintColor={styles.colors.blue}
+              />
+            }
+            onEndReached={handleEndReached}
+            onEndReachedThreshold={0.05}
+            ListFooterComponent={renderListFooter}
+            ListEmptyComponent={renderEmptyState}
+          />
+        )}
 
         <TransactionDetailModal
           visible={modalVisible}
@@ -389,6 +489,7 @@ const Transactions = () => {
             setSelectedTx(null);
           }}
           onEdit={handleEditTransaction}
+          onDeleteRequest={handleDeleteRequest}
         />
 
         <FilterModal
@@ -397,9 +498,54 @@ const Transactions = () => {
           onApply={filters => setActiveFilters(filters)}
           initialFilters={activeFilters}
         />
+
+        <ConfirmDialog
+          visible={!!deleteConfirmTx}
+          onClose={() => setDeleteConfirmTx(null)}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Transaction"
+          message={`Are you sure you want to delete "${deleteConfirmTx?.name}"? This action cannot be undone.`}
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          confirmVariant="danger"
+        />
       </View>
     </SafeAreaView>
   );
 };
+
+const ls = StyleSheet.create({
+  centerLoader: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 32,
+  },
+  footerLoader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    gap: 10,
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  footerEnd: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  footerEndText: {
+    fontSize: 13,
+    color: '#94A3B8',
+    fontWeight: '500',
+  },
+  emptyState: {
+    padding: 32,
+    alignItems: 'center',
+  },
+});
 
 export default Transactions;

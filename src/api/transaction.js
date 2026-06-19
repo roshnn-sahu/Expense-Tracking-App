@@ -48,6 +48,7 @@ const mapApiResponseToTransactions = (data) => {
       party: item.party ?? '',
       icon: item.icon ?? 'MoreHorizontal',
       color: isIncome ? '#10B981' : '#EF4444',
+      closing: item.closing ?? item.balance ?? '',
       // Pass through all raw API fields for the detail modal
       bill_no: item.bill_no ?? '',
       description: item.description ?? '',
@@ -60,21 +61,33 @@ const mapApiResponseToTransactions = (data) => {
   });
 };
 
-export const getTransactions = async (filter = 'All') => {
+export const getTransactions = async (filter = 'All', page = 1) => {
   const userId = await getUserId();
-  const response = await apiClient.get('/transaction/list/All/', {
+  const url = `/transaction/list/${filter}/${page}`;
 
+  const response = await apiClient.get(url, {
     headers: { user_id: userId },
   });
 
   const transactions = mapApiResponseToTransactions(response.data);
 
-  if (filter === 'Income') return transactions.filter(t => t.amount > 0);
-  if (filter === 'Expense') return transactions.filter(t => t.amount < 0);
-  if (filter !== 'All') return transactions.filter(t => t.category === filter);
+  // Extract pagination info from response if available
+  const parsedData =
+    typeof response.data === 'string'
+      ? JSON.parse(response.data)
+      : response.data;
+  const totalPages =
+    parsedData?.total_pages || parsedData?.data?.total_pages || null;
+  const hasMore = totalPages ? page < totalPages : transactions.length > 0;
 
-  return transactions;
+  return {
+    transactions,
+    page,
+    hasMore,
+    totalPages,
+  };
 };
+
 
 export const addTransaction = async (payload) => {
   const userId = await getUserId();
@@ -96,6 +109,18 @@ export const addTransaction = async (payload) => {
   return response.data;
 };
 
+export const deleteTransaction = async (id) => {
+  const userId = await getUserId();
+
+  const response = await apiClient.delete(`/transaction/delete/${id}`, {
+    headers: {
+      user_id: userId,
+      Accept: 'application/json',
+    },
+  });
+  return response.data;
+};
+
 export const updateTransaction = async (payload) => {
   const userId = await getUserId();
 
@@ -106,7 +131,8 @@ export const updateTransaction = async (payload) => {
     }
   });
 
-  const response = await apiClient.put(`/transaction/entry/${payload.id || payload.transaction_id}`, formData, {
+
+  const response = await apiClient.post(`/transaction/entry/${payload.id}`, formData, {
     headers: {
       user_id: userId,
       'Content-Type': 'multipart/form-data',
@@ -116,4 +142,20 @@ export const updateTransaction = async (payload) => {
   return response.data;
 };
 
-export default { getTransactions, addTransaction, updateTransaction };
+export const getStatement = async (fromDate, toDate) => {
+  const userId = await getUserId();
+
+  const response = await apiClient.get('/transaction/statement', {
+    params: {
+      from_date: fromDate,
+      to_date: toDate,
+    },
+    headers: { user_id: userId },
+  });
+
+  const transactions = mapApiResponseToTransactions(response.data);
+
+  return transactions;
+};
+
+export default { getTransactions, addTransaction, updateTransaction, deleteTransaction, getStatement };

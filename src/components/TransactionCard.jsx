@@ -5,16 +5,22 @@ import { ArrowDownLeft, ArrowUpRight } from 'lucide-react-native';
 import styles from '@/styles';
 import { useCurrency } from '@/context/CurrencyContext';
 
-const TransactionCard = ({ transaction, showDivider = true, onPress }) => {
+const TransactionCard = ({
+  transaction,
+  showDivider = true,
+  onPress,
+  index,
+}) => {
   const { formatCurrency } = useCurrency();
 
   const isPositive = transaction.amount > 0;
-  const IconComponent = isPositive
-    ? ArrowDownLeft
-    : ArrowUpRight;
+  const IconComponent = isPositive ? ArrowDownLeft : ArrowUpRight;
 
   return (
-    <TouchableOpacity onPress={() => onPress?.(transaction)} activeOpacity={0.7}>
+    <TouchableOpacity
+      onPress={() => onPress?.(transaction)}
+      activeOpacity={0.7}
+    >
       <View style={styles.txItem}>
         <View
           style={[
@@ -42,9 +48,7 @@ const TransactionCard = ({ transaction, showDivider = true, onPress }) => {
             >
               {transaction.category}
 
-              {transaction?.party && (
-                <Text style={styles.textGray}>, </Text>
-              )}
+              {transaction?.party && <Text style={styles.textGray}>, </Text>}
               <Text style={styles.textMidBlack}>{transaction?.party}</Text>
             </Text>
             <Text style={[styles.textGray, styles.fs12, styles.mt1]}>
@@ -53,17 +57,31 @@ const TransactionCard = ({ transaction, showDivider = true, onPress }) => {
           </View>
         </View>
         <View>
-        <Text
-          style={[
-            styles.txAmount,
-            { color: isPositive ? styles.colors.green : styles.colors.red },
-          ]}
-        >
-          {isPositive ? '+' : '-'}
-          {formatCurrency(Math.abs(transaction.amount))}
-        </Text>
-        
-          </View>
+          <Text
+            style={[
+              styles.textGray,
+              styles.fs12,
+              styles.mt1,
+
+              {
+                alignSelf: 'flex-end',
+
+                borderRadius: 10,
+              },
+            ]}
+          >
+            {`#${index + 1}`}
+          </Text>
+          <Text
+            style={[
+              styles.txAmount,
+              { color: isPositive ? styles.colors.green : styles.colors.red },
+            ]}
+          >
+            {isPositive ? '+' : '-'}
+            {formatCurrency(Math.abs(transaction.amount))}
+          </Text>
+        </View>
       </View>
       {showDivider && <View style={styles.txDivider} />}
     </TouchableOpacity>

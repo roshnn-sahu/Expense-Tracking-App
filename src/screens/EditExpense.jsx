@@ -193,16 +193,17 @@ const EditExpense = () => {
         type: 'success',
         text1: 'Success',
         text2: response?.message || 'Expense updated successfully!',
-        visibilityTime: 2500,
+        visibilityTime: 5000,
       });
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: error?.response?.data?.message ||
+        text2:
+          error?.response?.data?.message ||
           error?.message ||
           'Failed to update expense.',
-        visibilityTime: 2500,
+        visibilityTime: 5000,
       });
     } finally {
       setSaving(false);
@@ -337,21 +338,29 @@ const EditExpense = () => {
           <View style={[styles.px3]}>
             {/* NAME */}
             <View style={[styles.mb4]}>
-              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
                 NAME
               </Text>
-              <View style={[styles.row, styles.alignCenter, inputContainerStyle]}>
+              <View
+                style={[styles.row, styles.alignCenter, inputContainerStyle]}
+              >
                 <User size={20} color="#64748B" />
                 <TextInput
                   value={name}
                   onChangeText={value => {
                     setName(value);
-                    if (errors.name)
-                      setErrors(prev => ({ ...prev, name: '' }));
+                    if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
                   }}
                   placeholder="Expense name..."
                   placeholderTextColor="#94A3B8"
-                  style={{ flex: 1, marginLeft: 12, fontSize: 16, color: '#0F172A' }}
+                  style={{
+                    flex: 1,
+                    marginLeft: 12,
+                    fontSize: 16,
+                    color: '#0F172A',
+                  }}
                 />
               </View>
               <ErrorMessage message={errors.name} />
@@ -359,15 +368,24 @@ const EditExpense = () => {
 
             {/* CATEGORY */}
             <View style={[styles.mb4]}>
-              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
                 CATEGORY
               </Text>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowCategoryModal(true)}
-                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+                  styles.justifyBetween,
+                  inputContainerStyle,
+                ]}
               >
-                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>{category}</Text>
+                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
+                  {category}
+                </Text>
                 <ChevronDown size={20} color="#64748B" />
               </TouchableOpacity>
               <ErrorMessage message={errors.category} />
@@ -375,13 +393,20 @@ const EditExpense = () => {
 
             {/* DATE */}
             <View style={[styles.mb4]}>
-              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
                 DATE
               </Text>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowDatePicker(true)}
-                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+                  styles.justifyBetween,
+                  inputContainerStyle,
+                ]}
               >
                 <View style={[styles.row, styles.alignCenter]}>
                   <Calendar size={20} color="#64748B" />
@@ -406,15 +431,24 @@ const EditExpense = () => {
 
             {/* PAYMENT MODE */}
             <View style={[styles.mb4]}>
-              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
                 PAYMENT MODE
               </Text>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowPaymentModeModal(true)}
-                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+                  styles.justifyBetween,
+                  inputContainerStyle,
+                ]}
               >
-                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>{paymentMode}</Text>
+                <Text style={[styles.fs16, styles.textNavy, styles.fw500]}>
+                  {paymentMode}
+                </Text>
                 <ChevronDown size={20} color="#64748B" />
               </TouchableOpacity>
             </View>
@@ -422,17 +456,31 @@ const EditExpense = () => {
             {/* TRANSACTION ID */}
             {paymentMode !== 'Cash' && (
               <View style={[styles.mb4]}>
-                <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+                <Text
+                  style={[
+                    styles.fs13,
+                    styles.fw700,
+                    styles.textGray,
+                    styles.mb2,
+                  ]}
+                >
                   TRANSACTION ID
                 </Text>
-                <View style={[styles.row, styles.alignCenter, inputContainerStyle]}>
+                <View
+                  style={[styles.row, styles.alignCenter, inputContainerStyle]}
+                >
                   <Hash size={20} color="#64748B" />
                   <TextInput
                     value={transactionId}
                     onChangeText={setTransactionId}
                     placeholder="Enter transaction ID..."
                     placeholderTextColor="#94A3B8"
-                    style={{ flex: 1, marginLeft: 12, fontSize: 16, color: '#0F172A' }}
+                    style={{
+                      flex: 1,
+                      marginLeft: 12,
+                      fontSize: 16,
+                      color: '#0F172A',
+                    }}
                   />
                 </View>
               </View>
@@ -440,13 +488,20 @@ const EditExpense = () => {
 
             {/* PARTY */}
             <View style={[styles.mb4]}>
-              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
                 PARTY
               </Text>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowPartyModal(true)}
-                style={[styles.row, styles.alignCenter, styles.justifyBetween, inputContainerStyle]}
+                style={[
+                  styles.row,
+                  styles.alignCenter,
+                  styles.justifyBetween,
+                  inputContainerStyle,
+                ]}
               >
                 <Text
                   style={[
@@ -463,7 +518,9 @@ const EditExpense = () => {
 
             {/* DESCRIPTION */}
             <View style={[styles.mb8]}>
-              <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+              <Text
+                style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+              >
                 DESCRIPTION
               </Text>
               <View
@@ -531,7 +588,13 @@ const EditExpense = () => {
           }}
         >
           <TouchableOpacity
-            style={[styles.flex1, { backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'flex-end' }]}
+            style={[
+              styles.flex1,
+              {
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                justifyContent: 'flex-end',
+              },
+            ]}
             activeOpacity={1}
             onPress={() => {
               setShowCategoryModal(false);
@@ -548,7 +611,14 @@ const EditExpense = () => {
                   maxHeight: '70%',
                 }}
               >
-                <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb4]}>
+                <Text
+                  style={[
+                    styles.fs20,
+                    styles.fw700,
+                    styles.textNavy,
+                    styles.mb4,
+                  ]}
+                >
                   Select Category
                 </Text>
                 <View
@@ -573,12 +643,25 @@ const EditExpense = () => {
                     placeholder="Search categories..."
                     placeholderTextColor="#94A3B8"
                     autoCorrect={false}
-                    style={{ flex: 1, marginLeft: 10, fontSize: 15, color: '#0F172A' }}
+                    style={{
+                      flex: 1,
+                      marginLeft: 10,
+                      fontSize: 15,
+                      color: '#0F172A',
+                    }}
                   />
                 </View>
-                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
                   {filteredCategories.length === 0 && (
-                    <Text style={[styles.fs14, { color: '#94A3B8', textAlign: 'center', padding: 20 }]}>
+                    <Text
+                      style={[
+                        styles.fs14,
+                        { color: '#94A3B8', textAlign: 'center', padding: 20 },
+                      ]}
+                    >
                       No categories found
                     </Text>
                   )}
@@ -597,14 +680,24 @@ const EditExpense = () => {
                           styles.row,
                           styles.alignCenter,
                           styles.justifyBetween,
-                          { paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+                          {
+                            paddingVertical: 18,
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#F1F5F9',
+                          },
                         ]}
                       >
                         <View style={[styles.row, styles.alignCenter]}>
                           <Icon size={20} color="#64748B" />
-                          <Text style={[styles.fs16, styles.textNavy, styles.ml3]}>{item}</Text>
+                          <Text
+                            style={[styles.fs16, styles.textNavy, styles.ml3]}
+                          >
+                            {item}
+                          </Text>
                         </View>
-                        {category === item && <Check size={20} color="#2563EB" />}
+                        {category === item && (
+                          <Check size={20} color="#2563EB" />
+                        )}
                       </TouchableOpacity>
                     );
                   })}
@@ -625,7 +718,13 @@ const EditExpense = () => {
           }}
         >
           <TouchableOpacity
-            style={[styles.flex1, { backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'flex-end' }]}
+            style={[
+              styles.flex1,
+              {
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                justifyContent: 'flex-end',
+              },
+            ]}
             activeOpacity={1}
             onPress={() => {
               setShowPaymentModeModal(false);
@@ -642,7 +741,14 @@ const EditExpense = () => {
                   maxHeight: '70%',
                 }}
               >
-                <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb4]}>
+                <Text
+                  style={[
+                    styles.fs20,
+                    styles.fw700,
+                    styles.textNavy,
+                    styles.mb4,
+                  ]}
+                >
                   Select Payment Mode
                 </Text>
                 <View
@@ -667,10 +773,18 @@ const EditExpense = () => {
                     placeholder="Search payment modes..."
                     placeholderTextColor="#94A3B8"
                     autoCorrect={false}
-                    style={{ flex: 1, marginLeft: 10, fontSize: 15, color: '#0F172A' }}
+                    style={{
+                      flex: 1,
+                      marginLeft: 10,
+                      fontSize: 15,
+                      color: '#0F172A',
+                    }}
                   />
                 </View>
-                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
                   {filteredPaymentModes.map(item => {
                     const Icon = paymentIconMap[item] || CreditCard;
                     return (
@@ -687,14 +801,24 @@ const EditExpense = () => {
                           styles.row,
                           styles.alignCenter,
                           styles.justifyBetween,
-                          { paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+                          {
+                            paddingVertical: 18,
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#F1F5F9',
+                          },
                         ]}
                       >
                         <View style={[styles.row, styles.alignCenter]}>
                           <Icon size={20} color="#64748B" />
-                          <Text style={[styles.fs16, styles.textNavy, styles.ml3]}>{item}</Text>
+                          <Text
+                            style={[styles.fs16, styles.textNavy, styles.ml3]}
+                          >
+                            {item}
+                          </Text>
                         </View>
-                        {paymentMode === item && <Check size={20} color="#2563EB" />}
+                        {paymentMode === item && (
+                          <Check size={20} color="#2563EB" />
+                        )}
                       </TouchableOpacity>
                     );
                   })}
@@ -715,7 +839,13 @@ const EditExpense = () => {
           }}
         >
           <TouchableOpacity
-            style={[styles.flex1, { backgroundColor: 'rgba(0,0,0,0.2)', justifyContent: 'flex-end' }]}
+            style={[
+              styles.flex1,
+              {
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                justifyContent: 'flex-end',
+              },
+            ]}
             activeOpacity={1}
             onPress={() => {
               setShowPartyModal(false);
@@ -732,7 +862,14 @@ const EditExpense = () => {
                   maxHeight: '70%',
                 }}
               >
-                <Text style={[styles.fs20, styles.fw700, styles.textNavy, styles.mb4]}>
+                <Text
+                  style={[
+                    styles.fs20,
+                    styles.fw700,
+                    styles.textNavy,
+                    styles.mb4,
+                  ]}
+                >
                   Select Party
                 </Text>
                 <View
@@ -757,10 +894,18 @@ const EditExpense = () => {
                     placeholder="Search parties..."
                     placeholderTextColor="#94A3B8"
                     autoCorrect={false}
-                    style={{ flex: 1, marginLeft: 10, fontSize: 15, color: '#0F172A' }}
+                    style={{
+                      flex: 1,
+                      marginLeft: 10,
+                      fontSize: 15,
+                      color: '#0F172A',
+                    }}
                   />
                 </View>
-                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
                   {filteredParties.map(item => (
                     <TouchableOpacity
                       key={item}
@@ -774,12 +919,20 @@ const EditExpense = () => {
                         styles.row,
                         styles.alignCenter,
                         styles.justifyBetween,
-                        { paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+                        {
+                          paddingVertical: 18,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#F1F5F9',
+                        },
                       ]}
                     >
                       <View style={[styles.row, styles.alignCenter]}>
                         <Users size={20} color="#64748B" />
-                        <Text style={[styles.fs16, styles.textNavy, styles.ml3]}>{item}</Text>
+                        <Text
+                          style={[styles.fs16, styles.textNavy, styles.ml3]}
+                        >
+                          {item}
+                        </Text>
                       </View>
                       {party === item && <Check size={20} color="#2563EB" />}
                     </TouchableOpacity>

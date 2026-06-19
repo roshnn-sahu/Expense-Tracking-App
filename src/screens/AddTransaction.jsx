@@ -101,7 +101,9 @@ const AddTransaction = () => {
     return new Date();
   };
 
-  const editAmount = editTx ? String(Math.abs(parseFloat(editTx.amount) || 0)) : '';
+  const editAmount = editTx
+    ? String(Math.abs(parseFloat(editTx.amount) || 0))
+    : '';
   const editType = editTx?.type || (editTx?.amount > 0 ? 'Income' : 'Expense');
 
   const [type, setType] = useState(editType);
@@ -197,10 +199,14 @@ const AddTransaction = () => {
           : {}),
         ...(description.trim() ? { description: description.trim() } : {}),
       };
-      
+
       let response;
       if (isEditing && editTx?.id) {
-        response = await updateTransaction({ ...payload, id: editTx.id, transaction_id: editTx.transaction_id || editTx.id });
+        response = await updateTransaction({
+          ...payload,
+          id: editTx.id,
+          transaction_id: editTx.transaction_id || editTx.id,
+        });
       } else {
         response = await addTransaction(payload);
       }
@@ -211,15 +217,22 @@ const AddTransaction = () => {
       Toast.show({
         type: 'success',
         text1: 'Success',
-        text2: response?.message || (isEditing ? 'Transaction updated successfully!' : 'Transaction saved successfully!'),
-        visibilityTime: 2500,
+        text2:
+          response?.message ||
+          (isEditing
+            ? 'Transaction updated successfully!'
+            : 'Transaction saved successfully!'),
+        visibilityTime: 5000,
       });
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: error?.response?.data?.message || error?.message || 'Failed to save transaction.',
-        visibilityTime: 2500,
+        text2:
+          error?.response?.data?.message ||
+          error?.message ||
+          'Failed to save transaction.',
+        visibilityTime: 5000,
       });
     } finally {
       setSaving(false);
@@ -282,7 +295,9 @@ const AddTransaction = () => {
             <ArrowLeft size={22} color="#0F172A" />
           </TouchableOpacity>
 
-          <Text style={[styles.headerTitle]}>{isEditing ? 'Edit Transaction' : 'New Transaction'}</Text>
+          <Text style={[styles.headerTitle]}>
+            {isEditing ? 'Edit Transaction' : 'New Transaction'}
+          </Text>
 
           <View style={{ width: 40 }} />
         </View>
@@ -678,7 +693,15 @@ const AddTransaction = () => {
           ]}
         >
           <Button
-            label={saving ? (isEditing ? 'Updating...' : 'Saving...') : (isEditing ? 'Update Transaction' : 'Save Transaction')}
+            label={
+              saving
+                ? isEditing
+                  ? 'Updating...'
+                  : 'Saving...'
+                : isEditing
+                ? 'Update Transaction'
+                : 'Save Transaction'
+            }
             onPress={handleSave}
             variant="primary"
             size="lg"

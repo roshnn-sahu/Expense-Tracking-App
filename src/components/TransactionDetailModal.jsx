@@ -21,6 +21,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Pencil,
+  Trash2,
 } from 'lucide-react-native';
 import { useCurrency } from '@/context/CurrencyContext';
 import colors from '@/styles/colors';
@@ -39,7 +40,7 @@ const DetailRow = ({ label, value }) => {
   );
 };
 
-const TransactionDetailModal = ({ visible, onClose, onEdit, transaction }) => {
+const TransactionDetailModal = ({ visible, onClose, onEdit, onDeleteRequest, transaction }) => {
   const { formatCurrency } = useCurrency();
   const { height: screenHeight } = useWindowDimensions();
 
@@ -110,13 +111,26 @@ const TransactionDetailModal = ({ visible, onClose, onEdit, transaction }) => {
               <View style={s.sheetHandle} />
             </View>
 
-            {/* Edit button — inside sheet, uses responder system to bypass GestureDetector */}
-            <View
-              style={s.editBtn}
-              onStartShouldSetResponder={() => true}
-              onResponderRelease={() => onEdit?.(transaction)}
-            >
-              <Pencil size={18} color={colors.blue} strokeWidth={2.2} />
+            {/* Action buttons row — Edit + Delete */}
+            <View style={s.actionRow}>
+              <View
+                style={s.editBtn}
+                onStartShouldSetResponder={() => true}
+                onResponderRelease={() => onEdit?.(transaction)}
+              >
+                <Pencil size={18} color={colors.blue} strokeWidth={2.2} />
+              </View>
+
+              <View
+                style={s.deleteBtn}
+                onStartShouldSetResponder={() => true}
+                onResponderRelease={() => {
+                  onClose();
+                  onDeleteRequest?.(transaction);
+                }}
+              >
+                <Trash2 size={18} color={colors.red} strokeWidth={2.2} />
+              </View>
             </View>
 
             <ScrollView
@@ -228,10 +242,15 @@ const s = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: colors.grayBorder,
   },
-  editBtn: {
+  actionRow: {
     position: 'absolute',
     top: 22,
     right: 24,
+    flexDirection: 'row',
+    gap: 8,
+    zIndex: 10,
+  },
+  editBtn: {
     width: 36,
     height: 36,
     borderRadius: 12,
@@ -240,7 +259,16 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'rgba(37,99,235,0.2)',
-    zIndex: 10,
+  },
+  deleteBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: colors.redLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(239,68,68,0.2)',
   },
   scrollArea: {
     flexGrow: 0,
