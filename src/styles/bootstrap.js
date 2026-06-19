@@ -97,7 +97,7 @@ export default StyleSheet.create({
 grid
   ========================= */
 
- 
+
 
 
   /* =========================
@@ -413,6 +413,9 @@ grid
     backgroundColor: colors.surfaceAlt,
   },
 
+  bgGreen: {
+    backgroundColor: colors.green,
+  },
   bgGreenLight: {
     backgroundColor: colors.greenLight,
   },
@@ -442,8 +445,8 @@ grid
   textBlack: {
     color: colors.black,
   },
-  textMidBlack:{
-color:colors.midBlack
+  textMidBlack: {
+    color: colors.midBlack
   },
 
   textRed: {
@@ -471,6 +474,9 @@ color:colors.midBlack
      FONT SIZE
   ========================= */
 
+  fs10: {
+    fontSize: 10,
+  },
   fs12: {
     fontSize: 12,
   },
@@ -556,9 +562,9 @@ color:colors.midBlack
   textRight: {
     textAlign: 'right',
   },
-textItalic:{
-  fontStyle:'italic'
-},
+  textItalic: {
+    fontStyle: 'italic'
+  },
   /* =========================
      BORDERS
   ========================= */
