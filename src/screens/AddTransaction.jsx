@@ -222,8 +222,6 @@ const AddTransaction = () => {
           (isEditing
             ? 'Transaction updated successfully!'
             : 'Transaction saved successfully!'),
-        position: 'bottom',
-        swipeable: true,
         visibilityTime: 5000,
       });
     } catch (error) {
@@ -234,8 +232,6 @@ const AddTransaction = () => {
           error?.response?.data?.message ||
           error?.message ||
           'Failed to save transaction.',
-        position: 'bottom',
-        swipeable: true,
         visibilityTime: 5000,
       });
     } finally {

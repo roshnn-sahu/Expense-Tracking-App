@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Table, Row, Rows } from 'react-native-table-component';
+import { Table, Row } from 'react-native-table-component';
 import { format, parse } from 'date-fns';
 import { Calendar, Download } from 'lucide-react-native';
 
@@ -59,13 +59,13 @@ const Statement = ({ navigation }) => {
   }, [toDate]);
 
   const summary = useMemo(() => {
-    // Use API totals when available, fall back to calculated
-    if (meta.total_income) {
-      const income = parseFloat(meta.total_income) || 0;
-      const expense = parseFloat(meta.total_expense) || 0;
-      const opening = parseFloat(meta.opening_balance) || 0;
-      const closing = parseFloat(meta.closing) || 0;
-      return { income, expense, opening, closing, balance: closing - opening };
+    if (meta.income) {
+      const income = meta.income || 0;
+      const expense = meta.expense || 0;
+      const opening = meta.opening_balance || 0;
+      const closing = meta.closing || 0;
+      const diff = meta.diff || 0;
+      return { income, expense, opening, closing, diff };
     }
     let income = 0;
     let expense = 0;
@@ -92,7 +92,6 @@ const Statement = ({ navigation }) => {
         text1: 'Date range too large',
         text2:
           'Statement period cannot exceed 1 year. Please select a narrower range.',
-        position: 'bottom',
         visibilityTime: 4000,
       });
       return;
@@ -103,13 +102,16 @@ const Statement = ({ navigation }) => {
     try {
       const fromKey = formatDateKey(fromDate);
       const toKey = formatDateKey(toDate);
+
       const result = await getStatement(fromKey, toKey);
+
       setData(result.transactions);
       setMeta({
         closing: result.closing,
         opening_balance: result.opening_balance,
-        total_income: result.total_income,
-        total_expense: result.total_expense,
+        income: result.income,
+        expense: result.expense,
+        diff: result.diff,
       });
     } catch (err) {
       Toast.show({
@@ -119,8 +121,6 @@ const Statement = ({ navigation }) => {
           err?.response?.data?.message ||
           err?.message ||
           'Failed to fetch statement.',
-        position: 'bottom',
-        swipeable: true,
         visibilityTime: 4000,
       });
       setData([]);
@@ -131,22 +131,83 @@ const Statement = ({ navigation }) => {
   };
 
   // Build table data
-  const tableHead = ['#', 'Date', 'Name', 'Expense', 'Income', 'Closing'];
-  const tableWidths = [32, 80, 115, 90, 90, 100];
+  const tableHead = ['#', 'DATE', 'NAME', 'AMOUNT', 'CLOSING'];
+  const tableWidths = [32, 75, 115, 90, 100];
 
-  const tableData = useMemo(() => {
+  const cellBaseStyle = {
+    fontSize: 13,
+    fontWeight: '500',
+    paddingVertical: 10,
+    paddingHorizontal: 3,
+    textAlign: 'center',
+  };
+
+  // Build rows with colored cells for expense/income
+  const tableRows = useMemo(() => {
     let runningBalance = parseFloat(meta.opening_balance) || 0;
     return data.map((item, index) => {
       runningBalance += item.amount;
-      return [
-        String(index + 1),
-        safeFormatDate(item.date, 'dd MMM yy'),
-        item.name,
-        item.amount < 0 ? formatCurrency(Math.abs(item.amount)) : '',
-        item.amount > 0 ? formatCurrency(item.amount) : '',
-        formatCurrency(runningBalance),
-      ];
+      return (
+        <Row
+          key={item.id ?? index}
+          data={[
+            String(index + 1),
+            <Text style={{ fontSize: 12, textAlign: 'center' }}>
+              {item.date}
+            </Text>,
+            item.name,
+            item.amount < 0 ? (
+              <Text
+                style={{
+                  ...cellBaseStyle,
+                  color: colors.red,
+                  fontWeight: '700',
+                }}
+              >{`\u2212 ${formatCurrency(Math.abs(item.amount))}`}</Text>
+            ) : (
+              <Text
+                style={{
+                  ...cellBaseStyle,
+                  color: colors.green,
+                  fontWeight: '700',
+                }}
+              >{`+ ${formatCurrency(item.amount)}`}</Text>
+            ),
+
+            <Text style={{ ...cellBaseStyle, color: '#1E293B' }}>
+              {formatCurrency(runningBalance)}
+            </Text>,
+          ]}
+          widthArr={tableWidths}
+          style={{
+            backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F8FAFC',
+            minHeight: 44,
+          }}
+          textStyle={{
+            color: '#1E293B',
+            fontSize: 13,
+            fontWeight: '500',
+            paddingVertical: 10,
+            paddingHorizontal: 3,
+            textAlign: 'center',
+          }}
+        />
+      );
     });
+  }, [data, meta.opening_balance]);
+
+  // Footer totals
+  const footerTotals = useMemo(() => {
+    const opening = parseFloat(meta.opening_balance) || 0;
+    let totalExpense = 0;
+    let totalIncome = 0;
+    let running = opening;
+    data.forEach(item => {
+      running += item.amount;
+      if (item.amount < 0) totalExpense += Math.abs(item.amount);
+      else totalIncome += item.amount;
+    });
+    return { totalExpense, totalIncome, closing: running };
   }, [data, meta.opening_balance]);
 
   return (
@@ -274,7 +335,7 @@ const Statement = ({ navigation }) => {
               disabled={loading}
               style={[
                 {
-                  backgroundColor: loading ? '#93C5FD' : colors.primary,
+                  backgroundColor: loading ? '#1f61acff' : colors.primary,
                   borderRadius: 16,
                   paddingVertical: 16,
                   alignItems: 'center',
@@ -318,129 +379,122 @@ const Statement = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {/* SUMMARY BAR - shown only after fetching */}
+          {/* SUMMARY CARD - modern 2x2 grid */}
           {fetched && (
             <View
               style={[
-                styles.row,
-                {
-                  backgroundColor: '#F8FAFC',
-                  borderRadius: 16,
-                  padding: 16,
-                  marginBottom: 16,
-                  borderWidth: 1,
-                  borderColor: '#E2E8F0',
-                },
+                styles.card,
+                { marginBottom: 20, padding: 15, marginTop: 8 },
               ]}
             >
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text
+              <Text
+                style={[
+                  styles.fs16,
+                  styles.fw700,
+                  styles.textNavy,
+                  { marginBottom: 18, letterSpacing: -0.3 },
+                ]}
+              >
+                Summary
+              </Text>
+
+              <View style={[styles.flexRow, styles.gap3, styles.mb3]}>
+                {/* OPENING */}
+                <View
+                  style={[styles.ieCard, { backgroundColor: colors.blueLight }]}
+                >
+                  <View
+                    style={[styles.ieIconWrap, { backgroundColor: '#FFFFFF' }]}
+                  >
+                    <Text style={{ fontSize: 14 }}>📊</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.ieLabel}>Opening</Text>
+                    <Text style={[styles.ieAmount, { color: colors.blue }]}>
+                      {formatCurrency(summary.opening)}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* INCOME */}
+                <View
                   style={[
-                    styles.fs11,
-                    styles.fw600,
-                    styles.textGray,
-                    styles.mb1,
+                    styles.ieCard,
+                    { backgroundColor: colors.greenLight },
                   ]}
                 >
-                  Income
-                </Text>
-                <Text
-                  style={[styles.fs16, styles.fw700, { color: colors.green }]}
-                >
-                  {formatCurrency(summary.income)}
-                </Text>
+                  <View
+                    style={[styles.ieIconWrap, { backgroundColor: '#FFFFFF' }]}
+                  >
+                    <Text style={{ fontSize: 18 }}>📈</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.ieLabel}>Income</Text>
+                    <Text
+                      style={[styles.ieAmount, { color: colors.greenDark }]}
+                    >
+                      {formatCurrency(summary.income)}
+                    </Text>
+                  </View>
+                </View>
               </View>
 
-              <View
-                style={{
-                  width: 1,
-                  backgroundColor: '#E2E8F0',
-                  marginHorizontal: 12,
-                }}
-              />
-
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text
-                  style={[
-                    styles.fs11,
-                    styles.fw600,
-                    styles.textGray,
-                    styles.mb1,
-                  ]}
+              <View style={[styles.flexRow, styles.gap3]}>
+                {/* EXPENSE */}
+                <View
+                  style={[styles.ieCard, { backgroundColor: colors.redLight }]}
                 >
-                  Expense
-                </Text>
-                <Text
-                  style={[styles.fs16, styles.fw700, { color: colors.red }]}
-                >
-                  {formatCurrency(summary.expense)}
-                </Text>
-              </View>
+                  <View
+                    style={[styles.ieIconWrap, { backgroundColor: '#FFFFFF' }]}
+                  >
+                    <Text style={{ fontSize: 18 }}>📉</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.ieLabel}>Expense</Text>
+                    <Text style={[styles.ieAmount, { color: colors.redDark }]}>
+                      {formatCurrency(summary.expense)}
+                    </Text>
+                  </View>
+                </View>
 
-              <View
-                style={{
-                  width: 1,
-                  backgroundColor: '#E2E8F0',
-                  marginHorizontal: 12,
-                }}
-              />
-
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text
+                {/* NET DIFFERENCE */}
+                <View
                   style={[
-                    styles.fs11,
-                    styles.fw600,
-                    styles.textGray,
-                    styles.mb1,
-                  ]}
-                >
-                  Balance
-                </Text>
-                <Text
-                  style={[
-                    styles.fs16,
-                    styles.fw700,
+                    styles.ieCard,
                     {
-                      color: summary.balance >= 0 ? colors.green : colors.red,
+                      backgroundColor:
+                        (summary.diff || 0) >= 0
+                          ? colors.amberLight
+                          : colors.redLight,
                     },
                   ]}
                 >
-                  {formatCurrency(summary.balance)}
-                </Text>
+                  <View
+                    style={[styles.ieIconWrap, { backgroundColor: '#FFFFFF' }]}
+                  >
+                    <Text style={{ fontSize: 18 }}>
+                      {(summary.diff || 0) >= 0 ? '✅' : '⚠️'}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text style={styles.ieLabel}>Difference</Text>
+                    <Text
+                      style={[
+                        styles.ieAmount,
+                        {
+                          color:
+                            (summary.diff || 0) >= 0
+                              ? colors.greenDark
+                              : colors.redDark,
+                        },
+                      ]}
+                    >
+                      {formatCurrency(summary.diff)}
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
-          )}
-
-          {/* EXPORT BUTTON */}
-          {fetched && data.length > 0 && (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              style={[
-                styles.row,
-                styles.alignCenter,
-                styles.justifyCenter,
-                {
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: 14,
-                  borderWidth: 1.5,
-                  borderColor: colors.primary,
-                  paddingVertical: 14,
-                  marginBottom: 16,
-                },
-              ]}
-            >
-              <Download size={18} color={colors.primary} />
-              <Text
-                style={[
-                  styles.ml2,
-                  styles.fs15,
-                  styles.fw600,
-                  { color: colors.primary },
-                ]}
-              >
-                Export to PDF
-              </Text>
-            </TouchableOpacity>
           )}
 
           {/* TABLE */}
@@ -499,25 +553,138 @@ const Statement = ({ navigation }) => {
                           letterSpacing: 0.5,
                         }}
                       />
+                      {/* OPENING BALANCE ROW */}
+                      <Row
+                        data={[
+                          '',
+                          <Text
+                            style={{
+                              ...cellBaseStyle,
+                              color: '#64748B',
+                              fontWeight: '600',
+                            }}
+                          >
+                            OPENING
+                          </Text>,
+                          parseFloat(meta.opening_balance) < 0 ? (
+                            <Text
+                              style={{
+                                ...cellBaseStyle,
+                                color: colors.red,
+                                fontWeight: '700',
+                              }}
+                            >
+                              {`\u2212 ${formatCurrency(
+                                Math.abs(parseFloat(meta.opening_balance)),
+                              )}`}
+                            </Text>
+                          ) : (
+                            <Text
+                              style={{
+                                ...cellBaseStyle,
+                                color: colors.green,
+                                fontWeight: '700',
+                              }}
+                            >{`+ ${formatCurrency(
+                              parseFloat(meta.opening_balance),
+                            )}`}</Text>
+                          ),
 
-                      {/* TABLE BODY */}
-                      <Rows
-                        data={tableData}
+                          ,
+                        ]}
                         widthArr={tableWidths}
+                        style={{
+                          height: 44,
+                          backgroundColor: '#F1F5F9',
+                        }}
                         textStyle={{
-                          color: '#1E293B',
+                          color: '#64748B',
                           fontSize: 13,
-                          fontWeight: '500',
+                          fontWeight: '600',
                           paddingVertical: 10,
                           paddingHorizontal: 3,
                           textAlign: 'center',
                         }}
                       />
+                      {/* TABLE BODY */}
+                      {tableRows}
+                      {/* TABLE FOOTER */}
+                      <Row
+                        data={[
+                          '',
+                          '',
+                          '',
+                          <Text
+                            style={{
+                              ...cellBaseStyle,
+                              color: '#FFFFFF',
+                              fontWeight: '700',
+                            }}
+                          >
+                            CLOSING
+                          </Text>,
+
+                          <Text
+                            style={{
+                              ...cellBaseStyle,
+                              color: colors.green,
+                              fontWeight: '700',
+                            }}
+                          >
+                            {formatCurrency(footerTotals.closing)}
+                          </Text>,
+                        ]}
+                        widthArr={tableWidths}
+                        style={{
+                          height: 46,
+                          backgroundColor: '#1E293B',
+                          borderBottomLeftRadius: 12,
+                          borderBottomRightRadius: 12,
+                        }}
+                        textStyle={{
+                          color: '#FFFFFF',
+                          fontSize: 13,
+                          fontWeight: '700',
+                          textAlign: 'center',
+                        }}
+                      />{' '}
                     </Table>
                   </View>
                 </ScrollView>
               )}
             </View>
+          )}
+
+          {/* EXPORT BUTTON */}
+          {fetched && data.length > 0 && (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={[
+                styles.row,
+                styles.alignCenter,
+                styles.justifyCenter,
+                {
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: 14,
+                  borderWidth: 1.5,
+                  borderColor: colors.primary,
+                  paddingVertical: 14,
+                  marginBottom: 16,
+                },
+              ]}
+            >
+              <Download size={18} color={colors.primary} />
+              <Text
+                style={[
+                  styles.ml2,
+                  styles.fs15,
+                  styles.fw600,
+                  { color: colors.primary },
+                ]}
+              >
+                Export to PDF
+              </Text>
+            </TouchableOpacity>
           )}
 
           {/* Prompt when no data fetched yet */}

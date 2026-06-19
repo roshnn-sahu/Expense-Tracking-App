@@ -193,8 +193,6 @@ const EditExpense = () => {
         type: 'success',
         text1: 'Success',
         text2: response?.message || 'Expense updated successfully!',
-        position: 'bottom',
-        swipeable: true,
         visibilityTime: 5000,
       });
     } catch (error) {
@@ -205,8 +203,6 @@ const EditExpense = () => {
           error?.response?.data?.message ||
           error?.message ||
           'Failed to update expense.',
-        position: 'bottom',
-        swipeable: true,
         visibilityTime: 5000,
       });
     } finally {

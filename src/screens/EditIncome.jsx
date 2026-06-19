@@ -184,8 +184,6 @@ const EditIncome = () => {
         type: 'success',
         text1: 'Success',
         text2: response?.message || 'Income updated successfully!',
-        position: 'bottom',
-        swipeable: true,
         visibilityTime: 5000,
       });
     } catch (error) {
@@ -196,8 +194,6 @@ const EditIncome = () => {
           error?.response?.data?.message ||
           error?.message ||
           'Failed to update income.',
-        position: 'bottom',
-        swipeable: true,
         visibilityTime: 5000,
       });
     } finally {

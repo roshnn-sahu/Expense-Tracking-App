@@ -18,7 +18,7 @@ export default StyleSheet.create({
 
   scrollContent: {
     paddingHorizontal: 20,
-       paddingTop: 4,
+    paddingTop: 4,
     paddingBottom: 120,
   },
 
@@ -157,7 +157,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 20,
-    padding: 12,
+    padding: 8,
     flex: 1,
     borderWidth: 1,
     borderColor: colors.grayBorder,
@@ -182,7 +182,7 @@ export default StyleSheet.create({
   },
 
   ieAmount: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '700',
     color: colors.navy,
     letterSpacing: -0.5,
@@ -196,7 +196,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
-    position:"relative"
+    position: "relative"
   },
 
   txIconWrap: {

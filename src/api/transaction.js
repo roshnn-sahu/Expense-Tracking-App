@@ -156,6 +156,7 @@ export const getStatement = async (fromDate, toDate) => {
   const parsedData = parseResponseData(response.data);
   const transactions = mapApiResponseToTransactions(response.data);
 
+
   return {
     transactions,
     closing: parsedData?.closing ?? '',
@@ -164,6 +165,9 @@ export const getStatement = async (fromDate, toDate) => {
     total_expense: parsedData?.total_expense ?? '',
     s_date: parsedData?.s_date ?? '',
     e_date: parsedData?.e_date ?? '',
+    income: parsedData?.income ?? '',
+    expense: parsedData?.expense ?? '',
+    diff: parsedData?.diff ?? '',
   };
 };
 
