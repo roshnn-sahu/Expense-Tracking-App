@@ -10,8 +10,8 @@ import {
   StatusBar,
   Modal,
   TouchableWithoutFeedback,
-  Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { addTransaction, updateTransaction } from '@/api';
 import ErrorMessage from '@/components/ui/ErrorMessage';
@@ -208,15 +208,19 @@ const AddTransaction = () => {
       triggerRefresh();
       resetForm();
       navigation.goBack();
-      Alert.alert(
-        'Success',
-        response?.message || (isEditing ? 'Transaction updated successfully!' : 'Transaction saved successfully!'),
-      );
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: response?.message || (isEditing ? 'Transaction updated successfully!' : 'Transaction saved successfully!'),
+        visibilityTime: 2500,
+      });
     } catch (error) {
-      Alert.alert(
-        'Error',
-        error?.response?.data?.message || error?.message || 'Failed to save transaction.',
-      );
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error?.response?.data?.message || error?.message || 'Failed to save transaction.',
+        visibilityTime: 2500,
+      });
     } finally {
       setSaving(false);
     }

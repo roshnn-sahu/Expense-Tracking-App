@@ -10,8 +10,8 @@ import {
   StatusBar,
   Modal,
   TouchableWithoutFeedback,
-  Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { updateTransaction } from '@/api';
 import ErrorMessage from '@/components/ui/ErrorMessage';
@@ -180,17 +180,21 @@ const EditIncome = () => {
       const response = await updateTransaction(payload);
       triggerRefresh();
       navigation.goBack();
-      Alert.alert(
-        'Success',
-        response?.message || 'Income updated successfully!',
-      );
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: response?.message || 'Income updated successfully!',
+        visibilityTime: 2500,
+      });
     } catch (error) {
-      Alert.alert(
-        'Error',
-        error?.response?.data?.message ||
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error?.response?.data?.message ||
           error?.message ||
           'Failed to update income.',
-      );
+        visibilityTime: 2500,
+      });
     } finally {
       setSaving(false);
     }

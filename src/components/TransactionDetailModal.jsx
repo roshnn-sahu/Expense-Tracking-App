@@ -103,30 +103,26 @@ const TransactionDetailModal = ({ visible, onClose, onEdit, transaction }) => {
           onPress={onClose}
         />
 
-        {/* Bottom sheet wrapper — edit row outside GestureDetector to avoid Pan gesture interference */}
-        <View style={{ alignSelf: 'stretch' }}>
-          {/* Edit button row — OUTSIDE GestureDetector */}
-          <View style={s.editRow}>
-            <TouchableOpacity
+        <GestureDetector gesture={panGesture}>
+          <Animated.View style={[s.sheet, sheetStyle]}>
+            {/* Handle */}
+            <View style={s.sheetHeader}>
+              <View style={s.sheetHandle} />
+            </View>
+
+            {/* Edit button — inside sheet, uses responder system to bypass GestureDetector */}
+            <View
               style={s.editBtn}
-              onPress={() => onEdit?.(transaction)}
-              activeOpacity={0.7}
+              onStartShouldSetResponder={() => true}
+              onResponderRelease={() => onEdit?.(transaction)}
             >
               <Pencil size={18} color={colors.blue} strokeWidth={2.2} />
-            </TouchableOpacity>
-          </View>
+            </View>
 
-          <GestureDetector gesture={panGesture}>
-            <Animated.View style={[s.sheet, sheetStyle]}>
-              {/* Handle */}
-              <View style={s.sheetHeader}>
-                <View style={s.sheetHandle} />
-              </View>
-
-              <ScrollView
-                style={s.scrollArea}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={s.scrollContent}
+            <ScrollView
+              style={s.scrollArea}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={s.scrollContent}
               >
                 {/* Icon + Amount */}
                 <View style={s.amountSection}>
@@ -202,7 +198,6 @@ const TransactionDetailModal = ({ visible, onClose, onEdit, transaction }) => {
               </TouchableOpacity>
             </Animated.View>
           </GestureDetector>
-        </View>
       </View>
     </Modal>
   );
@@ -220,6 +215,7 @@ const s = StyleSheet.create({
     borderTopRightRadius: 28,
     paddingHorizontal: 24,
     paddingBottom: 20,
+    maxHeight: '85%',
   },
   sheetHeader: {
     alignItems: 'center',
@@ -232,13 +228,10 @@ const s = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: colors.grayBorder,
   },
-  editRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 4,
-    marginBottom: 4,
-  },
   editBtn: {
+    position: 'absolute',
+    top: 22,
+    right: 24,
     width: 36,
     height: 36,
     borderRadius: 12,
@@ -247,6 +240,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'rgba(37,99,235,0.2)',
+    zIndex: 10,
   },
   scrollArea: {
     flexGrow: 0,
