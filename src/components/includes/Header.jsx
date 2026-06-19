@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import { Menu, User } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import { constant_variables } from '@/config/constant';
 
 import styles from '@/styles';
 import { useCompany } from '@/context/CompanyContext';
 
 const Header = ({ onMenuPress, onUserPress }) => {
   const navigation = useNavigation();
-  const { company, loading, refreshCompany } = useCompany();
+  const { aSite, loading, refreshCompany } = useCompany();
   const [imgError, setImgError] = useState(false);
 
-  const logoUrl = company?.logo_url;
-  const companyName = company?.display_name || company?.name || 'Expense Tracker';
+  const logoUrl = aSite?.logo_url;
+  const companyName = aSite?.display_name || constant_variables.display_name;
   const showLogo = logoUrl && !imgError;
 
   const handleLogoPress = () => {

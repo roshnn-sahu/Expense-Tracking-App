@@ -1,2 +1,2 @@
 export { getCompanyData, clearCompanyCache, getCachedCompanyData } from './company';
-export { getTransactions, addTransaction, updateTransaction } from './transaction';
+export { getTransactions, addTransaction, updateTransaction, deleteTransaction, getStatement } from './transaction';

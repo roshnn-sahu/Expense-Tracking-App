@@ -1,4 +1,5 @@
 import { BaseToast, ErrorToast } from 'react-native-toast-message';
+
 export const toastConfig = {
   success: props => (
     <BaseToast
@@ -16,6 +17,15 @@ export const toastConfig = {
       contentContainerStyle={{ paddingHorizontal: 16 }}
       text1Style={{ fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}
       text2Style={{ fontSize: 13, color: '#FEF2F2' }}
+    />
+  ),
+  warning: props => (
+    <BaseToast
+      {...props}
+      style={{ backgroundColor: '#F59E0B', borderLeftColor: '#D97706' }}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+      text1Style={{ fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}
+      text2Style={{ fontSize: 13, color: '#FFFBEB' }}
     />
   ),
   info: props => (

@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getCompanyData, clearCompanyCache } from '@/api/company';
+import {
+  getCompanyData,
+  getCachedCompanyData,
+  clearCompanyCache,
+} from '@/api/company';
 
 const CompanyContext = createContext(null);
 
@@ -12,7 +16,7 @@ export const useCompany = () => {
 };
 
 export const CompanyProvider = ({ children }) => {
-  const [company, setCompany] = useState(null);
+  const [aSite, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,9 +24,22 @@ export const CompanyProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await getCompanyData(forceRefresh);
-  
-      setCompany(result.data.data);
+      if (forceRefresh) {
+        console.log('hey');
+        await getCompanyData(true);
+      }
+      console.log('hey outside');
+      const result = await getCachedCompanyData();
+      if (result) {
+        setCompany(result.data.data);
+      } else {
+        await getCompanyData();
+
+        const refreshed = await getCachedCompanyData();
+        if (refreshed) {
+          setCompany(refreshed.data.data);
+        }
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -39,7 +56,7 @@ export const CompanyProvider = ({ children }) => {
 
   return (
     <CompanyContext.Provider
-      value={{ company, loading, error, refreshCompany, clearCache }}
+      value={{ aSite, loading, error, refreshCompany, clearCache }}
     >
       {children}
     </CompanyContext.Provider>

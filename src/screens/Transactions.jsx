@@ -83,6 +83,8 @@ const Transactions = () => {
         type: 'info',
         text1: 'Deleted',
         text2: 'Transaction deleted successfully!',
+        position: 'bottom',
+        swipeable: true,
         visibilityTime: 2500,
       });
       triggerRefresh();
@@ -95,6 +97,8 @@ const Transactions = () => {
           err?.response?.data?.message ||
           err?.message ||
           'Failed to delete transaction.',
+        position: 'bottom',
+        swipeable: true,
         visibilityTime: 3000,
       });
     }

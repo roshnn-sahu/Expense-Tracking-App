@@ -65,6 +65,8 @@ const Statement = ({ navigation }) => {
           err?.response?.data?.message ||
           err?.message ||
           'Failed to fetch statement.',
+        position: 'bottom',
+        swipeable: true,
         visibilityTime: 4000,
       });
       setData([]);
