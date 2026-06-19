@@ -22,7 +22,7 @@ export const categoryIcons = {
   Wallet: 'Wallet',
 };
 
-export const filters = ['All', 'Income', 'Expense',];
+export const filters = ['All', 'Expense', 'Income'];
 
 export const allTransactions = [
   {

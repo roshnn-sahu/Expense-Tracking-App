@@ -6,7 +6,7 @@ import {
   ArrowUpDown,
   PlusCircle,
   PieChart,
- FileText
+  FileText,
 } from 'lucide-react-native';
 
 import HomeScreen from '@/screens/Home';
@@ -15,7 +15,6 @@ import Analytics from '@/screens/Analytics';
 import AddTransaction from '@/screens/AddTransaction';
 import Statement from '@/screens/Statement';
 import styles from '@/styles';
-import { TransactionRefreshProvider } from '@/context/TransactionRefreshContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -89,7 +88,6 @@ const tabBarLabelStyle = {
 };
 
 const BottomNavigation = () => (
-  <TransactionRefreshProvider>
   <Tab.Navigator
     screenOptions={{
       headerShown: false,
@@ -140,7 +138,6 @@ const BottomNavigation = () => (
       }}
     />
   </Tab.Navigator>
-  </TransactionRefreshProvider>
 );
 
 export default BottomNavigation;

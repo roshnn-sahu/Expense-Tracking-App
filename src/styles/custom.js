@@ -18,7 +18,7 @@ export default StyleSheet.create({
 
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 4,
+       paddingTop: 4,
     paddingBottom: 120,
   },
 

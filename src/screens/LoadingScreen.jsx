@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 
 import { View, Text, ActivityIndicator, StatusBar } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+
+import { constant_variables } from '@/config/constant';
 
 import styles from '@/styles';
 import { useCompany } from '@/context/CompanyContext';
 
 const LoadingScreen = ({ navigation }) => {
-  const { company, loading } = useCompany();
+  const { aSite, loading } = useCompany();
 
   useEffect(() => {
     if (!loading) {
@@ -21,7 +21,7 @@ const LoadingScreen = ({ navigation }) => {
     }
   }, [loading, navigation]);
 
-  const appName = company?.display_name || 'FinTrack';
+  const appName = aSite?.display_name || constant_variables.loding_screen_name;
 
   return (
     <SafeAreaView style={[styles.flex1, styles.bgWhite]}>
@@ -47,9 +47,9 @@ const LoadingScreen = ({ navigation }) => {
             },
           ]}
         >
-          {company?.logo ? (
+          {aSite?.logo ? (
             <Text style={[styles.fs42, styles.textWhite, styles.fw800]}>
-              {company.logo}
+              {aSite.logo}
             </Text>
           ) : (
             <Text

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
+
 import styles from '@/styles';
 import { useCompany } from '@/context/CompanyContext';
 
@@ -17,16 +18,16 @@ import { recentTransactions } from '@/data/transactions';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { company } = useCompany();
+  const { aSite } = useCompany();
   const [selectedTx, setSelectedTx] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleTransactionPress = (tx) => {
+  const handleTransactionPress = tx => {
     setSelectedTx(tx);
     setModalVisible(true);
   };
 
-  const handleEditTransaction = (tx) => {
+  const handleEditTransaction = tx => {
     setModalVisible(false);
     setSelectedTx(null);
     const isExpense = tx.amount < 0;
@@ -34,7 +35,8 @@ const HomeScreen = () => {
       transaction: tx,
     });
   };
- 
+
+
   return (
     <SafeAreaView style={[styles.safeArea]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
@@ -54,7 +56,7 @@ const HomeScreen = () => {
             <Text style={styles.greeting}>Welcome back 👋</Text>
 
             <Text style={styles.greetingSub}>
-              {company?.display_name ? `${company.display_name}'s ` : ''}Your
+              {aSite?.display_name ? `${aSite.display_name}'s ` : ''}Your
               spending summary is ready.
             </Text>
           </View>
