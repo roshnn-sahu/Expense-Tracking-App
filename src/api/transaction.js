@@ -23,7 +23,7 @@ const parseResponseData = (data) => {
 
 const getTransactionRows = (data) => {
   const parsedData = parseResponseData(data);
-  const rows = parsedData?.data?.aRow ?? parsedData?.data?.transactions ?? parsedData?.transactions;
+  const rows = parsedData?.data?.aRow ?? parsedData?.aRow ?? parsedData?.data?.transactions ?? parsedData?.transactions;
 
   if (Array.isArray(rows)) return rows;
   if (Array.isArray(parsedData)) return parsedData;
@@ -145,17 +145,26 @@ export const updateTransaction = async (payload) => {
 export const getStatement = async (fromDate, toDate) => {
   const userId = await getUserId();
 
-  const response = await apiClient.get('/transaction/statement', {
+  const response = await apiClient.get('/transaction/statement?', {
     params: {
-      from_date: fromDate,
-      to_date: toDate,
+      satisfies_date: fromDate,
+      e_date: toDate,
     },
     headers: { user_id: userId },
   });
 
+  const parsedData = parseResponseData(response.data);
   const transactions = mapApiResponseToTransactions(response.data);
 
-  return transactions;
+  return {
+    transactions,
+    closing: parsedData?.closing ?? '',
+    opening_balance: parsedData?.opening_balance ?? '',
+    total_income: parsedData?.total_income ?? '',
+    total_expense: parsedData?.total_expense ?? '',
+    s_date: parsedData?.s_date ?? '',
+    e_date: parsedData?.e_date ?? '',
+  };
 };
 
 export default { getTransactions, addTransaction, updateTransaction, deleteTransaction, getStatement };

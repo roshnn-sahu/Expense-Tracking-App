@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Table, Row, Rows } from 'react-native-table-component';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Calendar, Download } from 'lucide-react-native';
 
 import styles from '@/styles';
@@ -28,6 +28,17 @@ const getFirstOfMonth = () => {
 const formatDateDisplay = date => format(date, 'dd MMM yyyy');
 const formatDateKey = date => format(date, 'yyyy-MM-dd');
 
+const safeFormatDate = (dateStr, fmt) => {
+  if (!dateStr) return '-';
+  // Try standard Date parsing (works for ISO formats like "2026-06-19")
+  const d = new Date(dateStr);
+  if (!isNaN(d.getTime())) return format(d, fmt);
+  // Try custom API format: "01/Apr/2026, 02:08:03PM"
+  const parsed = parse(dateStr, 'dd/MMM/yyyy, hh:mm:ssa', new Date());
+  if (!isNaN(parsed.getTime())) return format(parsed, fmt);
+  return '-';
+};
+
 const Statement = ({ navigation }) => {
   const { formatCurrency } = useCurrency();
 
@@ -36,27 +47,70 @@ const Statement = ({ navigation }) => {
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
   const [data, setData] = useState([]);
+  const [meta, setMeta] = useState({});
   const [fetched, setFetched] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Earliest allowed From date is 1 year before To date
+  const minFromDate = useMemo(() => {
+    const date = new Date(toDate);
+    date.setFullYear(date.getFullYear() - 1);
+    return date;
+  }, [toDate]);
+
   const summary = useMemo(() => {
+    // Use API totals when available, fall back to calculated
+    if (meta.total_income) {
+      const income = parseFloat(meta.total_income) || 0;
+      const expense = parseFloat(meta.total_expense) || 0;
+      const opening = parseFloat(meta.opening_balance) || 0;
+      const closing = parseFloat(meta.closing) || 0;
+      return { income, expense, opening, closing, balance: closing - opening };
+    }
     let income = 0;
     let expense = 0;
     data.forEach(item => {
       if (item.amount > 0) income += item.amount;
       else expense += Math.abs(item.amount);
     });
-    return { income, expense, balance: income - expense };
-  }, [data]);
+    return {
+      income,
+      expense,
+      balance: income - expense,
+      opening: 0,
+      closing: 0,
+    };
+  }, [data, meta]);
 
   const handleGetStatement = async () => {
+    // Validate date range does not exceed 1 year (leap-year-aware)
+    const yearAgo = new Date(toDate);
+    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+    if (fromDate < yearAgo) {
+      Toast.show({
+        type: 'warning',
+        text1: 'Date range too large',
+        text2:
+          'Statement period cannot exceed 1 year. Please select a narrower range.',
+        position: 'bottom',
+        visibilityTime: 4000,
+      });
+      return;
+    }
+
     setLoading(true);
     setFetched(true);
     try {
       const fromKey = formatDateKey(fromDate);
       const toKey = formatDateKey(toDate);
       const result = await getStatement(fromKey, toKey);
-      setData(result);
+      setData(result.transactions);
+      setMeta({
+        closing: result.closing,
+        opening_balance: result.opening_balance,
+        total_income: result.total_income,
+        total_expense: result.total_expense,
+      });
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -70,24 +124,30 @@ const Statement = ({ navigation }) => {
         visibilityTime: 4000,
       });
       setData([]);
+      setMeta({});
     } finally {
       setLoading(false);
     }
   };
 
   // Build table data
-  const tableHead = ['Date', 'Name', 'Expense', 'Income', 'Closing'];
-  const tableWidths = [65, 140, 70, 70, 70];
+  const tableHead = ['#', 'Date', 'Name', 'Expense', 'Income', 'Closing'];
+  const tableWidths = [32, 80, 115, 90, 90, 100];
 
   const tableData = useMemo(() => {
-    return data.map(item => [
-      format(item.date, 'dd MMM yy'),
-      item.name,
-      item.amount < 0 ? formatCurrency(Math.abs(item.amount)) : '',
-      item.amount > 0 ? formatCurrency(item.amount) : '',
-      item.closing ? formatCurrency(item.closing) : '',
-    ]);
-  }, [data]);
+    let runningBalance = parseFloat(meta.opening_balance) || 0;
+    return data.map((item, index) => {
+      runningBalance += item.amount;
+      return [
+        String(index + 1),
+        safeFormatDate(item.date, 'dd MMM yy'),
+        item.name,
+        item.amount < 0 ? formatCurrency(Math.abs(item.amount)) : '',
+        item.amount > 0 ? formatCurrency(item.amount) : '',
+        formatCurrency(runningBalance),
+      ];
+    });
+  }, [data, meta.opening_balance]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -214,7 +274,7 @@ const Statement = ({ navigation }) => {
               disabled={loading}
               style={[
                 {
-                  backgroundColor: loading ? '#93C5FD' : colors.blue,
+                  backgroundColor: loading ? '#93C5FD' : colors.primary,
                   borderRadius: 16,
                   paddingVertical: 16,
                   alignItems: 'center',
@@ -363,19 +423,19 @@ const Statement = ({ navigation }) => {
                   backgroundColor: '#FFFFFF',
                   borderRadius: 14,
                   borderWidth: 1.5,
-                  borderColor: colors.blue,
+                  borderColor: colors.primary,
                   paddingVertical: 14,
                   marginBottom: 16,
                 },
               ]}
             >
-              <Download size={18} color={colors.blue} />
+              <Download size={18} color={colors.primary} />
               <Text
                 style={[
                   styles.ml2,
                   styles.fs15,
                   styles.fw600,
-                  { color: colors.blue },
+                  { color: colors.primary },
                 ]}
               >
                 Export to PDF
@@ -449,7 +509,7 @@ const Statement = ({ navigation }) => {
                           fontSize: 13,
                           fontWeight: '500',
                           paddingVertical: 10,
-                          paddingHorizontal: 0,
+                          paddingHorizontal: 3,
                           textAlign: 'center',
                         }}
                       />
@@ -489,6 +549,7 @@ const Statement = ({ navigation }) => {
           isVisible={showFromPicker}
           mode="date"
           date={fromDate}
+          minimumDate={minFromDate}
           maximumDate={toDate}
           onConfirm={selected => {
             setFromDate(selected);
