@@ -29,6 +29,8 @@ import SearchableDropdown from '@/components/ui/SearchableDropdown';
 import PickerDropdown from '@/components/ui/PickerDropdown';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import { useCompany } from '@/context/CompanyContext';
+import { signupUser } from '@/api';
+import Toast from 'react-native-toast-message';
 
 // Fallback defaults when API data is not yet loaded
 const FALLBACK_GENDER = [
@@ -121,13 +123,31 @@ const SignUp = () => {
     setLoading(true);
     setError('');
 
-    // Simulate API call — replace with actual registration logic
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      // On success, navigate to main app
-      navigation.replace('DrawerRoot');
+      // Strip confirm_password before sending to API
+      const { confirm_password, ...payload } = form;
+      const response = await signupUser(payload);
+      if (response?.status === 1 || response?.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Account created!',
+          text2: 'Welcome to Expense Manager.',
+          visibilityTime: 3000,
+        });
+        navigation.replace('DrawerRoot');
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: response?.message || 'Registration failed. Please try again.',
+          visibilityTime: 5000,
+        });
+      }
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
+      Toast.show({
+        type: 'error',
+        text1: err?.response?.data?.message || err.message || 'Registration failed. Please try again.',
+        visibilityTime: 4000,
+      });
     } finally {
       setLoading(false);
     }

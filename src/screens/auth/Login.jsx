@@ -15,6 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react-native';
 import styles from '@/styles';
 import ErrorMessage from '@/components/ui/ErrorMessage';
+import { loginUser } from '@/api';
+import Toast from 'react-native-toast-message';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -41,13 +43,29 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    // Simulate API call — replace with actual auth logic
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      // On success, navigate to main app
-      navigation.replace('DrawerRoot');
+      const response = await loginUser(form.email, form.password);
+      if (response?.status === 1 || response?.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Welcome back!',
+          text2: 'You have been logged in successfully.',
+          visibilityTime: 3000,
+        });
+        navigation.replace('DrawerRoot');
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: response?.message || 'Login failed. Please try again.',
+          visibilityTime: 4000,
+        });
+      }
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      Toast.show({
+        type: 'error',
+        text1: err?.response?.data?.message || err.message || 'Login failed. Please try again.',
+        visibilityTime: 4000,
+      });
     } finally {
       setLoading(false);
     }

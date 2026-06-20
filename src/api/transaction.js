@@ -9,6 +9,11 @@ const getUserId = async () => {
   return userId || DEFAULT_USER_ID;
 };
 
+const getUserHeader = async () => {
+  const userId = await getUserId();
+  return { 'User_id': userId };
+};
+
 const parseResponseData = (data) => {
   if (typeof data === 'string') {
     try {
@@ -62,11 +67,10 @@ const mapApiResponseToTransactions = (data) => {
 };
 
 export const getTransactions = async (filter = 'All', page = 1) => {
-  const userId = await getUserId();
   const url = `/transaction/list/${filter}/${page}`;
 
   const response = await apiClient.get(url, {
-    headers: { user_id: userId },
+    headers: await getUserHeader(),
   });
 
   const transactions = mapApiResponseToTransactions(response.data);
@@ -90,8 +94,6 @@ export const getTransactions = async (filter = 'All', page = 1) => {
 
 
 export const addTransaction = async (payload) => {
-  const userId = await getUserId();
-
   const formData = new FormData();
   Object.entries(payload).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') {
@@ -101,7 +103,7 @@ export const addTransaction = async (payload) => {
 
   const response = await apiClient.post('/transaction/entry', formData, {
     headers: {
-      user_id: userId,
+      ...await getUserHeader(),
       'Content-Type': 'multipart/form-data',
       Accept: 'application/json',
     },
@@ -110,11 +112,9 @@ export const addTransaction = async (payload) => {
 };
 
 export const deleteTransaction = async (id) => {
-  const userId = await getUserId();
-
   const response = await apiClient.delete(`/transaction/delete/${id}`, {
     headers: {
-      user_id: userId,
+      ...await getUserHeader(),
       Accept: 'application/json',
     },
   });
@@ -122,8 +122,6 @@ export const deleteTransaction = async (id) => {
 };
 
 export const updateTransaction = async (payload) => {
-  const userId = await getUserId();
-
   const formData = new FormData();
   Object.entries(payload).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') {
@@ -134,7 +132,7 @@ export const updateTransaction = async (payload) => {
 
   const response = await apiClient.post(`/transaction/entry/${payload.id}`, formData, {
     headers: {
-      user_id: userId,
+      ...await getUserHeader(),
       'Content-Type': 'multipart/form-data',
       Accept: 'application/json',
     },
@@ -143,14 +141,12 @@ export const updateTransaction = async (payload) => {
 };
 
 export const getStatement = async (fromDate, toDate) => {
-  const userId = await getUserId();
-
   const response = await apiClient.get('/transaction/statement?', {
     params: {
       satisfies_date: fromDate,
       e_date: toDate,
     },
-    headers: { user_id: userId },
+    headers: await getUserHeader(),
   });
 
   const parsedData = parseResponseData(response.data);

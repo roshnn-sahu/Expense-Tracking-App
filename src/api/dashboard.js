@@ -9,6 +9,11 @@ const getUserId = async () => {
   return userId || DEFAULT_USER_ID;
 };
 
+const getUserHeader = async () => {
+  const userId = await getUserId();
+  return { 'User_id': userId };
+};
+
 const parseResponseData = data => {
   if (typeof data === 'string') {
     try {
@@ -82,10 +87,8 @@ const mapApiResponseToDashboard = data => {
 };
 
 export const getDashboardData = async () => {
-  const userId = await getUserId();
-
   const response = await apiClient.get('/login/dashboard', {
-    headers: { user_id: userId },
+    headers: await getUserHeader(),
   });
 
   return mapApiResponseToDashboard(response.data);

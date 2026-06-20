@@ -15,6 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Mail, ArrowLeft, ArrowRight } from 'lucide-react-native';
 import styles from '@/styles';
 import ErrorMessage from '@/components/ui/ErrorMessage';
+import { forgotPassword } from '@/api';
+import Toast from 'react-native-toast-message';
 
 const ForgotPassword = () => {
   const navigation = useNavigation();
@@ -36,12 +38,23 @@ const ForgotPassword = () => {
     setLoading(true);
     setError('');
 
-    // Simulate API call — replace with actual forgot password logic
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSent(true);
+      const response = await forgotPassword(email);
+      if (response?.status === 1 || response?.success) {
+        setSent(true);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: response?.message || 'Something went wrong. Please try again.',
+          visibilityTime: 4000,
+        });
+      }
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.');
+      Toast.show({
+        type: 'error',
+        text1: err?.response?.data?.message || err.message || 'Something went wrong. Please try again.',
+        visibilityTime: 4000,
+      });
     } finally {
       setLoading(false);
     }

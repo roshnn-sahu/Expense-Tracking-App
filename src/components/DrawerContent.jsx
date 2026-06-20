@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import {
   Home,
   ArrowUpDown,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react-native';
 import styles from '@/styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { logoutUser } from '@/api/auth';
 
 const menus = [
   { title: 'Home', icon: Home, screen: 'Home' },
@@ -22,6 +23,28 @@ const menus = [
 ];
 
 const DrawerContent = ({ navigation }) => {
+  
+  const handleLogOut = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await logoutUser();
+          } catch {
+            // Session already cleared locally by logoutUser()
+          }
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.flex1}>
       {/* User Info */}
@@ -56,11 +79,9 @@ const DrawerContent = ({ navigation }) => {
                 </View>
                 <Text style={styles.drawerItemLabel}>{item.title}</Text>
               </TouchableOpacity>
-              
+
               {/* Divider between items */}
-              {index !== menus.length - 1 && (
-                <View style={styles.divider} />
-              )}
+              {index !== menus.length - 1 && <View style={styles.divider} />}
             </View>
           );
         })}
@@ -68,9 +89,12 @@ const DrawerContent = ({ navigation }) => {
 
       {/* Flexible Spacer pushes footer to the bottom */}
       <View style={styles.flex1} />
-      
+
       {/* Footer */}
-      <TouchableOpacity style={[styles.drawerFooter, styles.row]}>
+      <TouchableOpacity
+        style={[styles.drawerFooter, styles.row]}
+        onPress={handleLogOut}
+      >
         <LogOut size={20} color={styles.colors.red} />
         <Text style={[styles.textRed, styles.fw700, styles.ml2]}>Logout</Text>
       </TouchableOpacity>
