@@ -48,12 +48,11 @@ const DrawerContent = ({ navigation }) => {
         visibilityTime: 3000,
       });
     }
-    setTimeout(() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-    }, 800);
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   return (

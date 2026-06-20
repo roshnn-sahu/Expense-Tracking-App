@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Mail, ArrowLeft, ArrowRight } from 'lucide-react-native';
+import { Mail, Phone, ArrowLeft, ArrowRight } from 'lucide-react-native';
 import styles from '@/styles';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import { forgotPassword } from '@/api';
@@ -21,6 +21,7 @@ import Toast from 'react-native-toast-message';
 const ForgotPassword = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
@@ -34,12 +35,16 @@ const ForgotPassword = () => {
       setError('Please enter a valid email address');
       return;
     }
+    if (!mobile.trim()) {
+      setError('Please enter your mobile number');
+      return;
+    }
 
     setLoading(true);
     setError('');
 
     try {
-      const response = await forgotPassword(email);
+      const response = await forgotPassword(email, mobile);
       if (response?.status === 1 || response?.success) {
         setSent(true);
       } else {
@@ -88,7 +93,7 @@ const ForgotPassword = () => {
                 Forgot Password
               </Text>
               <Text style={[styles.fs15, styles.textGrayLight, styles.mt2, styles.mb6]}>
-                Enter your email address and we'll send you a reset link.
+                Enter your email and mobile number to receive a reset link.
               </Text>
 
               {/* Error */}
@@ -118,6 +123,33 @@ const ForgotPassword = () => {
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    style={[styles.flex1, styles.ml3, styles.textNavy, styles.fw500]}
+                  />
+                </View>
+              </View>
+
+              {/* Mobile */}
+              <View style={styles.mb4}>
+                <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+                  Mobile Number
+                </Text>
+                <View style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  height: 62,
+                  borderRadius: 20,
+                  paddingHorizontal: 18,
+                  borderWidth: 1,
+                  borderColor: '#E2E8F0',
+                  backgroundColor: '#FFFFFF',
+                }}>
+                  <Phone size={20} color="#64748B" />
+                  <TextInput
+                    value={mobile}
+                    onChangeText={v => { setMobile(v); setError(''); }}
+                    placeholder="9876543210"
+                    placeholderTextColor="#94A3B8"
+                    keyboardType="phone-pad"
                     style={[styles.flex1, styles.ml3, styles.textNavy, styles.fw500]}
                   />
                 </View>
@@ -171,6 +203,8 @@ const ForgotPassword = () => {
               <Text style={[styles.fs15, styles.textGray, styles.mt2, styles.textCenter, { lineHeight: 22 }]}>
                 We've sent a password reset link to{' '}
                 <Text style={[styles.textNavy, styles.fw600]}>{email}</Text>
+                {'\n'}and mobile{' '}
+                <Text style={[styles.textNavy, styles.fw600]}>{mobile}</Text>
               </Text>
 
               <TouchableOpacity

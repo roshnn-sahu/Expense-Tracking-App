@@ -46,14 +46,14 @@ const Login = () => {
     try {
       const response = await loginUser(form.email, form.password);
 
-      if (response?.status === 1) {
+      if (response.status === 1) {
         Toast.show({
           type: 'success',
           text1: 'Welcome back!',
           text2: 'You have been logged in successfully.',
-          visibilityTime: 3000,
+          visibilityTime: 5000,
         });
-        setTimeout(() => navigation.replace('DrawerRoot'), 1500);
+        navigation.replace('DrawerRoot');
       } else {
         Toast.show({
           type: 'error',

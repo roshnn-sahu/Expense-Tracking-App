@@ -40,8 +40,13 @@ export const signupUser = async (payload) => {
   return data;
 };
 
-export const forgotPassword = async (email) => {
-  const response = await apiClient.post('/login/forgot', { email_id: email });
+export const forgotPassword = async (email, mobile) => {
+  const response = await apiClient.post('/login/forgot', {
+    email_id: email,
+    mobile: mobile,
+  }, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response.data;
 };
 
