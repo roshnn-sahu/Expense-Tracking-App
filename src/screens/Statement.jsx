@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Table, Row } from 'react-native-table-component';
+import { Table, Row } from '@/components/Table';
 import { format, parse } from 'date-fns';
 import { Calendar, Download } from 'lucide-react-native';
 

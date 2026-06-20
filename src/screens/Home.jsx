@@ -3,7 +3,6 @@ import { View, Text, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
-
 import styles from '@/styles';
 import { useCompany } from '@/context/CompanyContext';
 
@@ -35,7 +34,6 @@ const HomeScreen = () => {
       transaction: tx,
     });
   };
-
 
   return (
     <SafeAreaView style={[styles.safeArea]}>
@@ -72,7 +70,7 @@ const HomeScreen = () => {
             <SectionHeader
               title="Recent Transactions"
               actionLabel="See All"
-              onActionPress={() => navigate('Transcations')}
+              onActionPress={() => navigation.navigate('Transactions')}
             />
 
             <View style={styles.transactionsCard}>

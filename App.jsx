@@ -25,7 +25,7 @@ export default function App() {
             </TransactionRefreshProvider>
           </CompanyProvider>
         </CurrencyProvider>
-        <Toast config={toastConfig} />
+        <Toast config={toastConfig} position="top" topOffset={60} />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

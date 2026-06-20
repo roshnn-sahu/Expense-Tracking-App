@@ -5,7 +5,6 @@ export default StyleSheet.create({
   /* =========================
      SCREEN
   ========================= */
-
   safeArea: {
     flex: 1,
     backgroundColor: colors.white,

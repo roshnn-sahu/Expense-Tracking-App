@@ -25,10 +25,9 @@ export const CompanyProvider = ({ children }) => {
     setError(null);
     try {
       if (forceRefresh) {
-        console.log('hey');
         await getCompanyData(true);
       }
-      console.log('hey outside');
+  
       const result = await getCachedCompanyData();
       if (result) {
         setCompany(result.data.data);
