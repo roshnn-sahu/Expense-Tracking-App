@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import {
   Home,
   ArrowUpDown,
@@ -12,6 +12,8 @@ import {
 import styles from '@/styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { logoutUser } from '@/api/auth';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import Toast from 'react-native-toast-message';
 
 const menus = [
   { title: 'Home', icon: Home, screen: 'Home' },
@@ -23,26 +25,35 @@ const menus = [
 ];
 
 const DrawerContent = ({ navigation }) => {
-  
-  const handleLogOut = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Logout',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await logoutUser();
-          } catch {
-            // Session already cleared locally by logoutUser()
-          }
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-          });
-        },
-      },
-    ]);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const handleLogOut = () => setShowLogoutModal(true);
+
+  const confirmLogout = async () => {
+    setShowLogoutModal(false);
+    try {
+      await logoutUser();
+      Toast.show({
+        type: 'success',
+        text1: 'Logged out successfully',
+        visibilityTime: 3000,
+      });
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1:
+          err?.response?.data?.message ||
+          err.message ||
+          'Logout failed, clearing session locally.',
+        visibilityTime: 3000,
+      });
+    }
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }, 800);
   };
 
   return (
@@ -98,6 +109,18 @@ const DrawerContent = ({ navigation }) => {
         <LogOut size={20} color={styles.colors.red} />
         <Text style={[styles.textRed, styles.fw700, styles.ml2]}>Logout</Text>
       </TouchableOpacity>
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmDialog
+        visible={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+        title="Logout"
+        message="Are you sure you want to logout?"
+        confirmLabel="Logout"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+      />
     </SafeAreaView>
   );
 };

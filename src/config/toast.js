@@ -1,53 +1,82 @@
-import React, { useRef, useMemo } from 'react';
-import { Animated, PanResponder } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { BaseToast, ErrorToast } from 'react-native-toast-message';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  runOnJS,
+  interpolate,
+  Extrapolation,
+} from 'react-native-reanimated';
 
 const SWIPE_THRESHOLD = 80;
+const DISMISS_DISTANCE = 400;
+const CLAMP = 200;
 
 const SwipeableToast = ({ children, hide }) => {
-  const translateX = useRef(new Animated.Value(0)).current;
+  const translateX = useSharedValue(0);
+  const isActive = useSharedValue(false);
 
-  const panResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_, gs) =>
-          Math.abs(gs.dx) > 10 && Math.abs(gs.dx) > Math.abs(gs.dy),
-        onPanResponderMove: (_, gs) => {
-          const clamped = Math.max(-200, Math.min(200, gs.dx));
-          translateX.setValue(clamped);
-        },
-        onPanResponderRelease: (_, gs) => {
-          if (Math.abs(gs.dx) > SWIPE_THRESHOLD) {
-            Animated.timing(translateX, {
-              toValue: gs.dx > 0 ? 400 : -400,
-              duration: 200,
-              useNativeDriver: true,
-            }).start(() => hide?.());
-          } else {
-            Animated.spring(translateX, {
-              toValue: 0,
-              useNativeDriver: true,
-              friction: 7,
-            }).start();
-          }
-        },
-      }),
-    [hide],
-  );
+  const dismissToast = () => {
+    hide?.();
+  };
 
-  const opacity = translateX.interpolate({
-    inputRange: [-200, 0, 200],
-    outputRange: [0.3, 1, 0.3],
-    extrapolate: 'clamp',
+  const pan = Gesture.Pan()
+    .activeOffsetX([-10, 10])
+    .failOffsetY([-20, 20])
+    .onStart(() => {
+      isActive.value = true;
+    })
+    .onUpdate(event => {
+      translateX.value = Math.max(-CLAMP, Math.min(CLAMP, event.translationX));
+    })
+    .onEnd(event => {
+      if (Math.abs(event.translationX) > SWIPE_THRESHOLD) {
+        // Swiped past threshold — dismiss
+        const direction = event.translationX > 0 ? DISMISS_DISTANCE : -DISMISS_DISTANCE;
+        translateX.value = withTiming(direction, { duration: 200 }, () => {
+          runOnJS(dismissToast)();
+        });
+      } else {
+        // Snap back to center
+        translateX.value = withSpring(0, {
+          damping: 15,
+          stiffness: 150,
+        });
+      }
+      isActive.value = false;
+    });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      Math.abs(translateX.value),
+      [0, CLAMP],
+      [1, 0.3],
+      Extrapolation.CLAMP,
+    );
+
+    const scale = interpolate(
+      Math.abs(translateX.value),
+      [0, CLAMP],
+      [1, 0.95],
+      Extrapolation.CLAMP,
+    );
+
+    return {
+      transform: [{ translateX: translateX.value }, { scale }],
+      opacity,
+    };
   });
 
   return (
-    <Animated.View
-      style={{ transform: [{ translateX }], opacity }}
-      {...panResponder.panHandlers}
-    >
-      {children}
-    </Animated.View>
+    <GestureDetector gesture={pan}>
+      <Animated.View style={animatedStyle}>
+        {children}
+      </Animated.View>
+    </GestureDetector>
   );
 };
 

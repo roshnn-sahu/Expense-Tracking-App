@@ -45,14 +45,15 @@ const Login = () => {
 
     try {
       const response = await loginUser(form.email, form.password);
-      if (response?.status === 1 || response?.success) {
+
+      if (response?.status === 1) {
         Toast.show({
           type: 'success',
           text1: 'Welcome back!',
           text2: 'You have been logged in successfully.',
           visibilityTime: 3000,
         });
-        navigation.replace('DrawerRoot');
+        setTimeout(() => navigation.replace('DrawerRoot'), 1500);
       } else {
         Toast.show({
           type: 'error',
@@ -63,7 +64,10 @@ const Login = () => {
     } catch (err) {
       Toast.show({
         type: 'error',
-        text1: err?.response?.data?.message || err.message || 'Login failed. Please try again.',
+        text1:
+          err?.response?.data?.message ||
+          err.message ||
+          'Login failed. Please try again.',
         visibilityTime: 4000,
       });
     } finally {
@@ -81,7 +85,11 @@ const Login = () => {
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.flex1, styles.justifyCenter, styles.px5]}
+          contentContainerStyle={[
+            styles.flex1,
+            styles.justifyCenter,
+            styles.px5,
+          ]}
           keyboardShouldPersistTaps="handled"
         >
           {/* Back Button */}
@@ -96,7 +104,9 @@ const Login = () => {
           <Text style={[styles.fontXXL, styles.fw700, styles.textNavy]}>
             Welcome back
           </Text>
-          <Text style={[styles.fs15, styles.textGrayLight, styles.mt2, styles.mb6]}>
+          <Text
+            style={[styles.fs15, styles.textGrayLight, styles.mt2, styles.mb6]}
+          >
             Sign in to your account
           </Text>
 
@@ -105,19 +115,23 @@ const Login = () => {
 
           {/* Email */}
           <View style={styles.mb4}>
-            <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+            <Text
+              style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+            >
               Email Address
             </Text>
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              height: 62,
-              borderRadius: 20,
-              paddingHorizontal: 18,
-              borderWidth: 1,
-              borderColor: '#E2E8F0',
-              backgroundColor: '#FFFFFF',
-            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                height: 62,
+                borderRadius: 20,
+                paddingHorizontal: 18,
+                borderWidth: 1,
+                borderColor: '#E2E8F0',
+                backgroundColor: '#FFFFFF',
+              }}
+            >
               <Mail size={20} color="#64748B" />
               <TextInput
                 value={form.email}
@@ -127,26 +141,35 @@ const Login = () => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
-                style={[styles.flex1, styles.ml3, styles.textNavy, styles.fw500]}
+                style={[
+                  styles.flex1,
+                  styles.ml3,
+                  styles.textNavy,
+                  styles.fw500,
+                ]}
               />
             </View>
           </View>
 
           {/* Password */}
           <View style={styles.mb2}>
-            <Text style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}>
+            <Text
+              style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
+            >
               Password
             </Text>
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              height: 62,
-              borderRadius: 20,
-              paddingHorizontal: 18,
-              borderWidth: 1,
-              borderColor: '#E2E8F0',
-              backgroundColor: '#FFFFFF',
-            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                height: 62,
+                borderRadius: 20,
+                paddingHorizontal: 18,
+                borderWidth: 1,
+                borderColor: '#E2E8F0',
+                backgroundColor: '#FFFFFF',
+              }}
+            >
               <Lock size={20} color="#64748B" />
               <TextInput
                 value={form.password}
@@ -154,7 +177,12 @@ const Login = () => {
                 placeholder="Enter your password"
                 placeholderTextColor="#94A3B8"
                 secureTextEntry={!showPassword}
-                style={[styles.flex1, styles.ml3, styles.textNavy, styles.fw500]}
+                style={[
+                  styles.flex1,
+                  styles.ml3,
+                  styles.textNavy,
+                  styles.fw500,
+                ]}
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                 {showPassword ? (
@@ -181,10 +209,7 @@ const Login = () => {
             activeOpacity={0.9}
             onPress={handleLogin}
             disabled={loading}
-            style={[
-              styles.primaryButton,
-              loading && { opacity: 0.6 },
-            ]}
+            style={[styles.primaryButton, loading && { opacity: 0.6 }]}
           >
             {loading ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
@@ -194,7 +219,14 @@ const Login = () => {
           </TouchableOpacity>
 
           {/* Sign Up Link */}
-          <View style={[styles.row, styles.justifyCenter, styles.alignCenter, styles.mt6]}>
+          <View
+            style={[
+              styles.row,
+              styles.justifyCenter,
+              styles.alignCenter,
+              styles.mt6,
+            ]}
+          >
             <Text style={[styles.fs15, styles.textGray]}>
               Don't have an account?{' '}
             </Text>
