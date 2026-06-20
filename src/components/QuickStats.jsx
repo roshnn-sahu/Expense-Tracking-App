@@ -1,29 +1,31 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react-native';
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react-native';
 
 import styles from '@/styles';
 import { useCurrency } from '@/context/CurrencyContext';
 
-const QuickStats = () => {
+const QuickStats = ({ income = 0, expense = 0, currency }) => {
   const { formatCurrency } = useCurrency();
 
   return (
-    <View style={[styles.flexRow, styles.gap3, styles.mb6]}>
+    <View style={[styles.flexRow, styles.gap2, styles.mb6]}>
       <View
         style={[styles.ieCard, { backgroundColor: styles.colors.greenLight }]}
       >
         <View style={[styles.ieIconWrap, styles.bgWhite]}>
-          <ArrowUpRight
+          <ArrowDownLeft
             size={20}
             color={styles.colors.green}
             strokeWidth={2.5}
           />
         </View>
         <View>
-          <Text style={styles.ieLabel}>Income</Text>
+          <Text style={[styles.ieLabel, { fontSize: 9 }]}>
+            This Month 
+          </Text>
           <Text style={[styles.ieAmount, { color: styles.colors.greenDark }]}>
-            {formatCurrency(4500)}
+            {formatCurrency(income, true, currency)}
           </Text>
         </View>
       </View>
@@ -32,16 +34,14 @@ const QuickStats = () => {
         style={[styles.ieCard, { backgroundColor: styles.colors.redLight }]}
       >
         <View style={[styles.ieIconWrap, styles.bgWhite]}>
-          <ArrowDownRight
-            size={20}
-            color={styles.colors.red}
-            strokeWidth={2.5}
-          />
+          <ArrowUpRight size={20} color={styles.colors.red} strokeWidth={2.5} />
         </View>
         <View>
-          <Text style={styles.ieLabel}>Expenses</Text>
+          <Text style={[styles.ieLabel, { fontSize: 9 }]}>
+            This Month 
+          </Text>
           <Text style={[styles.ieAmount, { color: styles.colors.redDark }]}>
-            {formatCurrency(2850)}
+            {formatCurrency(expense, true, currency)}
           </Text>
         </View>
       </View>

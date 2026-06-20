@@ -90,6 +90,15 @@ export default StyleSheet.create({
     elevation: 2,
   },
 
+  welcomeContainer: {
+    marginTop: 4,
+    marginBottom: 24,
+  },
+
+  transactionsSection: {
+    marginTop: 4,
+  },
+
   /* =========================
      BALANCE CARD
   ========================= */

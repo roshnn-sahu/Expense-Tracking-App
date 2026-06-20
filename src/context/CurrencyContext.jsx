@@ -38,13 +38,13 @@ export const CurrencyProvider = ({ children }) => {
   const currencySymbol = CURRENCY_SYMBOLS[currency] || '$';
 
   const formatCurrency = useCallback(
-    (amount, showSymbol = true) => {
+    (amount, showSymbol = true, symbol = currencySymbol) => {
       const number = Number(amount || 0);
       const formatted = number.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       });
-      return showSymbol ? `${currencySymbol}${formatted}` : formatted;
+      return showSymbol ? `${symbol}${formatted}` : formatted;
     },
     [currencySymbol],
   );

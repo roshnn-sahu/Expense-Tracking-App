@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, StatusBar } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StatusBar,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import styles from '@/styles';
 import { useCompany } from '@/context/CompanyContext';
+import { getDashboardData } from '@/api';
 
 import Header from '@/components/includes/Header';
 import BalanceCard from '@/components/BalanceCard';
@@ -13,13 +20,34 @@ import SectionHeader from '@/components/SectionHeader';
 import TransactionCard from '@/components/TransactionCard';
 import TransactionDetailModal from '@/components/TransactionDetailModal';
 
-import { recentTransactions } from '@/data/transactions';
-
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { aSite } = useCompany();
+  const [dashboardData, setDashboardData] = useState(null);
   const [selectedTx, setSelectedTx] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadDashboard = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getDashboardData();
+      setDashboardData(data);
+    } catch (err) {
+      setError(err?.message || 'Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadDashboard();
+    }, [loadDashboard]),
+  );
 
   const handleTransactionPress = tx => {
     setSelectedTx(tx);
@@ -35,22 +63,22 @@ const HomeScreen = () => {
     });
   };
 
+  const recentTransactions = dashboardData?.latestTransactions ?? [];
+  const dashboardCurrency = dashboardData?.currency;
+
   return (
     <SafeAreaView style={[styles.safeArea]}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
       <View style={styles.container}>
-        {/* HEADER */}
         <Header onMenuPress={() => navigation.getParent()?.openDrawer()} />
 
-        {/* BODY */}
         <ScrollView
           showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.scrollContent}
           style={[styles.mt3]}
         >
-          {/* GREETING */}
-          <View style={(styles.welcomeContainer, styles.mb3)}>
+          <View style={[styles.welcomeContainer, styles.mb3]}>
             <Text style={styles.greeting}>Welcome back 👋</Text>
 
             <Text style={styles.greetingSub}>
@@ -59,31 +87,65 @@ const HomeScreen = () => {
             </Text>
           </View>
 
-          {/* BALANCE CARD */}
-          <BalanceCard />
-
-          {/* QUICK STATS */}
-          <QuickStats />
-
-          {/* RECENT TRANSACTIONS */}
-          <View style={styles.transactionsSection}>
-            <SectionHeader
-              title="Recent Transactions"
-              actionLabel="See All"
-              onActionPress={() => navigation.navigate('Transactions')}
-            />
-
-            <View style={styles.transactionsCard}>
-              {recentTransactions.map((item, index) => (
-                <TransactionCard
-                  key={item.id}
-                  transaction={item}
-                  showDivider={index !== recentTransactions.length - 1}
-                  onPress={handleTransactionPress}
-                />
-              ))}
+          {loading && (
+            <View style={localStyles.loaderCard}>
+              <ActivityIndicator size="large" color={styles.colors.blue} />
+              <Text style={[localStyles.loaderText, styles.mt3]}>
+                Loading dashboard...
+              </Text>
             </View>
-          </View>
+          )}
+
+          {!loading && error && (
+            <View style={localStyles.errorCard}>
+              <Text style={[styles.textRed, styles.textCenter]}>{error}</Text>
+            </View>
+          )}
+
+          {!loading && !error && dashboardData && (
+            <>
+              <BalanceCard
+                balance={dashboardData.balance}
+                totalIncome={dashboardData.totalIncome}
+                totalExpense={dashboardData.totalExpense}
+                currency={dashboardCurrency}
+              />
+
+              <QuickStats
+                income={dashboardData.monthIncome}
+                expense={dashboardData.monthExpense}
+                currency={dashboardCurrency}
+              />
+
+              <View style={localStyles.transactionsSection}>
+                <SectionHeader
+                  title="Recent Transactions"
+                  actionLabel="See All"
+                  onActionPress={() => navigation.navigate('Transactions')}
+                />
+
+                <View style={styles.transactionCard}>
+                  {recentTransactions.length > 0 ? (
+                    recentTransactions.map((item, index) => (
+                      <TransactionCard
+                        key={item.id}
+                        index={index}
+                        transaction={item}
+                        showDivider={index !== recentTransactions.length - 1}
+                        onPress={handleTransactionPress}
+                      />
+                    ))
+                  ) : (
+                    <View style={[styles.px2, styles.py4]}>
+                      <Text style={[styles.textGray, styles.textCenter]}>
+                        No recent transactions found.
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </>
+          )}
         </ScrollView>
 
         <TransactionDetailModal
@@ -98,6 +160,31 @@ const HomeScreen = () => {
       </View>
     </SafeAreaView>
   );
+};
+
+const localStyles = {
+  loaderCard: {
+    borderRadius: 28,
+    padding: 24,
+    marginBottom: 20,
+    backgroundColor: styles.colors.surface,
+    borderWidth: 1,
+    borderColor: styles.colors.grayBorder,
+    alignItems: 'center',
+  },
+  loaderText: {
+    color: styles.colors.gray,
+    fontWeight: '500',
+  },
+  errorCard: {
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    backgroundColor: styles.colors.redLight,
+  },
+  transactionsSection: {
+    marginTop: 4,
+  },
 };
 
 export default HomeScreen;
