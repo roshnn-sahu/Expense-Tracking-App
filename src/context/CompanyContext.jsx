@@ -30,13 +30,12 @@ const parseCountryOptions = raw => {
   }));
 };
 
-// Helper: parse API's aCurrency object -> dropdown options array
+// Helper: parse API's aCurrency object -> dropdown options array (symbol is in label, no emoji to avoid double rendering)
 const parseCurrencyOptions = raw => {
   if (!raw || typeof raw !== 'object') return [];
   return Object.entries(raw).map(([code, info]) => ({
-    label: `${info.symbol || ''}  ${info.name}`,
+    label: `${info.symbol || ''}  (${info.name})`,
     value: code,
-    emoji: info.symbol || '',
   }));
 };
 
