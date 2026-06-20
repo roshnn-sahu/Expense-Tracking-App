@@ -18,7 +18,7 @@ export default StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 4,
-    paddingBottom: 120,
+    paddingBottom: 20,
   },
 
   /* =========================
@@ -165,7 +165,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 20,
-    padding: 8,
+    padding: 12,
     flex: 1,
     borderWidth: 1,
     borderColor: colors.grayBorder,
@@ -247,7 +247,7 @@ export default StyleSheet.create({
   transactionCard: {
     backgroundColor: colors.surface,
     borderRadius: 28,
-    padding: 16,
+
   },
 
   /* =========================

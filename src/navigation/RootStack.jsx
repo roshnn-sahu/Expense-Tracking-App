@@ -28,6 +28,12 @@ import Profile from '@/screens/Profile';
 
 import LoadingScreen from '@/screens/LoadingScreen';
 
+import Login from '@/screens/auth/Login';
+
+import SignUp from '@/screens/auth/SignUp';
+
+import ForgotPassword from '@/screens/auth/ForgotPassword';
+
 import EditExpense from '@/screens/EditExpense';
 
 import EditIncome from '@/screens/EditIncome';
@@ -118,11 +124,26 @@ const RootStack = () => {
         animation: 'slide_from_right',
       }}
     >
-      {/* LOADING */}
+      {/* AUTH */}
 
       <Stack.Screen
         name="Loading"
         component={LoadingScreen}
+      />
+
+      <Stack.Screen
+        name="Login"
+        component={Login}
+      />
+
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+      />
+
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
       />
 
       {/* MAIN APP */}

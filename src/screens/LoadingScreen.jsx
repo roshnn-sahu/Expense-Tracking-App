@@ -15,7 +15,7 @@ const LoadingScreen = ({ navigation }) => {
   useEffect(() => {
     if (!loading) {
       const timer = setTimeout(() => {
-        navigation.replace('DrawerRoot');
+        navigation.replace('Login');
       }, 500);
       return () => clearTimeout(timer);
     }
