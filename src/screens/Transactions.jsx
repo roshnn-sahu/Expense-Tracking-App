@@ -18,7 +18,11 @@ import {
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
+import {
+  useNavigation,
+  useFocusEffect,
+  useRoute,
+} from '@react-navigation/native';
 import { ChevronLeft, SlidersHorizontal } from 'lucide-react-native';
 import styles from '@/styles';
 import { filters } from '@/data/transactions';
@@ -35,7 +39,9 @@ const Transactions = () => {
   const { refreshCount, triggerRefresh } = useTransactionRefresh();
   const flatListRef = useRef(null);
 
-  const [activeFilter, setActiveFilter] = useState(route.params?.initialFilter || 'All');
+  const [activeFilter, setActiveFilter] = useState(
+    route.params?.initialFilter || 'All',
+  );
   const [allTransactions, setAllTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -304,7 +310,9 @@ const Transactions = () => {
         </View>
 
         <View style={[styles.mt2, styles.px5, styles.borderBottom]}>
-          <View style={[styles.row, styles.alignCenter, styles.pb2]}>
+          <View
+            style={[styles.row, styles.gap2, styles.alignCenter, styles.pb2]}
+          >
             {/* Segmented control switch */}
             <View
               style={{
@@ -330,11 +338,11 @@ const Transactions = () => {
                       paddingHorizontal: 12,
                       borderRadius: 20,
                       backgroundColor: isActive ? '#FFFFFF' : 'transparent',
-                      shadowColor: isActive ? '#000' : 'transparent',
+                      shadowColor: '#000',
                       shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: isActive ? 0.1 : 0,
                       shadowRadius: 4,
-                      elevation: isActive ? 3 : 0,
+                      elevation: isActive ? 4 : 0,
                     }}
                   >
                     <Text

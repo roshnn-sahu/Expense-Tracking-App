@@ -16,10 +16,12 @@ import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react-native';
 import styles from '@/styles';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import { loginUser } from '@/api';
+import { useUser } from '@/context/UserContext';
 import Toast from 'react-native-toast-message';
 
 const Login = () => {
   const navigation = useNavigation();
+  const { updateUser } = useUser();
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,8 @@ const Login = () => {
       const response = await loginUser(form.email, form.password);
 
       if (response.status === 1) {
+        const aUser = response?.data?.aUser || response?.aUser;
+        if (aUser) updateUser(aUser);
         Toast.show({
           type: 'success',
           text1: 'Welcome back!',

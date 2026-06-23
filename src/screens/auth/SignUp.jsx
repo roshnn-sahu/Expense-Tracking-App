@@ -29,6 +29,7 @@ import SearchableDropdown from '@/components/ui/SearchableDropdown';
 import PickerDropdown from '@/components/ui/PickerDropdown';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import { useCompany } from '@/context/CompanyContext';
+import { useUser } from '@/context/UserContext';
 import { signupUser } from '@/api';
 import Toast from 'react-native-toast-message';
 
@@ -47,6 +48,7 @@ const FALLBACK_PREFIXES = [
 
 const SignUp = () => {
   const navigation = useNavigation();
+  const { updateUser } = useUser();
   const {
     genderOptions,
     countryOptions,
@@ -128,6 +130,8 @@ const SignUp = () => {
       const { confirm_password, ...payload } = form;
       const response = await signupUser(payload);
       if (response?.status === 1 || response?.success) {
+        const aUser = response?.data?.aUser || response?.aUser;
+        if (aUser) updateUser(aUser);
         Toast.show({
           type: 'success',
           text1: 'Account created!',

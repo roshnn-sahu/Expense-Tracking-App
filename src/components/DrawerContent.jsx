@@ -14,6 +14,7 @@ import {
 import styles from '@/styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { logoutUser } from '@/api/auth';
+import { useUser } from '@/context/UserContext';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import Toast from 'react-native-toast-message';
 
@@ -72,6 +73,7 @@ const sections = [
 ];
 
 const DrawerContent = ({ navigation }) => {
+  const { userName, userEmail, clearUser } = useUser();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogOut = () => setShowLogoutModal(true);
@@ -95,6 +97,7 @@ const DrawerContent = ({ navigation }) => {
         visibilityTime: 3000,
       });
     }
+    clearUser();
     setTimeout(() => {
       navigation.reset({
         index: 0,
@@ -108,10 +111,12 @@ const DrawerContent = ({ navigation }) => {
       {/* User Info */}
       <View style={[styles.drawerHeader]}>
         <View style={styles.drawerAvatar}>
-          <Text style={[styles.textBlack, styles.fw700]}>A</Text>
+          <Text style={[styles.textBlack, styles.fw700]}>
+            {userName.charAt(0).toUpperCase()}
+          </Text>
         </View>
-        <Text style={styles.drawerUserName}>Alex Morgan</Text>
-        <Text style={styles.drawerUserEmail}>alex@email.com</Text>
+        <Text style={styles.drawerUserName}>{userName}</Text>
+        <Text style={styles.drawerUserEmail}>{userEmail}</Text>
       </View>
 
       {/* Menu Items */}

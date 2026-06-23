@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import styles from '@/styles';
 import { useCompany } from '@/context/CompanyContext';
+import { useUser } from '@/context/UserContext';
 import { getDashboardData } from '@/api';
 
 import Header from '@/components/includes/Header';
@@ -22,6 +23,7 @@ import TransactionDetailModal from '@/components/TransactionDetailModal';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const { userName } = useUser();
   const { aSite } = useCompany();
   const [dashboardData, setDashboardData] = useState(null);
   const [selectedTx, setSelectedTx] = useState(null);
@@ -77,7 +79,7 @@ const HomeScreen = () => {
           style={[styles.mt3]}
         >
           <View style={[styles.welcomeContainer, styles.mb3]}>
-            <Text style={styles.greeting}>Welcome back 👋</Text>
+            <Text style={styles.greeting}>Welcome back, {userName} 👋</Text>
 
             <Text style={styles.greetingSub}>
               {aSite?.display_name ? `${aSite.display_name}'s ` : ''}Your

@@ -18,6 +18,7 @@ import {
   Search,
 } from 'lucide-react-native';
 import styles from '@/styles';
+import { useUser } from '@/context/UserContext';
 import Header from '@/components/includes/Header';
 
 const menuSections = [
@@ -116,6 +117,7 @@ const menuSections = [
 
 const Profile = () => {
   const navigation = useNavigation();
+  const { userName, userEmail } = useUser();
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
@@ -157,8 +159,8 @@ const Profile = () => {
               <View style={styles.profileAvatar}>
                 <User size={36} color={styles.colors.blue} strokeWidth={2} />
               </View>
-              <Text style={styles.profileName}>Alex Rivera</Text>
-              <Text style={styles.profileEmail}>alex@example.com</Text>
+              <Text style={styles.profileName}>{userName}</Text>
+              <Text style={styles.profileEmail}>{userEmail}</Text>
             </View>
 
             {/* Quick Stats */}

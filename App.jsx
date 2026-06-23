@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import { CurrencyProvider } from '@/context/CurrencyContext';
 import { CompanyProvider } from '@/context/CompanyContext';
 import { TransactionRefreshProvider } from '@/context/TransactionRefreshContext';
+import { UserProvider } from '@/context/UserContext';
 import { toastConfig } from '@/config/toast';
 import RootStack from '@/navigation/RootStack';
 
@@ -18,11 +19,13 @@ export default function App() {
       <SafeAreaProvider>
         <CurrencyProvider>
           <CompanyProvider>
-            <TransactionRefreshProvider>
-              <NavigationContainer>
-                <RootStack />
-              </NavigationContainer>
-            </TransactionRefreshProvider>
+            <UserProvider>
+              <TransactionRefreshProvider>
+                <NavigationContainer>
+                  <RootStack />
+                </NavigationContainer>
+              </TransactionRefreshProvider>
+            </UserProvider>
           </CompanyProvider>
         </CurrencyProvider>
       </SafeAreaProvider>
