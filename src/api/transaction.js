@@ -1,6 +1,7 @@
 import { getUserId } from '@/utils/storage';
 import apiClient from '@/config/axios';
 
+// Helper: Build FormData from a payload object, skipping empty values
 const buildFormData = (payload) => {
   const fd = new FormData();
   Object.entries(payload).forEach(([key, value]) => {
@@ -11,6 +12,7 @@ const buildFormData = (payload) => {
   return fd;
 };
 
+// Helper: Map raw API transaction row into consistent frontend format
 const mapRow = (item, index) => {
   const amount = parseFloat(item.amount ?? item.value ?? 0) || 0;
   const isIncome = item.type === 'Income';
@@ -35,12 +37,14 @@ const mapRow = (item, index) => {
   };
 };
 
+// Helper: Extract transaction rows array from various API response shapes
 const getRows = (data) => {
   const d = typeof data === 'string' ? JSON.parse(data) : data;
   const rows = d?.data?.aRow ?? d?.aRow ?? d?.data?.transactions ?? d?.transactions;
   return Array.isArray(rows) ? rows : Array.isArray(d) ? d : [];
 };
 
+// Fetch paginated transaction list with optional filter (All/Income/Expense)
 export const getTransactions = async (filter = 'All', page = 1) => {
   const response = await apiClient.get(`/transaction/list/${filter}/${page}`, {
     headers: { user_id: await getUserId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
@@ -58,6 +62,7 @@ export const getTransactions = async (filter = 'All', page = 1) => {
   };
 };
 
+// Add a new transaction (expense or income)
 export const addTransaction = async (payload) => {
   const response = await apiClient.post('/transaction/entry', buildFormData(payload), {
     headers: { user_id: await getUserId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
@@ -65,6 +70,7 @@ export const addTransaction = async (payload) => {
   return response.data;
 };
 
+// Delete a transaction by its ID
 export const deleteTransaction = async (id) => {
   const response = await apiClient.delete(`/transaction/delete/${id}`, {
     headers: { user_id: await getUserId(), Accept: 'application/json' },
@@ -72,6 +78,7 @@ export const deleteTransaction = async (id) => {
   return response.data;
 };
 
+// Update an existing transaction by ID with new payload data
 export const updateTransaction = async (payload) => {
   const response = await apiClient.post(`/transaction/entry/${payload.id}`, buildFormData(payload), {
     headers: { user_id: await getUserId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
@@ -79,6 +86,7 @@ export const updateTransaction = async (payload) => {
   return response.data;
 };
 
+// Fetch statement/account summary for a date range (fromDate to toDate)
 export const getStatement = async (fromDate, toDate) => {
   const response = await apiClient.get('/transaction/statement?', {
     params: { satisfies_date: fromDate, e_date: toDate },

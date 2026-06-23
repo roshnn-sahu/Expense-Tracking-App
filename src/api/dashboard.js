@@ -1,11 +1,13 @@
 import { getUserId } from '@/utils/storage';
 import apiClient from '@/config/axios';
 
+// Helper: Parse a value to a number, default to 0 if invalid
 const toNumber = value => {
   const n = parseFloat(String(value ?? '').replace(/,/g, ''));
   return Number.isFinite(n) ? n : 0;
 };
 
+// Helper: Map raw API transaction into consistent frontend format
 const mapTransaction = (item, index) => {
   const amount = toNumber(item.amount);
   const isIncome = item.type === 'Income';
@@ -28,6 +30,7 @@ const mapTransaction = (item, index) => {
   };
 };
 
+// Fetch dashboard home screen data: balance, income/expense totals, and latest transactions
 export const getDashboardData = async () => {
   const response = await apiClient.get('/login/dashboard', {
     headers: { user_id: await getUserId() },
