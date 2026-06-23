@@ -51,9 +51,9 @@ const Transactions = () => {
 
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
-    months: [],
-    categories: [],
-    paymentTypes: [],
+    month: null,
+    category: null,
+    paymentType: null,
     dateRange: null,
   });
 
@@ -169,34 +169,32 @@ const Transactions = () => {
     }
 
     // Month filter
-    if (activeFilters.months.length > 0) {
+    if (activeFilters.month) {
       result = result.filter(t => {
         const dateStr = t.date || t.entry_date || '';
         if (!dateStr) return false;
         const yearMonth = dateStr.substring(0, 7);
-        return activeFilters.months.includes(yearMonth);
+        return activeFilters.month === yearMonth;
       });
     }
 
     // Category filter
-    if (activeFilters.categories.length > 0) {
-      result = result.filter(t =>
-        activeFilters.categories.includes(t.category),
-      );
+    if (activeFilters.category) {
+      result = result.filter(t => t.category === activeFilters.category);
     }
 
     // Payment type filter
-    if (activeFilters.paymentTypes.length > 0) {
-      result = result.filter(t => activeFilters.paymentTypes.includes(t.mode));
+    if (activeFilters.paymentType) {
+      result = result.filter(t => t.mode === activeFilters.paymentType);
     }
 
     return result;
   }, [allTransactions, activeFilter, activeFilters]);
 
   const activeFilterCount =
-    activeFilters.months.length +
-    activeFilters.categories.length +
-    activeFilters.paymentTypes.length +
+    (activeFilters.month ? 1 : 0) +
+    (activeFilters.category ? 1 : 0) +
+    (activeFilters.paymentType ? 1 : 0) +
     (activeFilters.dateRange ? 1 : 0);
 
   const hasActiveFilters = activeFilterCount > 0;
@@ -245,9 +243,9 @@ const Transactions = () => {
           <TouchableOpacity
             onPress={() =>
               setActiveFilters({
-                months: [],
-                categories: [],
-                paymentTypes: [],
+                month: null,
+                category: null,
+                paymentType: null,
                 dateRange: null,
               })
             }
@@ -307,25 +305,44 @@ const Transactions = () => {
 
         <View style={[styles.mt2, styles.px5, styles.borderBottom]}>
           <View style={[styles.row, styles.alignCenter, styles.pb2]}>
-            <View style={[styles.row, styles.gap1, { flex: 1 }]}>
+            {/* Segmented control switch */}
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                backgroundColor: '#F1F5F9',
+                borderRadius: 24,
+                padding: 4,
+              }}
+            >
               {filters.map(filter => {
-                const active = activeFilter === filter;
-
+                const isActive = activeFilter === filter;
                 return (
                   <TouchableOpacity
                     key={filter}
                     onPress={() => setActiveFilter(filter)}
-                    style={[
-                      styles.filterChip,
-                      active && styles.filterChipActive,
-                    ]}
-                    activeOpacity={0.75}
+                    activeOpacity={0.7}
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: 8,
+                      paddingHorizontal: 12,
+                      borderRadius: 20,
+                      backgroundColor: isActive ? '#FFFFFF' : 'transparent',
+                      shadowColor: isActive ? '#000' : 'transparent',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: isActive ? 0.1 : 0,
+                      shadowRadius: 4,
+                      elevation: isActive ? 3 : 0,
+                    }}
                   >
                     <Text
-                      style={[
-                        styles.filterChipText,
-                        active && styles.filterChipTextActive,
-                      ]}
+                      style={{
+                        fontSize: 14,
+                        fontWeight: isActive ? '700' : '500',
+                        color: isActive ? '#0F172A' : '#94A3B8',
+                      }}
                     >
                       {filter}
                     </Text>
@@ -383,7 +400,6 @@ const Transactions = () => {
                 { paddingTop: 8, paddingBottom: 8, flexWrap: 'wrap', gap: 6 },
               ]}
             >
-              {' '}
               {activeFilters.dateRange && (
                 <View
                   key="dateRange"
@@ -400,9 +416,9 @@ const Transactions = () => {
                   </Text>
                 </View>
               )}
-              {activeFilters.months.map(m => (
+              {activeFilters.month && (
                 <View
-                  key={m}
+                  key={activeFilters.month}
                   style={{
                     backgroundColor: '#EFF6FF',
                     borderRadius: 12,
@@ -411,13 +427,13 @@ const Transactions = () => {
                   }}
                 >
                   <Text style={{ fontSize: 11, color: styles.colors.blue }}>
-                    {m}
+                    {activeFilters.month}
                   </Text>
                 </View>
-              ))}
-              {activeFilters.categories.map(c => (
+              )}
+              {activeFilters.category && (
                 <View
-                  key={c}
+                  key={activeFilters.category}
                   style={{
                     backgroundColor: '#F0FDF4',
                     borderRadius: 12,
@@ -426,13 +442,13 @@ const Transactions = () => {
                   }}
                 >
                   <Text style={{ fontSize: 11, color: styles.colors.green }}>
-                    {c}
+                    {activeFilters.category}
                   </Text>
                 </View>
-              ))}
-              {activeFilters.paymentTypes.map(pt => (
+              )}
+              {activeFilters.paymentType && (
                 <View
-                  key={pt}
+                  key={activeFilters.paymentType}
                   style={{
                     backgroundColor: '#FDF4FF',
                     borderRadius: 12,
@@ -441,10 +457,10 @@ const Transactions = () => {
                   }}
                 >
                   <Text style={{ fontSize: 11, color: styles.colors.purple }}>
-                    {pt}
+                    {activeFilters.paymentType}
                   </Text>
                 </View>
-              ))}
+              )}
             </View>
           )}
         </View>

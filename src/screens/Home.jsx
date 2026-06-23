@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import styles from '@/styles';
 import { useCompany } from '@/context/CompanyContext';
@@ -29,7 +29,7 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadDashboard = useCallback(async () => {
+  const loadDashboard = async () => {
     setLoading(true);
     setError(null);
 
@@ -41,13 +41,11 @@ const HomeScreen = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
-  useFocusEffect(
-    useCallback(() => {
-      loadDashboard();
-    }, [loadDashboard]),
-  );
+  useEffect(() => {
+    loadDashboard();
+  }, []);
 
   const handleTransactionPress = tx => {
     setSelectedTx(tx);

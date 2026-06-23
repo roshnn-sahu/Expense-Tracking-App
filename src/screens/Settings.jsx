@@ -54,8 +54,8 @@ const Settings = () => {
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
         <Header
+          onMenuPress={() => navigation.openDrawer()}
           title="Settings"
-          onMenuPress={() => navigation.getParent()?.openDrawer()}
         />
 
         <ScrollView

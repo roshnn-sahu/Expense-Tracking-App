@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Modal } from 'react-native';
-import { Check, X } from 'lucide-react-native';
+import { X } from 'lucide-react-native';
 import styles from '@/styles';
 
 const FILTER_SECTIONS = [
@@ -112,7 +112,7 @@ const DEFAULT_PAYMENT_TYPES = [
   'Other',
 ];
 
-const CheckboxItem = ({ label, isSelected, onPress }) => (
+const RadioItem = ({ label, isSelected, onPress }) => (
   <TouchableOpacity
     activeOpacity={0.7}
     onPress={onPress}
@@ -135,15 +135,24 @@ const CheckboxItem = ({ label, isSelected, onPress }) => (
       style={{
         width: 22,
         height: 22,
-        borderRadius: 6,
-        borderWidth: 1.5,
+        borderRadius: 11,
+        borderWidth: 2,
         borderColor: isSelected ? '#2563EB' : '#CBD5E1',
-        backgroundColor: isSelected ? '#2563EB' : 'transparent',
+        backgroundColor: 'transparent',
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
-      {isSelected && <Check size={14} color="#FFFFFF" strokeWidth={3} />}
+      {isSelected && (
+        <View
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 6,
+            backgroundColor: '#2563EB',
+          }}
+        />
+      )}
     </View>
   </TouchableOpacity>
 );
@@ -157,14 +166,14 @@ const FilterModal = ({
   paymentTypes = DEFAULT_PAYMENT_TYPES,
 }) => {
   const [activeSection, setActiveSection] = useState('months');
-  const [selectedMonths, setSelectedMonths] = useState(
-    initialFilters?.months || [],
+  const [selectedMonth, setSelectedMonth] = useState(
+    initialFilters?.month || null,
   );
-  const [selectedCategories, setSelectedCategories] = useState(
-    initialFilters?.categories || [],
+  const [selectedCategory, setSelectedCategory] = useState(
+    initialFilters?.category || null,
   );
-  const [selectedPaymentTypes, setSelectedPaymentTypes] = useState(
-    initialFilters?.paymentTypes || [],
+  const [selectedPaymentType, setSelectedPaymentType] = useState(
+    initialFilters?.paymentType || null,
   );
   const [selectedDateRange, setSelectedDateRange] = useState(
     initialFilters?.dateRange || null,
@@ -173,59 +182,51 @@ const FilterModal = ({
   const months = useMemo(() => generateMonths(), []);
   const quickDateRanges = useMemo(() => generateQuickDateRanges(), []);
 
-  const toggleItem = useCallback((list, setList, value) => {
-    if (list.includes(value)) {
-      setList(list.filter(v => v !== value));
-    } else {
-      setList([...list, value]);
-    }
-  }, []);
-
   const handleClearAll = useCallback(() => {
-    setSelectedMonths([]);
-    setSelectedCategories([]);
-    setSelectedPaymentTypes([]);
+    setSelectedMonth(null);
+    setSelectedCategory(null);
+    setSelectedPaymentType(null);
     setSelectedDateRange(null);
   }, []);
 
   const handleApply = useCallback(() => {
     onApply({
-      months: selectedMonths,
-      categories: selectedCategories,
-      paymentTypes: selectedPaymentTypes,
+      month: selectedMonth,
+      category: selectedCategory,
+      paymentType: selectedPaymentType,
       dateRange: selectedDateRange,
     });
     onClose();
   }, [
-    selectedMonths,
-    selectedCategories,
-    selectedPaymentTypes,
+    selectedMonth,
+    selectedCategory,
+    selectedPaymentType,
     selectedDateRange,
     onApply,
     onClose,
   ]);
 
   const hasActiveFilters =
-    selectedMonths.length > 0 ||
-    selectedCategories.length > 0 ||
-    selectedPaymentTypes.length > 0 ||
+    selectedMonth !== null ||
+    selectedCategory !== null ||
+    selectedPaymentType !== null ||
     selectedDateRange !== null;
 
   const activeCount =
-    selectedMonths.length +
-    selectedCategories.length +
-    selectedPaymentTypes.length +
+    (selectedMonth ? 1 : 0) +
+    (selectedCategory ? 1 : 0) +
+    (selectedPaymentType ? 1 : 0) +
     (selectedDateRange ? 1 : 0);
 
   const renderSectionContent = () => {
     if (activeSection === 'months') {
       return months.map(month => (
-        <CheckboxItem
+        <RadioItem
           key={month.value}
           label={month.label}
-          isSelected={selectedMonths.includes(month.value)}
+          isSelected={selectedMonth === month.value}
           onPress={() =>
-            toggleItem(selectedMonths, setSelectedMonths, month.value)
+            setSelectedMonth(selectedMonth === month.value ? null : month.value)
           }
         />
       ));
@@ -235,7 +236,7 @@ const FilterModal = ({
       return (
         <View>
           {quickDateRanges.map(range => (
-            <CheckboxItem
+            <RadioItem
               key={range.label}
               label={range.label}
               isSelected={
@@ -260,12 +261,12 @@ const FilterModal = ({
 
     if (activeSection === 'categories') {
       return categories.map(cat => (
-        <CheckboxItem
+        <RadioItem
           key={cat}
           label={cat}
-          isSelected={selectedCategories.includes(cat)}
+          isSelected={selectedCategory === cat}
           onPress={() =>
-            toggleItem(selectedCategories, setSelectedCategories, cat)
+            setSelectedCategory(selectedCategory === cat ? null : cat)
           }
         />
       ));
@@ -273,12 +274,12 @@ const FilterModal = ({
 
     if (activeSection === 'paymentTypes') {
       return paymentTypes.map(pt => (
-        <CheckboxItem
+        <RadioItem
           key={pt}
           label={pt}
-          isSelected={selectedPaymentTypes.includes(pt)}
+          isSelected={selectedPaymentType === pt}
           onPress={() =>
-            toggleItem(selectedPaymentTypes, setSelectedPaymentTypes, pt)
+            setSelectedPaymentType(selectedPaymentType === pt ? null : pt)
           }
         />
       ));
@@ -368,11 +369,11 @@ const FilterModal = ({
                 const isActive = activeSection === section.key;
                 const sectionCount =
                   section.key === 'months'
-                    ? selectedMonths.length
+                    ? (selectedMonth ? 1 : 0)
                     : section.key === 'categories'
-                    ? selectedCategories.length
+                    ? (selectedCategory ? 1 : 0)
                     : section.key === 'paymentTypes'
-                    ? selectedPaymentTypes.length
+                    ? (selectedPaymentType ? 1 : 0)
                     : selectedDateRange
                     ? 1
                     : 0;
