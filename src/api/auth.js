@@ -47,9 +47,19 @@ export const forgotPassword = async (email, mobile) => {
   return response.data;
 };
 
+export const updateProfile = async (payload) => {
+  const response = await apiClient.post('/login/update', payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      user_id: await getUserId(),
+    },
+  });
+  return response.data;
+};
+
 export const logoutUser = async () => {
   try {
-    const response = await apiClient.post('/login/logout/', {}, {
+    const response = await apiClient.post('/login/logout/', {
       headers: { user_id: await getUserId() },
     });
     return response.data;

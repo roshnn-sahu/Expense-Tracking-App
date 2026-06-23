@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import axios from 'axios';
 import { API, AUTH_TOKEN } from '@env';
 
@@ -7,6 +8,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${AUTH_TOKEN}`,
+    'User-Agent': `${Platform.OS === 'ios' ? 'iOS' : 'Android'}`,
   },
 });
 

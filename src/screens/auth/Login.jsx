@@ -122,7 +122,7 @@ const Login = () => {
             <Text
               style={[styles.fs13, styles.fw700, styles.textGray, styles.mb2]}
             >
-              Email Address
+              Email/Mobile
             </Text>
             <View
               style={{

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +20,9 @@ import {
 import styles from '@/styles';
 import { useUser } from '@/context/UserContext';
 import Header from '@/components/includes/Header';
+import { logoutUser } from '@/api';
+import Toast from 'react-native-toast-message';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 const menuSections = [
   {
@@ -80,18 +83,6 @@ const menuSections = [
     ],
   },
 
-  {
-    title: 'Data',
-    items: [
-      {
-        icon: Download,
-        label: 'Export Data',
-        route: 'ExportData',
-        color: styles.colors.blue,
-        bg: styles.colors.blueLight,
-      },
-    ],
-  },
 
   {
     title: 'Support',
@@ -117,36 +108,67 @@ const menuSections = [
 
 const Profile = () => {
   const navigation = useNavigation();
-  const { userName, userEmail } = useUser();
+  const { userName, userEmail, clearUser } = useUser();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const handleLogOut = () => setShowLogoutModal(true);
+
+  const confirmLogout = async () => {
+    setShowLogoutModal(false);
+    try {
+      await logoutUser();
+      Toast.show({
+        type: 'info',
+        text1: 'Logged out successfully',
+        visibilityTime: 3000,
+      });
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1:
+          err?.response?.data?.message ||
+          err.message ||
+          'Logout failed, clearing session locally.',
+        visibilityTime: 3000,
+      });
+    }
+    clearUser();
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }, 500);
+  };
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F8F9FC" barStyle="dark-content" />
       <View style={styles.container}>
-           <View
-                style={[
-                  styles.row,
-                  styles.justifyBetween,
-                  styles.alignCenter,
-                  styles.px5,
-                  styles.py4,
-                ]}
-              >
-                <TouchableOpacity
-                  style={[styles.iconBtn, styles.bgSurfaceAlt]}
-                  onPress={() => navigation.goBack()}
-                  activeOpacity={0.7}
-                >
-                  <ChevronLeft
-                    size={22}
-                    color={styles.colors.navy}
-                    strokeWidth={2.2}
-                  />
-                </TouchableOpacity>
-      
-                <Text style={styles.headerTitle}>Profile</Text>
-      
-                <View style={{ width: 40 }} />
-              </View>
+        <View
+          style={[
+            styles.row,
+            styles.justifyBetween,
+            styles.alignCenter,
+            styles.px5,
+            styles.py4,
+          ]}
+        >
+          <TouchableOpacity
+            style={[styles.iconBtn, styles.bgSurfaceAlt]}
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+          >
+            <ChevronLeft
+              size={22}
+              color={styles.colors.navy}
+              strokeWidth={2.2}
+            />
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Profile</Text>
+
+          <View style={{ width: 40 }} />
+        </View>
 
         <ScrollView
           style={[styles.mt3]}
@@ -233,11 +255,10 @@ const Profile = () => {
                       activeOpacity={0.7}
                       onPress={() => {
                         if (item.route === 'Logout') {
-                      
-                          return;
+                          handleLogOut();
+                        } else {
+                          navigation.navigate(item.route);
                         }
-
-                        navigation.navigate(item.route);
                       }}
                     >
                       <View style={styles.menuItem}>
@@ -270,6 +291,17 @@ const Profile = () => {
             </View>
           ))}
         </ScrollView>
+        {/* Logout Confirmation Modal */}
+        <ConfirmDialog
+          visible={showLogoutModal}
+          onClose={() => setShowLogoutModal(false)}
+          onConfirm={confirmLogout}
+          title="Logout"
+          message="Are you sure you want to logout?"
+          confirmLabel="Logout"
+          cancelLabel="Cancel"
+          confirmVariant="danger"
+        />
       </View>
     </SafeAreaView>
   );
