@@ -30,7 +30,6 @@ import PickerDropdown from '@/components/ui/PickerDropdown';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import Toast from 'react-native-toast-message';
 
-const FALLBACK_GENDER = [
 
 const FALLBACK_GENDER = [
   { label: 'Male', value: 'Male' },

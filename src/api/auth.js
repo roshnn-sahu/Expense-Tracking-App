@@ -47,16 +47,6 @@ export const forgotPassword = async (email, mobile) => {
   return response.data;
 };
 
-export const updateProfile = async (payload) => {
-  const response = await apiClient.post('/login/update', payload, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      user_id: await getUserId(),
-    },
-  });
-  return response.data;
-};
-
 export const logoutUser = async () => {
   try {
     const response = await apiClient.post('/login/logout/', {
@@ -66,4 +56,16 @@ export const logoutUser = async () => {
   } finally {
     await clearSession();
   }
+};
+
+//USER ROUTES
+
+export const updateProfile = async (payload) => {
+  const response = await apiClient.post('/login/update', payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      user_id: await getUserId(),
+    },
+  });
+  return response.data;
 };
