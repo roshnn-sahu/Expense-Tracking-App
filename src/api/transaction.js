@@ -1,9 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserId } from '@/utils/storage';
 import apiClient from '@/config/axios';
-
-const USER_ID_KEY = 'user_id';
-
-const userId = async () => (await AsyncStorage.getItem(USER_ID_KEY)) || '1';
 
 const buildFormData = (payload) => {
   const fd = new FormData();
@@ -47,7 +43,7 @@ const getRows = (data) => {
 
 export const getTransactions = async (filter = 'All', page = 1) => {
   const response = await apiClient.get(`/transaction/list/${filter}/${page}`, {
-    headers: { user_id: await userId() },
+    headers: { user_id: await getUserId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
   });
 
   const transactions = getRows(response.data).map(mapRow);
@@ -64,21 +60,21 @@ export const getTransactions = async (filter = 'All', page = 1) => {
 
 export const addTransaction = async (payload) => {
   const response = await apiClient.post('/transaction/entry', buildFormData(payload), {
-    headers: { user_id: await userId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
+    headers: { user_id: await getUserId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
   });
   return response.data;
 };
 
 export const deleteTransaction = async (id) => {
   const response = await apiClient.delete(`/transaction/delete/${id}`, {
-    headers: { user_id: await userId(), Accept: 'application/json' },
+    headers: { user_id: await getUserId(), Accept: 'application/json' },
   });
   return response.data;
 };
 
 export const updateTransaction = async (payload) => {
   const response = await apiClient.post(`/transaction/entry/${payload.id}`, buildFormData(payload), {
-    headers: { user_id: await userId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
+    headers: { user_id: await getUserId(), 'Content-Type': 'multipart/form-data', Accept: 'application/json' },
   });
   return response.data;
 };
@@ -86,7 +82,7 @@ export const updateTransaction = async (payload) => {
 export const getStatement = async (fromDate, toDate) => {
   const response = await apiClient.get('/transaction/statement?', {
     params: { satisfies_date: fromDate, e_date: toDate },
-    headers: { user_id: await userId() },
+    headers: { user_id: await getUserId() },
   });
 
   const parsed = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;

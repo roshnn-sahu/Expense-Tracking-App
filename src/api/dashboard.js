@@ -1,11 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserId } from '@/utils/storage';
 import apiClient from '@/config/axios';
-
-const USER_ID_KEY = 'user_id';
-
-const getUserId = async () => {
-  return (await AsyncStorage.getItem(USER_ID_KEY)) || '1';
-};
 
 const toNumber = value => {
   const n = parseFloat(String(value ?? '').replace(/,/g, ''));
@@ -36,7 +30,7 @@ const mapTransaction = (item, index) => {
 
 export const getDashboardData = async () => {
   const response = await apiClient.get('/login/dashboard', {
-    headers: { user_id: "1" },
+    headers: { user_id: await getUserId() },
   });
 
   const raw = response.data?.data ?? response.data;

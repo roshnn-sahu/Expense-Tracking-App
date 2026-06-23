@@ -1,16 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '@/config/axios';
-
-const USER_ID_KEY = 'user_id';
-const AUSER_KEY = 'aUser';
+import { getUserId, setUserId, setUserData, clearAuthSession } from '@/utils/storage';
 
 const storeSession = async (userId, aUser) => {
-  if (userId) await AsyncStorage.setItem(USER_ID_KEY, String(userId));
-  if (aUser) await AsyncStorage.setItem(AUSER_KEY, JSON.stringify(aUser));
+  if (userId) await setUserId(userId);
+  if (aUser) await setUserData(aUser);
 };
 
 const clearSession = async () => {
-  await AsyncStorage.multiRemove([USER_ID_KEY, AUSER_KEY]);
+  await clearAuthSession();
 };
 
 export const loginUser = async (email, password) => {
@@ -52,9 +49,8 @@ export const forgotPassword = async (email, mobile) => {
 
 export const logoutUser = async () => {
   try {
-    const userId = await AsyncStorage.getItem(USER_ID_KEY);
     const response = await apiClient.post('/login/logout/', {}, {
-      headers: { user_id: userId || '' },
+      headers: { user_id: await getUserId() },
     });
     return response.data;
   } finally {
