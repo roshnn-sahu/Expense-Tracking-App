@@ -71,7 +71,7 @@ export const updateProfile = async (payload) => {
   return response.data;
 };
 export const changePassword = async (payload) => {
-
+  
   const response = await apiClient.post('/login/change-password', payload, {
     headers: {
       'Content-Type': 'multipart/form-data',

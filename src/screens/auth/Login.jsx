@@ -96,14 +96,7 @@ const Login = () => {
           ]}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Back Button */}
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={[styles.iconBtn, styles.bgSurfaceAlt, { marginBottom: 20 }]}
-          >
-            <ArrowLeft size={20} color={styles.colors.navy} />
-          </TouchableOpacity>
-
+         
           {/* Heading */}
           <Text style={[styles.fontXXL, styles.fw700, styles.textNavy]}>
             Welcome back

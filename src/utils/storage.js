@@ -6,7 +6,7 @@ export const AUSER_KEY = 'aUser';
 
 // ── User ID ──
 export const getUserId = async () => {
-  return (await AsyncStorage.getItem('1')) || '1';
+  return (await AsyncStorage.getItem('15')) || '1';
 };
 
 export const setUserId = async (userId) => {

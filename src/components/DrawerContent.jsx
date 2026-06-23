@@ -95,12 +95,11 @@ const DrawerContent = ({ navigation }) => {
       });
     }
     clearUser();
-    setTimeout(() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-    }, 500);
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   return (
