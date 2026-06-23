@@ -15,26 +15,28 @@ import RootStack from '@/navigation/RootStack';
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <CurrencyProvider>
-          <CompanyProvider>
-            <UserProvider>
-              <TransactionRefreshProvider>
-                <NavigationContainer>
-                  <RootStack />
-                </NavigationContainer>
-              </TransactionRefreshProvider>
-            </UserProvider>
-          </CompanyProvider>
-        </CurrencyProvider>
-      </SafeAreaProvider>
+    <>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <CurrencyProvider>
+            <CompanyProvider>
+              <UserProvider>
+                <TransactionRefreshProvider>
+                  <NavigationContainer>
+                    <RootStack />
+                  </NavigationContainer>
+                </TransactionRefreshProvider>
+              </UserProvider>
+            </CompanyProvider>
+          </CurrencyProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
       <Toast
         config={toastConfig}
         position="top"
         topOffset={60}
         autoHide={true}
       />
-    </GestureHandlerRootView>
+    </>
   );
 }
