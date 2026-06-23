@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
 import { ChevronLeft, SlidersHorizontal } from 'lucide-react-native';
 import styles from '@/styles';
 import { filters } from '@/data/transactions';
@@ -31,10 +31,11 @@ import { useTransactionRefresh } from '@/context/TransactionRefreshContext';
 
 const Transactions = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const { refreshCount, triggerRefresh } = useTransactionRefresh();
   const flatListRef = useRef(null);
 
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeFilter, setActiveFilter] = useState(route.params?.initialFilter || 'All');
   const [allTransactions, setAllTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import {
   Home,
-  ArrowUpDown,
+  TrendingDown,
+  List,
+  TrendingUp,
   PieChart,
+  FileText,
   User,
   Settings,
   LogOut,
-  FileText,
 } from 'lucide-react-native';
 import styles from '@/styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,13 +17,58 @@ import { logoutUser } from '@/api/auth';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import Toast from 'react-native-toast-message';
 
-const menus = [
-  { title: 'Home', icon: Home, screen: 'Home' },
-  { title: 'Transactions', icon: ArrowUpDown, screen: 'Transactions' },
-  { title: 'Analytics', icon: PieChart, screen: 'Analytics' },
-  { title: 'Statement', icon: FileText, screen: 'Statement' },
-  { title: 'Profile', icon: User, screen: 'Profile' },
-  { title: 'Settings', icon: Settings, screen: 'Settings' },
+const sections = [
+  {
+    title: 'Overview',
+    items: [{ title: 'Home', icon: Home, screen: 'Home', tab: true }],
+  },
+  {
+    title: 'Transactions',
+    items: [
+      {
+        title: 'Add Expense',
+        icon: TrendingDown,
+        screen: 'AddTransaction',
+        tab: true,
+        params: { type: 'Expense' },
+      },
+      {
+        title: 'Expense List',
+        icon: List,
+        screen: 'Transactions',
+        tab: true,
+        params: { initialFilter: 'Expense' },
+      },
+      {
+        title: 'Add Income',
+        icon: TrendingUp,
+        screen: 'AddTransaction',
+        tab: true,
+        params: { type: 'Income' },
+      },
+      {
+        title: 'Income List',
+        icon: List,
+        screen: 'Transactions',
+        tab: true,
+        params: { initialFilter: 'Income' },
+      },
+    ],
+  },
+  {
+    title: 'Reports',
+    items: [
+      { title: 'Analytics', icon: PieChart, screen: 'Analytics', tab: true },
+      { title: 'Statement', icon: FileText, screen: 'Statement', tab: true },
+    ],
+  },
+  {
+    title: 'Account',
+    items: [
+      { title: 'Profile', icon: User, screen: 'Profile' },
+      { title: 'Settings', icon: Settings, screen: 'Settings' },
+    ],
+  },
 ];
 
 const DrawerContent = ({ navigation }) => {
@@ -34,7 +81,7 @@ const DrawerContent = ({ navigation }) => {
     try {
       await logoutUser();
       Toast.show({
-        type: 'success',
+        type: 'info',
         text1: 'Logged out successfully',
         visibilityTime: 3000,
       });
@@ -48,11 +95,12 @@ const DrawerContent = ({ navigation }) => {
         visibilityTime: 3000,
       });
     }
-
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Login' }],
-    });
+    setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }, 500);
   };
 
   return (
@@ -67,38 +115,66 @@ const DrawerContent = ({ navigation }) => {
       </View>
 
       {/* Menu Items */}
-      <View style={styles.drawerSection}>
-        {menus.map((item, index) => {
-          const Icon = item.icon;
-          return (
-            <View key={item.screen}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.drawerItem}
-                onPress={() => {
-                  if (item.screen === 'Settings') {
-                    navigation.navigate('Settings');
-                  } else {
-                    navigation.navigate('Main', { screen: item.screen });
-                  }
-                  navigation.closeDrawer();
-                }}
-              >
-                <View style={styles.drawerItemIcon}>
-                  <Icon size={20} color={styles.colors.blue} />
-                </View>
-                <Text style={styles.drawerItemLabel}>{item.title}</Text>
-              </TouchableOpacity>
 
-              {/* Divider between items */}
-              {index !== menus.length - 1 && <View style={styles.divider} />}
-            </View>
-          );
-        })}
-      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.drawerSection}
+      >
+        {sections.map((section, sIdx) => (
+          <View key={section.title}>
+            {/* Section Header */}
+            <Text
+              style={{
+                fontSize: 11,
+                fontWeight: '700',
+                color: '#94A3B8',
+                textTransform: 'uppercase',
+                letterSpacing: 1,
+                paddingHorizontal: 16,
+                paddingTop: sIdx === 0 ? 4 : 20,
+                paddingBottom: 6,
+              }}
+            >
+              {section.title}
+            </Text>
+
+            {section.items.map(item => {
+              const Icon = item.icon;
+              return (
+                <TouchableOpacity
+                  key={
+                    item.screen +
+                    (item.params?.type || item.params?.initialFilter || '')
+                  }
+                  activeOpacity={0.7}
+                  style={styles.drawerItem}
+                  onPress={() => {
+                    if (item.params) {
+                      navigation.navigate('Main', {
+                        screen: item.screen,
+                        params: item.params,
+                      });
+                    } else if (item.tab) {
+                      navigation.navigate('Main', { screen: item.screen });
+                    } else {
+                      navigation.navigate(item.screen);
+                    }
+                    navigation.closeDrawer();
+                  }}
+                >
+                  <View style={styles.drawerItemIcon}>
+                    <Icon size={20} color={styles.colors.blue} />
+                  </View>
+                  <Text style={styles.drawerItemLabel}>{item.title}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        ))}
+      </ScrollView>
 
       {/* Flexible Spacer pushes footer to the bottom */}
-      <View style={styles.flex1} />
+      <View style={(styles.flex1)} />
 
       {/* Footer */}
       <TouchableOpacity

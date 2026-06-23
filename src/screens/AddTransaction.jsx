@@ -106,7 +106,7 @@ const AddTransaction = () => {
     : '';
   const editType = editTx?.type || (editTx?.amount > 0 ? 'Income' : 'Expense');
 
-  const [type, setType] = useState(editType);
+  const [type, setType] = useState(route.params?.type || editType);
   const [amount, setAmount] = useState(editAmount);
   const [name, setName] = useState(editTx?.name || '');
   const [description, setDescription] = useState(editTx?.description || '');

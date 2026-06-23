@@ -6,7 +6,7 @@ export const AUSER_KEY = 'aUser';
 
 // ── User ID ──
 export const getUserId = async () => {
-  return (await AsyncStorage.getItem(USER_ID_KEY)) || '1';
+  return (await AsyncStorage.getItem('1')) || '1';
 };
 
 export const setUserId = async (userId) => {
@@ -27,18 +27,12 @@ export const clearAuthSession = async () => {
   await AsyncStorage.multiRemove([USER_ID_KEY, AUSER_KEY]);
 };
 
-// ── Company cache keys ──
+// ── Company cache (permanent until cleared) ──
 export const COMPANY_CACHE_KEY = 'aCompany';
-export const COMPANY_CACHE_EXPIRY_KEY = 'company_cache_expiry';
-export const COMPANY_CACHE_DURATION = 5 * 60 * 1000;
 
-// ── Company cache operations ──
 export const getCompanyCache = async () => {
-  const [cached, expiry] = await Promise.all([
-    AsyncStorage.getItem(COMPANY_CACHE_KEY),
-    AsyncStorage.getItem(COMPANY_CACHE_EXPIRY_KEY),
-  ]);
-  if (cached && expiry && Date.now() < parseInt(expiry, 10)) {
+  const cached = await AsyncStorage.getItem(COMPANY_CACHE_KEY);
+  if (cached) {
     return JSON.parse(cached);
   }
   return null;
@@ -52,7 +46,6 @@ export const getCompanyCacheRaw = async () => {
       if (typeof parsed === 'object' && parsed !== null) {
         return { data: parsed, fromCache: true };
       }
-      await AsyncStorage.multiRemove([COMPANY_CACHE_KEY, COMPANY_CACHE_EXPIRY_KEY]);
     }
     return null;
   } catch {
@@ -61,12 +54,9 @@ export const getCompanyCacheRaw = async () => {
 };
 
 export const setCompanyCache = async (data) => {
-  await Promise.all([
-    AsyncStorage.setItem(COMPANY_CACHE_KEY, JSON.stringify(data)),
-    AsyncStorage.setItem(COMPANY_CACHE_EXPIRY_KEY, String(Date.now() + COMPANY_CACHE_DURATION)),
-  ]);
+  await AsyncStorage.setItem(COMPANY_CACHE_KEY, JSON.stringify(data));
 };
 
 export const clearCompanyCache = async () => {
-  await AsyncStorage.multiRemove([COMPANY_CACHE_KEY, COMPANY_CACHE_EXPIRY_KEY]);
+  await AsyncStorage.removeItem(COMPANY_CACHE_KEY);
 };

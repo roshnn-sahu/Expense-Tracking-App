@@ -495,8 +495,9 @@ export default StyleSheet.create({
   },
 
   drawerSection: {
-    paddingTop: 12,
+  
     paddingHorizontal: 6,
+
   },
 
   drawerItem: {
