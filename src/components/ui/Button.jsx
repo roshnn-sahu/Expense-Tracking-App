@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import colors from '@/styles/colors';
 
-
 const Button = ({
   label,
   onPress,

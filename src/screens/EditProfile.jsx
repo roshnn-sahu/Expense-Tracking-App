@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  ActivityIndicator,
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -28,6 +27,7 @@ import { updateProfile } from '@/api';
 import SearchableDropdown from '@/components/ui/SearchableDropdown';
 import PickerDropdown from '@/components/ui/PickerDropdown';
 import ErrorMessage from '@/components/ui/ErrorMessage';
+import Button from '@/components/ui/Button';
 import Toast from 'react-native-toast-message';
 
 
@@ -296,18 +296,15 @@ const EditProfile = () => {
             />
 
             {/* Save */}
-            <TouchableOpacity
-              activeOpacity={0.9}
+            <Button
+              label="Save Changes"
               onPress={handleSave}
+              variant="primary"
+              size="lg"
+              loading={saving}
               disabled={saving}
-              style={[styles.primaryButton, styles.mt6, saving && { opacity: 0.6 }]}
-            >
-              {saving ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Text style={styles.primaryButtonText}>Save Changes</Text>
-              )}
-            </TouchableOpacity>
+              style={styles.mt6}
+            />
           </ScrollView>
         </View>
       </KeyboardAvoidingView>

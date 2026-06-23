@@ -8,7 +8,6 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +17,7 @@ import ErrorMessage from '@/components/ui/ErrorMessage';
 import { loginUser } from '@/api';
 import { useUser } from '@/context/UserContext';
 import Toast from 'react-native-toast-message';
+import Button from '@/components/ui/Button';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -202,18 +202,14 @@ const Login = () => {
           </TouchableOpacity>
 
           {/* Login Button */}
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <Button
+            label="Sign In"
             onPress={handleLogin}
+            variant="primary"
+            size="lg"
+            loading={loading}
             disabled={loading}
-            style={[styles.primaryButton, loading && { opacity: 0.6 }]}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <Text style={styles.primaryButtonText}>Sign In</Text>
-            )}
-          </TouchableOpacity>
+          />
 
           {/* Sign Up Link */}
           <View

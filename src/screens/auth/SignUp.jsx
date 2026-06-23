@@ -8,7 +8,6 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -32,6 +31,7 @@ import { useCompany } from '@/context/CompanyContext';
 import { useUser } from '@/context/UserContext';
 import { signupUser } from '@/api';
 import Toast from 'react-native-toast-message';
+import Button from '@/components/ui/Button';
 
 // Fallback defaults when API data is not yet loaded
 const FALLBACK_GENDER = [
@@ -385,18 +385,14 @@ const SignUp = () => {
           </View>
 
           {/* Sign Up Button */}
-          <TouchableOpacity
-            activeOpacity={0.9}
+          <Button
+            label="Create Account"
             onPress={handleSignUp}
+            variant="primary"
+            size="lg"
+            loading={loading}
             disabled={loading}
-            style={[styles.primaryButton, loading && { opacity: 0.6 }]}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <Text style={styles.primaryButtonText}>Create Account</Text>
-            )}
-          </TouchableOpacity>
+          />
 
           {/* Login Link */}
           <View

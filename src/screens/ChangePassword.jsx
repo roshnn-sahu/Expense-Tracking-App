@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  ActivityIndicator,
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -16,6 +15,7 @@ import { ArrowLeft, Lock, Eye, EyeOff } from 'lucide-react-native';
 import styles from '@/styles';
 import { changePassword } from '@/api';
 import ErrorMessage from '@/components/ui/ErrorMessage';
+import Button from '@/components/ui/Button';
 import Toast from 'react-native-toast-message';
 
 const ChangePasswordScreen = () => {
@@ -205,22 +205,15 @@ const ChangePasswordScreen = () => {
             />
 
             {/* Save */}
-            <TouchableOpacity
-              activeOpacity={0.9}
+            <Button
+              label="Update Password"
               onPress={handleSave}
+              variant="primary"
+              size="lg"
+              loading={saving}
               disabled={saving}
-              style={[
-                styles.primaryButton,
-                styles.mt4,
-                saving && { opacity: 0.6 },
-              ]}
-            >
-              {saving ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Text style={styles.primaryButtonText}>Update Password</Text>
-              )}
-            </TouchableOpacity>
+              style={styles.mt4}
+            />
           </ScrollView>
         </View>
       </KeyboardAvoidingView>

@@ -8,7 +8,6 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -17,6 +16,7 @@ import styles from '@/styles';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import { forgotPassword } from '@/api';
 import Toast from 'react-native-toast-message';
+import Button from '@/components/ui/Button';
 
 const ForgotPassword = () => {
   const navigation = useNavigation();
@@ -207,33 +207,15 @@ const ForgotPassword = () => {
               </View>
 
               {/* Send Button */}
-              <TouchableOpacity
-                activeOpacity={0.9}
+              <Button
+                label="Send Reset Link"
                 onPress={handleSend}
+                variant="primary"
+                size="lg"
+                loading={loading}
                 disabled={loading}
-                style={[styles.primaryButton, loading && { opacity: 0.6 }]}
-              >
-                {loading ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <View
-                    style={[
-                      styles.row,
-                      styles.alignCenter,
-                      styles.justifyCenter,
-                    ]}
-                  >
-                    <Text style={styles.primaryButtonText}>
-                      Send Reset Link
-                    </Text>
-                    <ArrowRight
-                      size={20}
-                      color="#FFFFFF"
-                      style={{ marginLeft: 8 }}
-                    />
-                  </View>
-                )}
-              </TouchableOpacity>
+                iconRight={<ArrowRight size={20} color="#FFFFFF" />}
+              />
 
               {/* Back to Login */}
               <TouchableOpacity
@@ -294,13 +276,13 @@ const ForgotPassword = () => {
                 <Text style={[styles.textNavy, styles.fw600]}>{mobile}</Text>
               </Text>
 
-              <TouchableOpacity
-                activeOpacity={0.9}
+              <Button
+                label="Back to Sign In"
                 onPress={() => navigation.goBack()}
-                style={[styles.primaryButton, styles.mt6, styles.wFull]}
-              >
-                <Text style={styles.primaryButtonText}>Back to Sign In</Text>
-              </TouchableOpacity>
+                variant="primary"
+                size="lg"
+                style={styles.mt6}
+              />
             </View>
           )}
         </ScrollView>
