@@ -14,8 +14,10 @@ const DrawerNavigation = () => {
       drawerContent={renderDrawerContent}
       screenOptions={{
         headerShown: false,
-        drawerType: 'slide',
-        overlayColor: 'rgba(15,23,42,0.2)',
+        drawerType: 'front',
+        swipeEnabled: true,
+        swipeEdgeWidth: 50,
+        overlayColor: 'rgba(15,23,42,0.4)',
         drawerStyle: {
           width: 270,
           backgroundColor: '#FFFFFF',

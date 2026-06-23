@@ -4,6 +4,7 @@ import {
   Text,
   ScrollView,
   StatusBar,
+  RefreshControl,
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,10 +30,12 @@ const HomeScreen = () => {
   const [selectedTx, setSelectedTx] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  const loadDashboard = async () => {
-    setLoading(true);
+  const loadDashboard = async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    else setLoading(true);
     setError(null);
 
     try {
@@ -42,6 +45,7 @@ const HomeScreen = () => {
       setError(err?.message || 'Failed to load dashboard data.');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -77,13 +81,20 @@ const HomeScreen = () => {
           showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.scrollContent}
           style={[styles.mt3]}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => loadDashboard(true)}
+              colors={[styles.colors.blue]}
+              tintColor={styles.colors.blue}
+            />
+          }
         >
           <View style={[styles.welcomeContainer, styles.mb3]}>
-            <Text style={styles.greeting}>Welcome back, {userName} 👋</Text>
+            <Text style={styles.greeting}>Welcome back, 👋</Text>
 
             <Text style={styles.greetingSub}>
-              {aSite?.display_name ? `${aSite.display_name}'s ` : ''}Your
-              spending summary is ready.
+              {userName ? userName : 'User'}'s Your spending summary is ready.
             </Text>
           </View>
 
@@ -164,12 +175,9 @@ const HomeScreen = () => {
 
 const localStyles = {
   loaderCard: {
-    borderRadius: 28,
     padding: 24,
     marginBottom: 20,
     backgroundColor: styles.colors.surface,
-    borderWidth: 1,
-    borderColor: styles.colors.grayBorder,
     alignItems: 'center',
   },
   loaderText: {

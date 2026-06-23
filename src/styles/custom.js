@@ -69,13 +69,13 @@ export default StyleSheet.create({
     borderRadius: 28,
     padding: 20,
     marginBottom: 16,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#EEF2F6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.04,
     shadowRadius: 14,
-    elevation: 2,
+
   },
 
   cardCompact: {
@@ -83,11 +83,6 @@ export default StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
   },
 
   welcomeContainer: {
@@ -495,7 +490,7 @@ export default StyleSheet.create({
   },
 
   drawerSection: {
-  
+
     paddingHorizontal: 6,
 
   },

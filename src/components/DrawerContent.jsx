@@ -65,10 +65,7 @@ const sections = [
   },
   {
     title: 'Account',
-    items: [
-      { title: 'Profile', icon: User, screen: 'Profile' },
-      { title: 'Settings', icon: Settings, screen: 'Settings' },
-    ],
+    items: [{ title: 'Settings', icon: Settings, screen: 'Profile' }],
   },
 ];
 
@@ -179,7 +176,7 @@ const DrawerContent = ({ navigation }) => {
       </ScrollView>
 
       {/* Flexible Spacer pushes footer to the bottom */}
-      <View style={(styles.flex1)} />
+      <View style={styles.flex1} />
 
       {/* Footer */}
       <TouchableOpacity
