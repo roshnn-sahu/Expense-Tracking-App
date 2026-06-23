@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ChevronLeft,
   Search,
+  Lock,
 } from 'lucide-react-native';
 import styles from '@/styles';
 import { useUser } from '@/context/UserContext';
@@ -37,11 +38,11 @@ const menuSections = [
       },
 
       {
-        icon: Bell,
-        label: 'Notifications',
-        route: 'Notifications',
-        color: styles.colors.purple,
-        bg: styles.colors.purpleLight,
+        icon: Lock,
+        label: 'Change Password',
+        route: 'ChangePassword',
+        color: styles.colors.red,
+        bg: styles.colors.redLight,
       },
 
       {
@@ -82,7 +83,6 @@ const menuSections = [
       },
     ],
   },
-
 
   {
     title: 'Support',

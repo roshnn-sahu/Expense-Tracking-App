@@ -81,7 +81,6 @@ export default StyleSheet.create({
   cardCompact: {
     backgroundColor: colors.surface,
     borderRadius: 20,
-    padding: 16,
     marginBottom: 12,
   },
 

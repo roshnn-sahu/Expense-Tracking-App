@@ -61,7 +61,18 @@ export const logoutUser = async () => {
 //USER ROUTES
 
 export const updateProfile = async (payload) => {
+
   const response = await apiClient.post('/login/update', payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      user_id: await getUserId(),
+    },
+  });
+  return response.data;
+};
+export const changePassword = async (payload) => {
+
+  const response = await apiClient.post('/login/change-password', payload, {
     headers: {
       'Content-Type': 'multipart/form-data',
       user_id: await getUserId(),
