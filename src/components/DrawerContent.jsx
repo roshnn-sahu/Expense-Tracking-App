@@ -78,13 +78,15 @@ const DrawerContent = ({ navigation }) => {
   const confirmLogout = async () => {
     setShowLogoutModal(false);
     try {
-      await logoutUser();
+      const res = await logoutUser();
+      console.log(res, 'LOGOUT');
       Toast.show({
         type: 'info',
         text1: 'Logged out successfully',
         visibilityTime: 3000,
       });
     } catch (err) {
+      console.log(err, 'LOGOUT');
       Toast.show({
         type: 'error',
         text1:

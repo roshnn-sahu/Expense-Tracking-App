@@ -110,7 +110,7 @@ const ForgotPassword = () => {
                   styles.mb6,
                 ]}
               >
-                Enter your email and mobile number to receive a reset link.
+                Enter your email and mobile number to receive new password.
               </Text>
 
               {/* Error */}
@@ -208,7 +208,7 @@ const ForgotPassword = () => {
 
               {/* Send Button */}
               <Button
-                label="Send Reset Link"
+                label="Forgot Password"
                 onPress={handleSend}
                 variant="primary"
                 size="lg"

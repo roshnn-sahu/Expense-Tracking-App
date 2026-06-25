@@ -230,15 +230,7 @@ const Login = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Skip Button */}
-          <TouchableOpacity
-            onPress={() => navigation.replace('DrawerRoot')}
-            style={[styles.alignCenter, styles.mt4, styles.pb5]}
-          >
-            <Text style={[styles.fs14, styles.textGrayLight, styles.fw500]}>
-              Skip for now ›
-            </Text>
-          </TouchableOpacity>
+    
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

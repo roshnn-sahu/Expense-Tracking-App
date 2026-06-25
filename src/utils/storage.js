@@ -6,7 +6,7 @@ export const AUSER_KEY = 'aUser';
 
 // ── User ID ──
 export const getUserId = async () => {
-  return (await AsyncStorage.getItem('15')) || '1';
+  return (await AsyncStorage.getItem(USER_ID_KEY)) || '1';
 };
 
 export const setUserId = async (userId) => {
@@ -23,8 +23,8 @@ export const getUserData = async () => {
   return data ? JSON.parse(data) : null;
 };
 
-export const clearAuthSession = async () => {
-  await AsyncStorage.multiRemove([USER_ID_KEY, AUSER_KEY]);
+export const clearAuthSession = async () => { 
+  await AsyncStorage.removeMany([USER_ID_KEY, AUSER_KEY]);
 };
 
 // ── Company cache (permanent until cleared) ──

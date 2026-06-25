@@ -55,7 +55,7 @@ export const forgotPassword = async (email, mobile) => {
 // Log out user from server and clear local auth session
 export const logoutUser = async () => {
   try {
-    const response = await apiClient.post('/login/logout/', {
+    const response = await apiClient.post('/login/logout/', {}, {
       headers: { user_id: await getUserId() },
     });
     return response.data;
@@ -77,7 +77,7 @@ export const updateProfile = async (payload) => {
 };
 // Change user password by providing old password, new password, and confirmation
 export const changePassword = async (payload) => {
-  
+
   const response = await apiClient.post('/login/change-password', payload, {
     headers: {
       'Content-Type': 'multipart/form-data',
